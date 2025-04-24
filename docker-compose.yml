@@ -1,5 +1,5 @@
 services:
-  flask-app:
+  flask-app-isak-landing:
     container_name: flask-app-isak-landing
     restart: always
     env_file: .env
@@ -9,12 +9,12 @@ services:
     networks:
       - web_network
 
-  nginx:
+  nginx-isak-landing:
     container_name: nginx-isak-landing
     restart: always
     image: nginx:latest
     ports:
-      - "40001:40001"
+      - "40002:40002"
     volumes:
       - ./nginx:/etc/nginx/conf.d
     networks:
