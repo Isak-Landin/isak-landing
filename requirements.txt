@@ -1,0 +1,5 @@
+flask
+gunicorn
+flask-sqlalchemy
+python-dotenv  # Ensures Flask loads .env correctly
+importlib-metadata

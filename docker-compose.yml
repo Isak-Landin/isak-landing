@@ -1,0 +1,27 @@
+services:
+  flask-app:
+    container_name: flask-app-isak-landing
+    restart: always
+    env_file: .env
+    build: .
+    ports:
+      - "5006:5006"
+    networks:
+      - web_network
+
+  nginx:
+    container_name: nginx-isak-landing
+    restart: always
+    image: nginx:latest
+    ports:
+      - "40001:40001"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    networks:
+      - web_network
+    depends_on:
+      - flask-app-isak-landing
+
+networks:
+  web_network:
+    driver: bridge
