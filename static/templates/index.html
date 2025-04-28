@@ -3,7 +3,22 @@
 
 <html>
 	<head>
-		<title>Custom Websites and </title>
+		<title>Custom Websites and Hosting</title>
+
+		<!-- Small favicon icon for the website -->
+		<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon_io/favicon.ico') }}" />
+		<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon_io/apple-touch-icon.png') }}" />">
+		<!-- Link preview -->
+		<meta property="og:title" content="Custom Websites, Hosting, and VPS Setup | Isak Landin" />
+		<meta name="twitter:title" content="Custom Websites, Hosting, and VPS Setup | Isak Landin" />
+
+		<meta property="og:description" content="Tailor-made websites with full ownership, VPS setup, and hosting support. Fast, secure, and built to empower businesses and individuals." />
+		<meta name="twitter:description" content="Tailor-made websites with full ownership, VPS setup, and hosting support. Fast, secure, and built to empower businesses and individuals." />
+
+		<meta property="og:image" content="{{ url_for('static', filename='images/preview.png', _external=True) }}" />
+		<meta name="twitter:image" content="{{ url_for('static', filename='images/preview.png', _external=True) }}" />
+
+
 		<meta name="description" content="Custom Websites and Web Applications + Hosting support and recommendation" />
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
