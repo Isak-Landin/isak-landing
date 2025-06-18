@@ -144,7 +144,7 @@ p {
 .split-image {
   flex: 0 0 42%;
   max-width: auto;
-  max-height: 40%;
+  max-height: 35%;
   padding-top: 1rem;
   padding-bottom: 1rem;
 }
