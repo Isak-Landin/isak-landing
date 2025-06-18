@@ -68,11 +68,14 @@ p {
 
 .split-content {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
   align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 3rem;
   max-width: 960px;
   margin: 0 auto;
-  gap: 2rem;
+  padding: 2rem 0;
 }
 
 .split-content.reverse {
@@ -80,19 +83,21 @@ p {
 }
 
 .split-image {
-  flex: 1 1 50%;
-  padding: 1rem;
+  flex: 0 0 45%;
+  max-width: 45%;
 }
 
 .split-image img {
   width: 100%;
+  height: auto;
+  max-width: 100%;
   border-radius: 0.5rem;
+  object-fit: cover;
 }
 
 .split-text {
-  flex: 1 1 50%;
+  flex: 1;
   text-align: left;
-  padding: 1rem;
 }
 
 .cta-section {
@@ -108,4 +113,41 @@ p {
 
 .cta-section p {
   color: #ddd;
+}
+
+/* Mobile responsiveness */
+@media screen and (max-width: 768px) {
+  .split-content,
+  .split-content.reverse {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .split-image,
+  .split-text {
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .split-text {
+    text-align: center;
+    padding: 0;
+  }
+
+  .split-image {
+    padding: 0;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .button.large {
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+  }
 }
