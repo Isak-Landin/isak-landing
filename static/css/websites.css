@@ -76,12 +76,14 @@ p {
 }
 
 .radial-dark-section p {
-  color: #ccc;
-  font-size: 1.1rem;
-  max-width: 700px;
-  margin: 0 auto 2rem;
-  animation: fadeInUp 0.8s ease-out forwards;
-  animation-delay: 0.2s;
+    font-size: 1.1rem;
+    color: #ccc;
+    text-align: center;
+    max-width: 700px;
+    margin: 1.25rem auto 2.5rem auto;
+    line-height: 1.8;
+    letter-spacing: 0.2px;
+    animation: fadeInUp 0.8s ease-out forwards;
 }
 
 .radial-dark-section h1,
@@ -94,7 +96,6 @@ p {
 .radial-dark-section .cta-buttons {
   text-align: center;
   animation: fadeInUp 0.8s ease-out forwards;
-  animation-delay: 0.4s;
 }
 
 .hero-marker {
@@ -160,29 +161,6 @@ p {
 /* CTA Buttons */
 .cta-buttons {
   text-align: center;
-  margin-top: 2rem;
-}
-
-.text-group {
-  opacity: 0;
-  transform: translateY(15px);
-  animation: fadeInUp 0.8s ease-out forwards;
-  text-align: center; /* Set default for h2 */
-}
-
-.text-group h1,
-.text-group h2 {
-  text-align: center;
-}
-
-.text-group p {
-  text-align: left;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 700px;
-}
-
-.text-group .cta-buttons {
   margin-top: 2rem;
 }
 
