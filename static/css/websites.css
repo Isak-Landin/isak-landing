@@ -1,74 +1,74 @@
-/* websites.css – contrast-improved, minimalist style for websites.html */
+/* websites.css — clean minimal custom layout for websites.html */
 
-.minimal-hero {
-  padding: 5rem 2rem;
-  text-align: center;
-  background-color: #ffffff;
-}
-
-.minimal-hero .inner {
-  max-width: 800px;
+.container {
+  max-width: 960px;
   margin: 0 auto;
+  padding: 4rem 2rem;
+  text-align: center;
 }
 
-.minimal-hero h1 {
+h1 {
   font-size: 2.5rem;
-  color: #111; /* Strong heading contrast */
   margin-bottom: 1rem;
-}
-
-.minimal-hero p {
-  font-size: 1.1rem;
-  color: #444; /* Readable dark gray */
-  margin-bottom: 2rem;
-}
-
-.minimal-sections {
-  padding: 3rem 2rem;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.minimal-sections h2 {
-  color: #222;
-  margin-bottom: 1rem;
-}
-
-.minimal-sections section {
-  margin-bottom: 3rem;
-}
-
-.minimal-sections p {
-  color: #444;
-  font-size: 1rem;
-  line-height: 1.6;
-}
-
-.final-cta {
-  text-align: center;
-  padding-top: 2rem;
-}
-
-.final-cta h2 {
   color: #111;
-  margin-bottom: 1rem;
 }
 
-.final-cta .button.primary.large {
-  font-size: 1.1rem;
-  padding: 0.9rem 2rem;
-  background: #111;
+h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #222;
+}
+
+p {
+  font-size: 1.05rem;
+  color: #444;
+  line-height: 1.6;
+  max-width: 720px;
+  margin: 0 auto 2rem auto;
+}
+
+.button.primary {
+  background-color: #3f90f0;
   color: #fff;
-  border: none;
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 4px;
+  display: inline-block;
   transition: background 0.3s ease;
 }
 
-.final-cta .button.primary.large:hover {
-  background: #333;
+.button.primary:hover {
+  background-color: #2a70c5;
 }
 
+.button.large {
+  font-size: 1.1rem;
+  padding: 1rem 2rem;
+}
 
-.minimal-sections section:not(:last-child) {
-  border-bottom: 1px solid #e0e0e0;
-  padding-bottom: 2rem;
+.hero-section {
+  background-color: #ffffff;
+  border-bottom: 1px solid #eee;
+}
+
+.feature-section.white {
+  background-color: #ffffff;
+}
+
+.feature-section.alt {
+  background-color: #f8f9fb;
+}
+
+.cta-section {
+  background-color: #1e1e2f;
+  color: #fff;
+}
+
+.cta-section h2 {
+  color: #fff;
+}
+
+.cta-section p {
+  color: #ddd;
 }

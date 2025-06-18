@@ -2,77 +2,45 @@
 
 {% block title %}Custom Websites | Isak Landin{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/websites.css') }}">
+{% endblock %}
+
 {% block content %}
-<!-- Banner -->
-<section id="banner" class="style2">
-  <div class="inner">
-    <header class="major">
-      <h1>Custom Websites</h1>
-    </header>
-    <div class="content">
-      <p>Websites built to reflect your brand, optimize performance, and empower your business with full code ownership.</p>
-    </div>
+<section class="hero-section">
+  <div class="container">
+    <h1>Custom-Built Websites</h1>
+    <p>Modern, fast, and built entirely around your business — with full ownership and no platform dependencies.</p>
+    <a href="{{ url_for('contact_blueprint.contact') }}" class="button primary">Get a Free Consultation</a>
   </div>
 </section>
 
-<!-- Main -->
-<div id="main">
-  <!-- One -->
-  <section id="one" class="spotlights">
-    <section>
-      <a href="#" class="image">
-        <img src="{{ url_for('static', filename='images/websites.png') }}" alt="Web Preview" />
-      </a>
-      <div class="content">
-        <div class="inner">
-          <header class="major">
-            <h2>Tailored from Scratch</h2>
-          </header>
-          <p>No WordPress, no drag-and-drop builders. I code your website with performance, clarity, and security in mind — always tailored to your goals.</p>
-        </div>
-      </div>
-    </section>
+<section class="feature-section white">
+  <div class="container">
+    <h2>Designed Around You</h2>
+    <p>I don’t use prebuilt themes or page builders. Every website is coded for your brand, your goals, and your audience — with speed and clarity in mind.</p>
+  </div>
+</section>
 
-    <section>
-      <a href="#" class="image">
-        <img src="{{ url_for('static', filename='images/pic05.jpg') }}" alt="Design System" />
-      </a>
-      <div class="content">
-        <div class="inner">
-          <header class="major">
-            <h2>Ownership Without Lock-in</h2>
-          </header>
-          <p>You get all source code and deployment instructions. No subscriptions. No vendor traps. You're free to host it, move it, or scale it anytime.</p>
-        </div>
-      </div>
-    </section>
+<section class="feature-section alt">
+  <div class="container">
+    <h2>Clean Code, Full Ownership</h2>
+    <p>No subscriptions, no lock-in. You receive all source files, full documentation, and deployment support. You're free to host and scale it however you like.</p>
+  </div>
+</section>
 
-    <section>
-      <a href="#" class="image">
-        <img src="{{ url_for('static', filename='images/pic07.jpg') }}" alt="Speed Optimization" />
-      </a>
-      <div class="content">
-        <div class="inner">
-          <header class="major">
-            <h2>Speed & Simplicity</h2>
-          </header>
-          <p>Lightweight builds, fast load times, and intuitive layouts. Everything designed with users and future maintenance in mind.</p>
-        </div>
-      </div>
-    </section>
-  </section>
+<section class="feature-section white">
+  <div class="container">
+    <h2>Performance Comes First</h2>
+    <p>Google loves fast websites — so do users. I optimize every line of code for speed, accessibility, and future-proof structure. No clutter. No bloat.</p>
+  </div>
+</section>
 
-  <!-- CTA -->
-  <section id="two">
-    <div class="inner">
-      <header class="major">
-        <h2>Need a Custom-Built Website?</h2>
-      </header>
-      <p>Let’s create something that reflects your brand and gives you full control — clean, fast, and future-proof.</p>
-      <ul class="actions">
-        <li><a href="{{ url_for('contact_blueprint.contact') }}" class="button next">Get In Touch</a></li>
-      </ul>
-    </div>
-  </section>
-</div>
+<section class="cta-section">
+  <div class="container">
+    <h2>Need a Website Built Right?</h2>
+    <p>Let’s make something that reflects your brand — and stands the test of time.</p>
+    <a href="{{ url_for('contact_blueprint.contact') }}" class="button primary large">Contact Me</a>
+  </div>
+</section>
 {% endblock %}
