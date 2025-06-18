@@ -143,16 +143,18 @@ p {
 
 .split-image {
   flex: 0 0 42%;
-  max-width: auto;
-  max-height: 35%;
   padding-top: 1rem;
   padding-bottom: 1rem;
+  display: flex;
+  align-items: center;
 }
+
 .split-image img {
   width: 100%;
   height: auto;
   object-fit: contain;
 }
+
 
 .split-text {
   flex: 1;
