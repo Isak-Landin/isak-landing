@@ -153,6 +153,8 @@ p {
   width: 100%;
   height: auto;
   object-fit: contain;
+  border-radius: 0.5rem;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
 
