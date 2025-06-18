@@ -10,5 +10,6 @@ def home():
         # Handle form submission or other POST request logic here
         # For example, you can redirect to another route after processing
         return redirect(url_for('home_blueprint.home'))
-    return render_template('index.html')
+    return render_template('landing.html')
+    #return render_template('index.html')
 
