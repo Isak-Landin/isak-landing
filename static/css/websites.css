@@ -164,6 +164,13 @@ p {
 }
 
 
+.cta-buttons {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+
+
 @media screen and (max-width: 768px) {
   .split-text {
     text-align: center;
