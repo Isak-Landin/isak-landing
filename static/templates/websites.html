@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block content %}
+<!-- Section 1: Hero -->
 <section class="hero-section">
   <div class="container">
     <h1>Custom-Built Websites</h1>
@@ -15,27 +16,41 @@
   </div>
 </section>
 
+<!-- Section 2: Complementary -->
 <section class="feature-section white">
-  <div class="container">
+  <div class="container narrow">
     <h2>Designed Around You</h2>
     <p>I don’t use prebuilt themes or page builders. Every website is coded for your brand, your goals, and your audience — with speed and clarity in mind.</p>
   </div>
 </section>
 
-<section class="feature-section alt">
-  <div class="container">
-    <h2>Clean Code, Full Ownership</h2>
-    <p>No subscriptions, no lock-in. You receive all source files, full documentation, and deployment support. You're free to host and scale it however you like.</p>
+<!-- Section 3: Split Layout -->
+<section class="split-section">
+  <div class="split-content">
+    <div class="split-image">
+      <img src="{{ url_for('static', filename='images/websites.png') }}" alt="Clean Code" />
+    </div>
+    <div class="split-text">
+      <h2>Clean Code, Full Ownership</h2>
+      <p>No subscriptions, no lock-in. You receive all source files, full documentation, and deployment support. You're free to host and scale it however you like.</p>
+    </div>
   </div>
 </section>
 
-<section class="feature-section white">
-  <div class="container">
-    <h2>Performance Comes First</h2>
-    <p>Google loves fast websites — so do users. I optimize every line of code for speed, accessibility, and future-proof structure. No clutter. No bloat.</p>
+<!-- Section 4: Split Layout Reversed -->
+<section class="split-section alt">
+  <div class="split-content reverse">
+    <div class="split-text">
+      <h2>Performance Comes First</h2>
+      <p>Google loves fast websites — so do users. I optimize every line of code for speed, accessibility, and future-proof structure. No clutter. No bloat.</p>
+    </div>
+    <div class="split-image">
+      <img src="{{ url_for('static', filename='images/pic07.jpg') }}" alt="Performance" />
+    </div>
   </div>
 </section>
 
+<!-- Section 5: Final CTA -->
 <section class="cta-section">
   <div class="container">
     <h2>Need a Website Built Right?</h2>

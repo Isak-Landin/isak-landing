@@ -1,10 +1,12 @@
-/* websites.css — clean minimal custom layout for websites.html */
-
 .container {
   max-width: 960px;
   margin: 0 auto;
   padding: 4rem 2rem;
   text-align: center;
+}
+
+.container.narrow {
+  max-width: 720px;
 }
 
 h1 {
@@ -23,8 +25,7 @@ p {
   font-size: 1.05rem;
   color: #444;
   line-height: 1.6;
-  max-width: 720px;
-  margin: 0 auto 2rem auto;
+  margin-bottom: 2rem;
 }
 
 .button.primary {
@@ -56,13 +57,49 @@ p {
   background-color: #ffffff;
 }
 
-.feature-section.alt {
-  background-color: #f8f9fb;
+.split-section {
+  background-color: #f7f7f7;
+  padding: 4rem 2rem;
+}
+
+.split-section.alt {
+  background-color: #ffffff;
+}
+
+.split-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  max-width: 960px;
+  margin: 0 auto;
+  gap: 2rem;
+}
+
+.split-content.reverse {
+  flex-direction: row-reverse;
+}
+
+.split-image {
+  flex: 1 1 50%;
+  padding: 1rem;
+}
+
+.split-image img {
+  width: 100%;
+  border-radius: 0.5rem;
+}
+
+.split-text {
+  flex: 1 1 50%;
+  text-align: left;
+  padding: 1rem;
 }
 
 .cta-section {
   background-color: #1e1e2f;
   color: #fff;
+  text-align: center;
+  padding: 5rem 2rem;
 }
 
 .cta-section h2 {
