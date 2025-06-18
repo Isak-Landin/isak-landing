@@ -7,7 +7,7 @@ from apps.websites.websites import blueprint as websites_bp
 from apps.about.about import blueprint as about_bp
 from apps.contact.contact import blueprint as contact_bp
 from apps.hosting.hosting import blueprint as hosting_bp
-from apps.server.models import blueprint as server_bp
+from apps.server.server import blueprint as server_bp
 from apps.support.support import blueprint as support_bp
 
 
