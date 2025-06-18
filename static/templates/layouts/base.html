@@ -1,0 +1,47 @@
+<!-- base.html -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title %}Custom Websites and Hosting{% endblock %}</title>
+
+        <!-- Favicon and Icons -->
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon_io/favicon.ico') }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon_io/apple-touch-icon.png') }}">
+
+        <!-- Open Graph (Facebook and others) -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://isaklandin.com">
+        <meta property="og:title" content="Custom Websites, Hosting, and VPS Setup | Isak Landin">
+        <meta property="og:description" content="Tailor-made websites with full ownership, VPS setup, and hosting support. Fast, secure, and built to empower businesses and individuals.">
+        <meta property="og:image" content="{{ url_for('static', filename='images/preview.png', _external=True) }}">
+
+        <!-- Twitter (X) Card -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:url" content="https://isaklandin.com">
+        <meta name="twitter:title" content="Custom Websites, Hosting, and VPS Setup | Isak Landin">
+        <meta name="twitter:description" content="Tailor-made websites with full ownership, VPS setup, and hosting support. Fast, secure, and built to empower businesses and individuals.">
+        <meta name="twitter:image" content="{{ url_for('static', filename='images/preview.png', _external=True) }}">
+
+        <!-- General Meta -->
+        <meta name="description" content="Custom Websites and Web Applications + Hosting support and recommendation">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+        <!-- Stylesheets -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+        <noscript><link rel="stylesheet" href="{{ url_for('static', filename='css/noscript.css') }}"></noscript>
+    </head>
+
+    <body>
+        {% block content %}{% endblock %}
+
+        <!-- Scripts -->
+        <script src="static/js/jquery.min.js"></script>
+        <script src="static/js/jquery.scrolly.min.js"></script>
+        <script src="static/js/jquery.scrollex.min.js"></script>
+        <script src="static/js/browser.min.js"></script>
+        <script src="static/js/breakpoints.min.js"></script>
+        <script src="static/js/util.js"></script>
+        <script src="static/js/main.js"></script>
+    </body>
+</html>
