@@ -10,26 +10,6 @@
   color: #eee;
 }
 
-.websites-spotlights section {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 2rem;
-  padding: 3rem 2rem;
-}
-
-.websites-spotlights section:nth-child(even) {
-  flex-direction: row-reverse;
-  background-color: #f7f7f7;
-}
-
-.websites-spotlights .image img {
-  width: 100%;
-  max-width: 350px;
-  border-radius: 0.5rem;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
 .websites-cta {
   background: linear-gradient(to right, #2b2b2b, #1c1c1c);
   color: #fff;
@@ -48,3 +28,37 @@
 .websites-cta .button.primary:hover {
   background: #ddd;
 }
+
+.websites-section {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  color: #fff;
+}
+
+.websites-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 0;
+}
+
+.websites-section .overlay {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 0.5rem;
+  backdrop-filter: blur(2px);
+}
+
