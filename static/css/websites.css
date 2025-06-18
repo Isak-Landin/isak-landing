@@ -1,64 +1,22 @@
-/* websites.css — scoped styles for websites.html */
+/* websites.css — minimal additions scoped to websites.html */
 
-.websites-banner {
-  position: relative;
-  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("../images/banner.jpg") center/cover no-repeat;
-  color: #fff;
+/* Optional: space adjustments or overrides */
+.tiles.alt article {
+  text-align: center;
 }
 
-.websites-banner .content p {
-  color: #eee;
+.tiles.alt article p {
+  font-size: 0.95rem;
+  color: #666;
+  margin-top: 0.5rem;
 }
 
-.websites-cta {
-  background: linear-gradient(to right, #2b2b2b, #1c1c1c);
-  color: #fff;
-  padding: 4rem 2rem;
-}
-
-.websites-cta .button.primary {
-  background: #fff;
-  color: #111;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  font-weight: bold;
-  transition: background 0.3s ease;
-}
-
-.websites-cta .button.primary:hover {
-  background: #ddd;
-}
-
-.websites-section {
-  position: relative;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  min-height: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* CTA section alignment */
+.cta-section {
   padding: 4rem 2rem;
   text-align: center;
-  color: #fff;
 }
 
-.websites-section::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 0;
+.cta-section h2 {
+  margin-bottom: 1rem;
 }
-
-.websites-section .overlay {
-  position: relative;
-  z-index: 1;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 0.5rem;
-  backdrop-filter: blur(2px);
-}
-

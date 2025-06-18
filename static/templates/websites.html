@@ -6,59 +6,52 @@
 {% endblock %}
 
 {% block content %}
-<section id="banner" class="style2 websites-banner">
+<section id="banner" class="style2">
   <div class="inner">
-    <span class="image banner-image">
-      <img src="{{ url_for('static', filename='images/websites.png') }}" alt="Custom Websites" />
-    </span>
     <header class="major">
       <h1>Custom Websites</h1>
     </header>
     <div class="content">
-      <p>Modern, secure, and made for your business — fully owned and self-hostable.</p>
+      <p>Tailor-made websites with clean code, responsive design, and full ownership. Built to serve your goals and scale with your growth.</p>
     </div>
   </div>
 </section>
 
 <div id="main">
-    <section class="websites-section" style="background-image: url('{{ url_for('static', filename='images/pic03.jpg') }}');">
-    <div class="overlay">
+  <section class="tiles alt">
+    <article>
+      <span class="image fit"><img src="{{ url_for('static', filename='images/pic03.jpg') }}" alt="Clean Code" /></span>
       <header class="major">
-        <h2>Tailored to Your Needs</h2>
+        <h3>Built for Longevity</h3>
+        <p>Websites built from scratch using clean, maintainable code — without third-party bloat or platform lock-in.</p>
       </header>
-      <p>I build websites from scratch using clean code — no bloated builders or platform lock-ins. Whether you need a portfolio, booking system, or something custom, I’ll structure it for long-term reliability and clarity.</p>
-    </div>
+    </article>
+
+    <article>
+      <span class="image fit"><img src="{{ url_for('static', filename='images/pic05.jpg') }}" alt="Design" /></span>
+      <header class="major">
+        <h3>Design Around You</h3>
+        <p>Designs that reflect your brand, optimized for mobile and accessibility from the start.</p>
+      </header>
+    </article>
+
+    <article>
+      <span class="image fit"><img src="{{ url_for('static', filename='images/pic07.jpg') }}" alt="Ownership" /></span>
+      <header class="major">
+        <h3>You Own Everything</h3>
+        <p>You'll receive all source files and documentation — host it yourself, scale it freely, modify as needed.</p>
+      </header>
+    </article>
   </section>
 
-  <section class="websites-section" style="background-image: url('{{ url_for('static', filename='images/pic05.jpg') }}');">
-    <div class="overlay">
-      <header class="major">
-        <h2>Design That Matches Your Identity</h2>
-      </header>
-      <p>Every design is built around your content and brand. You’ll get a responsive layout that works beautifully across mobile, tablet, and desktop, using modern CSS and flexible structure.</p>
-    </div>
-  </section>
-
-  <section class="websites-section" style="background-image: url('{{ url_for('static', filename='images/pic08.jpg') }}');">
-    <div class="overlay">
-      <header class="major">
-        <h2>You Keep Full Ownership</h2>
-      </header>
-      <p>Your site is built on open tech — no subscriptions, no dependency on my infrastructure. I’ll deliver source files, help with setup, and you’re free to host it anywhere or expand it later.</p>
-    </div>
-  </section>
-
-
-  <section class="cta websites-cta">
-    <div class="inner">
-      <header class="major">
-        <h2>Let’s Build Something Together</h2>
-      </header>
-      <p>Start from scratch or rebuild an existing site — I’ll guide you from idea to launch.</p>
-      <ul class="actions">
-        <li><a href="{{ url_for('contact_blueprint.contact') }}" class="button primary">Contact Me</a></li>
-      </ul>
-    </div>
+  <section class="inner cta-section">
+    <header class="major">
+      <h2>Need a site built from scratch?</h2>
+    </header>
+    <p>I’ll help you plan, design, and launch a site that works for your users and your business — with full transparency and no hidden costs.</p>
+    <ul class="actions">
+      <li><a href="{{ url_for('contact_blueprint.contact') }}" class="button primary">Contact Me</a></li>
+    </ul>
   </section>
 </div>
 {% endblock %}
