@@ -109,10 +109,11 @@ p {
 .hero-marker {
   width: 60px;
   height: 3px;
-  background-color: #3f90f0; /* same as button */
+  background-color: #6a88b9; /* softer version of #3f90f0 */
   margin: 0 auto 1.5rem auto;
   border-radius: 2px;
-  animation: pulse 2.5s ease-in-out infinite;
+  animation: pulse 5s ease-in-out infinite;
+  opacity: 0.7;
 }
 
 
