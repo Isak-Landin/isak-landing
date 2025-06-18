@@ -71,8 +71,9 @@ p {
 }
 
 .hero-section.alt-theme {
-    border-top: 1px solid #444;
-    background: linear-gradient(to bottom, #252731 0%, #1c1e26 100%);
+    border-top: 1px solid #2e3345;
+    background: linear-gradient(to bottom, #252a3a 0%, #1f2331 100%);
+
     color: #fff;
     border-bottom: none;
     padding-top: 6rem;
