@@ -1,234 +1,198 @@
-<!DOCTYPE HTML>
-	<!--IsakLandin.com | @isaklandin-->
+{% extends "base.html" %}
 
-<html>
-	<head>
-		<title>Custom Websites and Hosting</title>
+{% block title %}Home | Isak Landin{% endblock %}
 
-		<!-- Favicon and Icons -->
-		<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon_io/favicon.ico') }}">
-		<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon_io/apple-touch-icon.png') }}">
+{% block content %}
+	<div id="wrapper">
+		<!-- Header -->
+			<header id="header" class="alt">
+				<a href="index.html" class="logo"><strong>Websites</strong> <span>by Isak Landin</span></a>
+				<nav>
+					<a href="#menu">Menu</a>
+				</nav>
+			</header>
 
-		<!-- Open Graph (Facebook and others) -->
-		<meta property="og:type" content="website">
-		<meta property="og:url" content="https://isaklandin.com">
-		<meta property="og:title" content="Custom Websites, Hosting, and VPS Setup | Isak Landin">
-		<meta property="og:description" content="Tailor-made websites with full ownership, VPS setup, and hosting support. Fast, secure, and built to empower businesses and individuals.">
-		<meta property="og:image" content="{{ url_for('static', filename='images/preview.png', _external=True) }}">
+		<!-- Menu -->
+			<nav id="menu">
+				<ul class="links">
+					<li><a href="index.html">Home</a></li>
+					<li><a href="landing.html">Landing</a></li>
+					<li><a href="generic.html">Generic</a></li>
+					<li><a href="elements.html">Elements</a></li>
+				</ul>
+				<ul class="actions stacked">
+					<li><a href="#" class="button primary fit">Get Started</a></li>
+					<li><a href="#" class="button fit">Log In</a></li>
+				</ul>
+			</nav>
 
-		<!-- Twitter (X) Card -->
-		<meta name="twitter:card" content="summary_large_image">
-		<meta name="twitter:url" content="https://isaklandin.com">
-		<meta name="twitter:title" content="Custom Websites, Hosting, and VPS Setup | Isak Landin">
-		<meta name="twitter:description" content="Tailor-made websites with full ownership, VPS setup, and hosting support. Fast, secure, and built to empower businesses and individuals.">
-		<meta name="twitter:image" content="{{ url_for('static', filename='images/preview.png', _external=True) }}">
-
-		<!-- General Meta -->
-		<meta name="description" content="Custom Websites and Web Applications + Hosting support and recommendation">
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
-		<!-- Stylesheets -->
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-		<noscript><link rel="stylesheet" href="{{ url_for('static', filename='css/noscript.css') }}"></noscript>
-	</head>
-
-	<body class="is-preload">
-
-		<!-- Wrapper -->
-			<div id="wrapper">
-
-				<!-- Header -->
-					<header id="header" class="alt">
-						<a href="index.html" class="logo"><strong>Websites</strong> <span>by Isak Landin</span></a>
-						<nav>
-							<a href="#menu">Menu</a>
-						</nav>
+		<!-- Banner -->
+			<section id="banner" class="major">
+				<div class="inner">
+					<header class="major">
+						<h1>Hi, I'm Isak Landin</h1>
 					</header>
-
-				<!-- Menu -->
-					<nav id="menu">
-						<ul class="links">
-							<li><a href="index.html">Home</a></li>
-							<li><a href="landing.html">Landing</a></li>
-							<li><a href="generic.html">Generic</a></li>
-							<li><a href="elements.html">Elements</a></li>
+					<div class="content">
+						<p>Custom Websites • Hosting Support • VPS & Domain Setup <br/>
+							Helping businesses and individuals create, host, and maintain fast and secure websites.
+						</p>
+						<ul class="actions">
+							<li><a href="#one" class="button next scrolly">Let's Build Your Project</a></li>
 						</ul>
-						<ul class="actions stacked">
-							<li><a href="#" class="button primary fit">Get Started</a></li>
-							<li><a href="#" class="button fit">Log In</a></li>
-						</ul>
-					</nav>
+					</div>
+				</div>
+			</section>
 
-				<!-- Banner -->
-					<section id="banner" class="major">
+		<!-- Main -->
+			<div id="main">
+
+				<!-- One -->
+					<section id="one" class="tiles">
+						<article id="websites">
+							<span class="image">
+								<img src="{{ url_for('static', filename='images/websites.png') }}" alt="" />
+							</span>
+							<header class="major">
+								<h3><a href="landing.html" class="link">Custom Websites</a></h3>
+								<p>Tailor-made websites with clean code, responsive design, and full ownership.</p>
+							</header>
+						</article>
+						<article id="hosting">
+							<span class="image">
+								<img src="{{ url_for('static', filename='images/hosting.png') }}" alt="" />
+							</span>
+							<header class="major">
+								<h3><a href="landing.html" class="link">Domains & Hosting</a></h3>
+								<p>Setup, migration, and management of domains and servers — handled for you.</p>
+							</header>
+						</article>
+						<article id="server">
+							<span class="image">
+								<img src="static/images/server.png" alt="" />
+							</span>
+							<header class="major">
+								<h3><a href="landing.html" class="link">Server & System Setup</a></h3>
+								<p>Custom VPS, Linux servers, and self-hosted applications — configured securely and efficiently.</p>
+							</header>
+						</article>
+						<article id="about">
+							<span class="image">
+								<img src="static/images/about.png" alt="" />
+							</span>
+							<header class="major">
+								<h3><a href="landing.html" class="link">About Me</a></h3>
+								<p>Learn more about my background, values, and how I work with clients.</p>
+							</header>
+						</article>
+						<article id="contact_me">
+							<span class="image">
+								<img src="static/images/contact.png" alt="" />
+							</span>
+							<header class="major">
+								<h3><a href="landing.html" class="link">Contact Me</a></h3>
+								<p>Let's talk about your project, your ideas, and how I can help you move forward.</p>
+							</header>
+						</article>
+						<article id="support">
+							<span class="image">
+								<img src="static/images/Tech_Support.png" alt="" />
+							</span>
+							<header class="major">
+								<h3><a href="landing.html" class="link">Technical Support</a></h3>
+								<p>Fast troubleshooting and support for websites, servers, and hosting setups.</p>
+							</header>
+						</article>
+					</section>
+
+				<!-- Two -->
+					<section id="two">
 						<div class="inner">
 							<header class="major">
-								<h1>Hi, I'm Isak Landin</h1>
+								<h2>Your Website, Your Server, Your Rules</h2>
 							</header>
-							<div class="content">
-								<p>Custom Websites • Hosting Support • VPS & Domain Setup <br/>
-									Helping businesses and individuals create, host, and maintain fast and secure websites.
-								</p>
-								<ul class="actions">
-									<li><a href="#one" class="button next scrolly">Let's Build Your Project</a></li>
-								</ul>
-							</div>
-						</div>
-					</section>
-
-				<!-- Main -->
-					<div id="main">
-
-						<!-- One -->
-							<section id="one" class="tiles">
-								<article id="websites">
-									<span class="image">
-										<img src="{{ url_for('static', filename='images/websites.png') }}" alt="" />
-									</span>
-									<header class="major">
-										<h3><a href="landing.html" class="link">Custom Websites</a></h3>
-										<p>Tailor-made websites with clean code, responsive design, and full ownership.</p>
-									</header>
-								</article>
-								<article id="hosting">
-									<span class="image">
-										<img src="{{ url_for('static', filename='images/hosting.png') }}" alt="" />
-									</span>
-									<header class="major">
-										<h3><a href="landing.html" class="link">Domains & Hosting</a></h3>
-										<p>Setup, migration, and management of domains and servers — handled for you.</p>
-									</header>
-								</article>
-								<article id="server">
-									<span class="image">
-										<img src="static/images/server.png" alt="" />
-									</span>
-									<header class="major">
-										<h3><a href="landing.html" class="link">Server & System Setup</a></h3>
-										<p>Custom VPS, Linux servers, and self-hosted applications — configured securely and efficiently.</p>
-									</header>
-								</article>
-								<article id="about">
-									<span class="image">
-										<img src="static/images/about.png" alt="" />
-									</span>
-									<header class="major">
-										<h3><a href="landing.html" class="link">About Me</a></h3>
-										<p>Learn more about my background, values, and how I work with clients.</p>
-									</header>
-								</article>
-								<article id="contact_me">
-									<span class="image">
-										<img src="static/images/contact.png" alt="" />
-									</span>
-									<header class="major">
-										<h3><a href="landing.html" class="link">Contact Me</a></h3>
-										<p>Let's talk about your project, your ideas, and how I can help you move forward.</p>
-									</header>
-								</article>
-								<article id="support">
-									<span class="image">
-										<img src="static/images/Tech_Support.png" alt="" />
-									</span>
-									<header class="major">
-										<h3><a href="landing.html" class="link">Technical Support</a></h3>
-										<p>Fast troubleshooting and support for websites, servers, and hosting setups.</p>
-									</header>
-								</article>
-							</section>
-
-						<!-- Two -->
-							<section id="two">
-								<div class="inner">
-									<header class="major">
-										<h2>Your Website, Your Server, Your Rules</h2>
-									</header>
-									<p>I offer complete, custom-built web solutions that you control — from backend logic and frontend design to hosting and deployment. No subscription fees, no walled gardens — just high-quality work, full transparency, and long-term support when you need it.</p>
-									<ul class="actions">
-										<li><a href="landing.html" class="button next">Get Started</a></li>
-									</ul>
-								</div>
-							</section>
-
-					</div>
-
-				<!-- Contact -->
-					<section id="contact">
-						<div class="inner">
-							<section>
-								<form method="post" action="#">
-									<div class="fields">
-										<div class="field half">
-											<label for="name">Name</label>
-											<input type="text" name="name" id="name" />
-										</div>
-										<div class="field half">
-											<label for="email">Email</label>
-											<input type="text" name="email" id="email" />
-										</div>
-										<div class="field">
-											<label for="message">Message</label>
-											<textarea name="message" id="message" rows="6"></textarea>
-										</div>
-									</div>
-									<ul class="actions">
-										<li><input type="submit" value="Send Message" class="primary" /></li>
-										<li><input type="reset" value="Clear" /></li>
-									</ul>
-								</form>
-							</section>
-							<section class="split">
-								<section>
-									<div class="contact-method">
-										<span class="icon solid alt fa-envelope"></span>
-										<h3>Email</h3>
-										<a href="mailto:support@isaklandin.com">Support@IsakLandin.com</a>
-									</div>
-								</section>
-								<section>
-									<div class="contact-method">
-										<span class="icon solid alt fa-phone"></span>
-										<h3>Phone</h3>
-										<span><a href="tel:+46735376149">(+46) 735 37 61 49</a></span>
-									</div>
-								</section>
-								<section>
-									<div class="contact-method">
-										<span class="icon solid alt fa-home"></span>
-										<h3>Sections</h3>
-										<span>
-											<a href="#websites">Websites</a><br />
-											<a href="#hosting">Hosting</a><br />
-											<a href="#server">Server Setup</a><br />
-											<a href="#about">About Me</a><br />
-											<a href="#contact_me">Contact Me</a><br />
-											<a href="#support">Technical Support</a><br />
-											<a href="#two">Your Website, Your Server, Your Rules</a><br />
-											<a href="#one">Let's Build Your Project</a>
-										</span>
-									</div>
-								</section>
-							</section>
-						</div>
-					</section>
-
-				<!-- Footer -->
-					<footer id="footer">
-						<div class="inner">
-							<ul class="icons">
-								<li><a href="https://github.com/Isak-Landin" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
-								<li><a href="https://www.linkedin.com/in/isak-landin-375625153/" class="icon brands alt fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
-							</ul>
-							<ul class="copyright">
-								<li>&copy; IL</li><li>Design: <a href="https://www.linkedin.com/in/isak-landin-375625153/">Isak Landin</a></li>
+							<p>I offer complete, custom-built web solutions that you control — from backend logic and frontend design to hosting and deployment. No subscription fees, no walled gardens — just high-quality work, full transparency, and long-term support when you need it.</p>
+							<ul class="actions">
+								<li><a href="landing.html" class="button next">Get Started</a></li>
 							</ul>
 						</div>
-					</footer>
+					</section>
 
 			</div>
 
+		<!-- Contact -->
+			<section id="contact">
+				<div class="inner">
+					<section>
+						<form method="post" action="#">
+							<div class="fields">
+								<div class="field half">
+									<label for="name">Name</label>
+									<input type="text" name="name" id="name" />
+								</div>
+								<div class="field half">
+									<label for="email">Email</label>
+									<input type="text" name="email" id="email" />
+								</div>
+								<div class="field">
+									<label for="message">Message</label>
+									<textarea name="message" id="message" rows="6"></textarea>
+								</div>
+							</div>
+							<ul class="actions">
+								<li><input type="submit" value="Send Message" class="primary" /></li>
+								<li><input type="reset" value="Clear" /></li>
+							</ul>
+						</form>
+					</section>
+					<section class="split">
+						<section>
+							<div class="contact-method">
+								<span class="icon solid alt fa-envelope"></span>
+								<h3>Email</h3>
+								<a href="mailto:support@isaklandin.com">Support@IsakLandin.com</a>
+							</div>
+						</section>
+						<section>
+							<div class="contact-method">
+								<span class="icon solid alt fa-phone"></span>
+								<h3>Phone</h3>
+								<span><a href="tel:+46735376149">(+46) 735 37 61 49</a></span>
+							</div>
+						</section>
+						<section>
+							<div class="contact-method">
+								<span class="icon solid alt fa-home"></span>
+								<h3>Sections</h3>
+								<span>
+									<a href="#websites">Websites</a><br />
+									<a href="#hosting">Hosting</a><br />
+									<a href="#server">Server Setup</a><br />
+									<a href="#about">About Me</a><br />
+									<a href="#contact_me">Contact Me</a><br />
+									<a href="#support">Technical Support</a><br />
+									<a href="#two">Your Website, Your Server, Your Rules</a><br />
+									<a href="#one">Let's Build Your Project</a>
+								</span>
+							</div>
+						</section>
+					</section>
+				</div>
+			</section>
 
+		<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+					<ul class="icons">
+						<li><a href="https://github.com/Isak-Landin" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+						<li><a href="https://www.linkedin.com/in/isak-landin-375625153/" class="icon brands alt fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
+					</ul>
+					<ul class="copyright">
+						<li>&copy; IL</li><li>Design: <a href="https://www.linkedin.com/in/isak-landin-375625153/">Isak Landin</a></li>
+					</ul>
+				</div>
+			</footer>
 
-	</body>
-</html>
+	</div>
+{% endblock %}
+
+		<!-- Wrapper -->
