@@ -23,10 +23,10 @@ h2 {
 }
 
 p {
-  font-size: 1.05rem;
-  color: #444;
-  line-height: 1.6;
-  margin-bottom: 2rem;
+    font-size: 1.05rem;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 2rem;
 }
 
 .hero-section h1,
@@ -34,62 +34,63 @@ p {
 .hero-section p,
 .cta-section h2,
 .cta-section p {
-  text-align: center;
+    text-align: center;
 }
 
 
 .button.primary {
-  background-color: #3f90f0;
-  color: #fff;
-  padding: 0.9rem 1.6rem;
-  text-decoration: none;
-  font-weight: 600;
-  border-radius: 6px;
-  display: inline-block;
-  line-height: 1.2;
-  font-size: 1rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  vertical-align: middle;
-  text-align: center;
+    background-color: #3f90f0;
+    color: #fff;
+    padding: 0.9rem 1.6rem;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 6px;
+    display: inline-block;
+    line-height: 1.2;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    vertical-align: middle;
+    text-align: center;
 }
 
 
 .button.primary:hover {
-  background-color: #2a70c5;
+    background-color: #2a70c5;
 }
 
 .button.large {
-  font-size: 1.1rem;
-  padding: 1rem 2rem;
+    font-size: 1.1rem;
+    padding: 1rem 2rem;
 }
 
 
 .hero-section {
-  background-color: #ffffff;
-  border-bottom: 1px solid #eee;
+    background-color: #ffffff;
+    border-bottom: 1px solid #eee;
 }
 
 .hero-section.alt-theme {
-  background-color: #1c1e26;
-  color: #fff;
-  border-bottom: none;
-  padding-top: 6rem;
-  padding-bottom: 6rem;
+    border-top: 1px solid #444;
+    background: linear-gradient(to bottom, #252731 0%, #1c1e26 100%);
+    color: #fff;
+    border-bottom: none;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
 }
 
 .hero-section.alt-theme h1 {
-  color: #fff;
-  font-size: 2.8rem;
-  margin-bottom: 1.2rem;
+    color: #fff;
+    font-size: 2.8rem;
+    margin-bottom: 1.2rem;
 }
 
 .hero-section.alt-theme p {
-  color: #ccc;
-  font-size: 1.1rem;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
+    color: #ccc;
+    font-size: 1.1rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .hero-section.alt-theme .secondary {
