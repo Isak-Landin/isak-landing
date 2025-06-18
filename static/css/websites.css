@@ -2,8 +2,9 @@
   max-width: 960px;
   margin: 0 auto;
   padding: 4rem 2rem;
-  text-align: center;
+  text-align: left;
 }
+
 
 .container.narrow {
   max-width: 720px;
