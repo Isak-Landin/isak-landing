@@ -47,6 +47,7 @@ p {
   border-radius: 4px;
   display: inline-block;
   transition: background 0.3s ease;
+  vertical-align: middle;
 }
 
 .button.primary:hover {
