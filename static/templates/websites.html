@@ -1,52 +1,78 @@
 {% extends "layouts/base.html" %}
 
 {% block title %}Custom Websites | Isak Landin{% endblock %}
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/websites.css') }}">
-{% endblock %}
 
 {% block content %}
-<section class="minimal-hero">
+<!-- Banner -->
+<section id="banner" class="style2">
   <div class="inner">
     <header class="major">
-      <h1>Custom Website Development</h1>
+      <h1>Custom Websites</h1>
     </header>
-    <p>Modern, fast, and fully tailored — no templates, no subscriptions, and no nonsense. Just high-quality work, delivered with full ownership and long-term value.</p>
-    <ul class="actions">
-      <li><a href="{{ url_for('contact_blueprint.contact') }}" class="button primary">Request a Free Quote</a></li>
-    </ul>
+    <div class="content">
+      <p>Websites built to reflect your brand, optimize performance, and empower your business with full code ownership.</p>
+    </div>
   </div>
 </section>
 
-<div id="main" class="minimal-sections">
-  <section>
-    <header class="major">
-      <h2>Purpose-Built for Your Business</h2>
-    </header>
-    <p>Your website is built from the ground up — no WordPress, no cookie-cutter builders. I code it to match your workflow, your brand, and your goals.</p>
+<!-- Main -->
+<div id="main">
+  <!-- One -->
+  <section id="one" class="spotlights">
+    <section>
+      <a href="#" class="image">
+        <img src="{{ url_for('static', filename='images/websites.png') }}" alt="Web Preview" />
+      </a>
+      <div class="content">
+        <div class="inner">
+          <header class="major">
+            <h2>Tailored from Scratch</h2>
+          </header>
+          <p>No WordPress, no drag-and-drop builders. I code your website with performance, clarity, and security in mind — always tailored to your goals.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <a href="#" class="image">
+        <img src="{{ url_for('static', filename='images/pic05.jpg') }}" alt="Design System" />
+      </a>
+      <div class="content">
+        <div class="inner">
+          <header class="major">
+            <h2>Ownership Without Lock-in</h2>
+          </header>
+          <p>You get all source code and deployment instructions. No subscriptions. No vendor traps. You're free to host it, move it, or scale it anytime.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <a href="#" class="image">
+        <img src="{{ url_for('static', filename='images/pic07.jpg') }}" alt="Speed Optimization" />
+      </a>
+      <div class="content">
+        <div class="inner">
+          <header class="major">
+            <h2>Speed & Simplicity</h2>
+          </header>
+          <p>Lightweight builds, fast load times, and intuitive layouts. Everything designed with users and future maintenance in mind.</p>
+        </div>
+      </div>
+    </section>
   </section>
 
-  <section>
-    <header class="major">
-      <h2>Clean Code. Full Ownership.</h2>
-    </header>
-    <p>You’ll get complete access to the codebase, deployment help, and total control over your site. I don’t lock clients into hosting or service plans — you’re free to scale, move, or rebuild as you see fit.</p>
-  </section>
-
-  <section>
-    <header class="major">
-      <h2>Focused on Speed and Simplicity</h2>
-    </header>
-    <p>I care about load times, usability, and long-term maintainability. That means no bloat, no animations for the sake of it, and no 30MB JavaScript bundles. Your users — and Google — will thank you.</p>
-  </section>
-
-  <section class="final-cta">
-    <header class="major">
-      <h2>Want a site that works — and lasts?</h2>
-    </header>
-    <ul class="actions">
-      <li><a href="{{ url_for('contact_blueprint.contact') }}" class="button primary large">Let’s Talk</a></li>
-    </ul>
+  <!-- CTA -->
+  <section id="two">
+    <div class="inner">
+      <header class="major">
+        <h2>Need a Custom-Built Website?</h2>
+      </header>
+      <p>Let’s create something that reflects your brand and gives you full control — clean, fast, and future-proof.</p>
+      <ul class="actions">
+        <li><a href="{{ url_for('contact_blueprint.contact') }}" class="button next">Get In Touch</a></li>
+      </ul>
+    </div>
   </section>
 </div>
 {% endblock %}
