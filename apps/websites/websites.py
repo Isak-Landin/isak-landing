@@ -5,7 +5,7 @@ blueprint = Blueprint('websites_blueprint', __name__, url_prefix='/websites')
 
 
 @blueprint.route('/', methods=['GET', 'POST'])
-def home():
+def websites():
     if request.method == 'POST':
         # Handle form submission or other POST request logic here
         # For example, you can redirect to another route after processing
