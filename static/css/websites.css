@@ -76,12 +76,13 @@ p {
 }
 
 .radial-dark-section p {
-    font-size: 1.1rem;
     color: #ccc;
-    text-align: center;
+    font-size: 1.1rem;
     max-width: 700px;
-    margin: 1.25rem auto 2.5rem auto;
+    margin: 1.5rem auto 2.5rem auto;
     line-height: 1.8;
+    font-weight: 400;
+    text-align: center;
     letter-spacing: 0.2px;
     animation: fadeInUp 0.8s ease-out forwards;
 }
