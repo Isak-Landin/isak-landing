@@ -1,11 +1,14 @@
 {% extends "layouts/base.html" %}
 
 {% block title %}Custom Websites | Isak Landin{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/websites.css') }}">
+{% endblock %}
 
 {% block content %}
-<section id="banner" class="style2">
+<section id="banner" class="style2 websites-banner">
   <div class="inner">
-    <span class="image">
+    <span class="image banner-image">
       <img src="{{ url_for('static', filename='images/websites.png') }}" alt="Custom Websites" />
     </span>
     <header class="major">
@@ -18,8 +21,11 @@
 </section>
 
 <div id="main">
-  <section class="spotlights">
+  <section class="spotlights websites-spotlights">
     <section>
+      <span class="image">
+        <img src="{{ url_for('static', filename='images/pic03.jpg') }}" alt="" />
+      </span>
       <div class="content">
         <div class="inner">
           <header class="major">
@@ -30,6 +36,9 @@
       </div>
     </section>
     <section>
+      <span class="image">
+        <img src="{{ url_for('static', filename='images/pic05.jpg') }}" alt="" />
+      </span>
       <div class="content">
         <div class="inner">
           <header class="major">
@@ -40,6 +49,9 @@
       </div>
     </section>
     <section>
+      <span class="image">
+        <img src="{{ url_for('static', filename='images/pic08.jpg') }}" alt="" />
+      </span>
       <div class="content">
         <div class="inner">
           <header class="major">
@@ -51,7 +63,7 @@
     </section>
   </section>
 
-  <section class="cta">
+  <section class="cta websites-cta">
     <div class="inner">
       <header class="major">
         <h2>Let’s Build Something Together</h2>

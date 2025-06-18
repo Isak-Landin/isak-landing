@@ -1,0 +1,50 @@
+/* websites.css — scoped styles for websites.html */
+
+.websites-banner {
+  position: relative;
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("../images/banner.jpg") center/cover no-repeat;
+  color: #fff;
+}
+
+.websites-banner .content p {
+  color: #eee;
+}
+
+.websites-spotlights section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+  padding: 3rem 2rem;
+}
+
+.websites-spotlights section:nth-child(even) {
+  flex-direction: row-reverse;
+  background-color: #f7f7f7;
+}
+
+.websites-spotlights .image img {
+  width: 100%;
+  max-width: 350px;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.websites-cta {
+  background: linear-gradient(to right, #2b2b2b, #1c1c1c);
+  color: #fff;
+  padding: 4rem 2rem;
+}
+
+.websites-cta .button.primary {
+  background: #fff;
+  color: #111;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.websites-cta .button.primary:hover {
+  background: #ddd;
+}
