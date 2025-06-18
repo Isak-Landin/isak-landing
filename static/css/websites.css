@@ -29,6 +29,15 @@ p {
   margin-bottom: 2rem;
 }
 
+.hero-section h1,
+.hero-section h2,
+.hero-section p,
+.cta-section h2,
+.cta-section p {
+  text-align: center;
+}
+
+
 .button.primary {
   background-color: #3f90f0;
   color: #fff;
@@ -56,6 +65,7 @@ p {
 
 .feature-section.white {
   background-color: #ffffff;
+  text-align: left;
 }
 
 .split-section {
@@ -150,5 +160,16 @@ p {
   .button.large {
     font-size: 1rem;
     padding: 0.75rem 1.5rem;
+  }
+}
+
+
+@media screen and (max-width: 768px) {
+  .split-text {
+    text-align: center;
+  }
+
+  .split-text h2 {
+    text-align: center;
   }
 }
