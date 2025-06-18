@@ -68,7 +68,7 @@
 						</article>
 						<article id="server">
 							<span class="image">
-								<img src="static/images/server.png" alt="" />
+								<img src="{{ url_for('static', filename='images/server.png') }}" alt="" />
 							</span>
 							<header class="major">
 								<h3><a href="landing.html" class="link">Server & System Setup</a></h3>
@@ -77,7 +77,7 @@
 						</article>
 						<article id="about">
 							<span class="image">
-								<img src="static/images/about.png" alt="" />
+								<img src="{{ url_for('static', filename='images/about.png') }}" alt="" />
 							</span>
 							<header class="major">
 								<h3><a href="landing.html" class="link">About Me</a></h3>
@@ -86,7 +86,7 @@
 						</article>
 						<article id="contact_me">
 							<span class="image">
-								<img src="static/images/contact.png" alt="" />
+								<img src="{{ url_for('static', filename='images/contact.png') }}" alt="" />
 							</span>
 							<header class="major">
 								<h3><a href="landing.html" class="link">Contact Me</a></h3>
@@ -95,7 +95,7 @@
 						</article>
 						<article id="support">
 							<span class="image">
-								<img src="static/images/Tech_Support.png" alt="" />
+								<img src="{{ url_for('static', filename='images/Tech_Support.png') }}" alt="" />
 							</span>
 							<header class="major">
 								<h3><a href="landing.html" class="link">Technical Support</a></h3>
@@ -194,5 +194,3 @@
 
 	</div>
 {% endblock %}
-
-		<!-- Wrapper -->
