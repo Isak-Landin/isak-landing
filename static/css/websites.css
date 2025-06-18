@@ -142,14 +142,14 @@ p {
 }
 
 .split-image {
-  flex: 0 0 40%;
-  max-width: 40%;
+  flex: 0 0 42%;
+  max-width: 42%;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
-
 .split-image img {
+  width: 100%;
   height: auto;
-  max-width: 100%;
-  border-radius: 0.5rem;
   object-fit: contain;
 }
 
