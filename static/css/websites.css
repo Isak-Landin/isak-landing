@@ -1,9 +1,9 @@
-/* websites.css – additions scoped for websites.html */
+/* websites.css – contrast-improved, minimalist style for websites.html */
 
 .minimal-hero {
   padding: 5rem 2rem;
   text-align: center;
-  background-color: #f7f7f7;
+  background-color: #ffffff;
 }
 
 .minimal-hero .inner {
@@ -11,9 +11,15 @@
   margin: 0 auto;
 }
 
+.minimal-hero h1 {
+  font-size: 2.5rem;
+  color: #111; /* Strong heading contrast */
+  margin-bottom: 1rem;
+}
+
 .minimal-hero p {
   font-size: 1.1rem;
-  color: #444;
+  color: #444; /* Readable dark gray */
   margin-bottom: 2rem;
 }
 
@@ -23,12 +29,17 @@
   margin: 0 auto;
 }
 
+.minimal-sections h2 {
+  color: #222;
+  margin-bottom: 1rem;
+}
+
 .minimal-sections section {
   margin-bottom: 3rem;
 }
 
 .minimal-sections p {
-  color: #555;
+  color: #444;
   font-size: 1rem;
   line-height: 1.6;
 }
@@ -38,7 +49,26 @@
   padding-top: 2rem;
 }
 
+.final-cta h2 {
+  color: #111;
+  margin-bottom: 1rem;
+}
+
 .final-cta .button.primary.large {
   font-size: 1.1rem;
   padding: 0.9rem 2rem;
+  background: #111;
+  color: #fff;
+  border: none;
+  transition: background 0.3s ease;
+}
+
+.final-cta .button.primary.large:hover {
+  background: #333;
+}
+
+
+.minimal-sections section:not(:last-child) {
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 2rem;
 }
