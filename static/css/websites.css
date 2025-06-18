@@ -1,22 +1,44 @@
-/* websites.css — minimal additions scoped to websites.html */
+/* websites.css – additions scoped for websites.html */
 
-/* Optional: space adjustments or overrides */
-.tiles.alt article {
+.minimal-hero {
+  padding: 5rem 2rem;
   text-align: center;
+  background-color: #f7f7f7;
 }
 
-.tiles.alt article p {
-  font-size: 0.95rem;
-  color: #666;
-  margin-top: 0.5rem;
+.minimal-hero .inner {
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-/* CTA section alignment */
-.cta-section {
-  padding: 4rem 2rem;
+.minimal-hero p {
+  font-size: 1.1rem;
+  color: #444;
+  margin-bottom: 2rem;
+}
+
+.minimal-sections {
+  padding: 3rem 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.minimal-sections section {
+  margin-bottom: 3rem;
+}
+
+.minimal-sections p {
+  color: #555;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.final-cta {
   text-align: center;
+  padding-top: 2rem;
 }
 
-.cta-section h2 {
-  margin-bottom: 1rem;
+.final-cta .button.primary.large {
+  font-size: 1.1rem;
+  padding: 0.9rem 2rem;
 }

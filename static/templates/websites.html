@@ -6,51 +6,46 @@
 {% endblock %}
 
 {% block content %}
-<section id="banner" class="style2">
+<section class="minimal-hero">
   <div class="inner">
     <header class="major">
-      <h1>Custom Websites</h1>
+      <h1>Custom Website Development</h1>
     </header>
-    <div class="content">
-      <p>Tailor-made websites with clean code, responsive design, and full ownership. Built to serve your goals and scale with your growth.</p>
-    </div>
+    <p>Modern, fast, and fully tailored — no templates, no subscriptions, and no nonsense. Just high-quality work, delivered with full ownership and long-term value.</p>
+    <ul class="actions">
+      <li><a href="{{ url_for('contact_blueprint.contact') }}" class="button primary">Request a Free Quote</a></li>
+    </ul>
   </div>
 </section>
 
-<div id="main">
-  <section class="tiles alt">
-    <article>
-      <span class="image fit"><img src="{{ url_for('static', filename='images/pic03.jpg') }}" alt="Clean Code" /></span>
-      <header class="major">
-        <h3>Built for Longevity</h3>
-        <p>Websites built from scratch using clean, maintainable code — without third-party bloat or platform lock-in.</p>
-      </header>
-    </article>
-
-    <article>
-      <span class="image fit"><img src="{{ url_for('static', filename='images/pic05.jpg') }}" alt="Design" /></span>
-      <header class="major">
-        <h3>Design Around You</h3>
-        <p>Designs that reflect your brand, optimized for mobile and accessibility from the start.</p>
-      </header>
-    </article>
-
-    <article>
-      <span class="image fit"><img src="{{ url_for('static', filename='images/pic07.jpg') }}" alt="Ownership" /></span>
-      <header class="major">
-        <h3>You Own Everything</h3>
-        <p>You'll receive all source files and documentation — host it yourself, scale it freely, modify as needed.</p>
-      </header>
-    </article>
+<div id="main" class="minimal-sections">
+  <section>
+    <header class="major">
+      <h2>Purpose-Built for Your Business</h2>
+    </header>
+    <p>Your website is built from the ground up — no WordPress, no cookie-cutter builders. I code it to match your workflow, your brand, and your goals.</p>
   </section>
 
-  <section class="inner cta-section">
+  <section>
     <header class="major">
-      <h2>Need a site built from scratch?</h2>
+      <h2>Clean Code. Full Ownership.</h2>
     </header>
-    <p>I’ll help you plan, design, and launch a site that works for your users and your business — with full transparency and no hidden costs.</p>
+    <p>You’ll get complete access to the codebase, deployment help, and total control over your site. I don’t lock clients into hosting or service plans — you’re free to scale, move, or rebuild as you see fit.</p>
+  </section>
+
+  <section>
+    <header class="major">
+      <h2>Focused on Speed and Simplicity</h2>
+    </header>
+    <p>I care about load times, usability, and long-term maintainability. That means no bloat, no animations for the sake of it, and no 30MB JavaScript bundles. Your users — and Google — will thank you.</p>
+  </section>
+
+  <section class="final-cta">
+    <header class="major">
+      <h2>Want a site that works — and lasts?</h2>
+    </header>
     <ul class="actions">
-      <li><a href="{{ url_for('contact_blueprint.contact') }}" class="button primary">Contact Me</a></li>
+      <li><a href="{{ url_for('contact_blueprint.contact') }}" class="button primary large">Let’s Talk</a></li>
     </ul>
   </section>
 </div>
