@@ -72,8 +72,8 @@ p {
 
 .hero-section.alt-theme {
     border-top: 1px solid #2e3345;
-    background: linear-gradient(to bottom, #252a3a 0%, #1f2331 100%);
-
+    background: radial-gradient(ellipse at center, #252a3a 0%, #1f2331 100%);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
     color: #fff;
     border-bottom: none;
     padding-top: 4rem;
@@ -100,6 +100,16 @@ p {
   margin-top: -1rem;
   margin-bottom: 2rem;
 }
+
+.hero-marker {
+  width: 60px;
+  height: 3px;
+  background-color: #3f90f0; /* same as button */
+  margin: 0 auto 1.5rem auto;
+  border-radius: 2px;
+}
+
+
 
 
 .feature-section.white {
