@@ -54,7 +54,6 @@
   transition: all 0.3s ease;
 }
 
-
 /* Contact Section */
 
 .contact-section {
@@ -65,96 +64,111 @@
 }
 
 .contact-section h2 {
-  font-size: 2.4rem;
-  color: #111;
-  margin-bottom: 1rem;
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 0.75rem;
 }
 
 .contact-section p {
   font-size: 1.05rem;
-  color: #444;
+  color: #555;
   max-width: 700px;
   margin: 0 auto 2rem auto;
   line-height: 1.6;
 }
 
+/* Grid Layout */
 .contact-grid {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   gap: 2rem;
-  margin-top: 2.5rem;
+  margin-top: 3rem;
 }
 
+/* Contact Card Redesign */
 .contact-card {
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 2rem 1.5rem;
-  max-width: 300px;
-  flex: 1 1 250px;
-  box-shadow: 0 10px 20px rgba(63, 144, 240, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  text-align: center;
+  background-color: #ffffff;
+  border: 1px solid #e5e7ec;
+  border-radius: 12px;
+  padding: 2rem 1.75rem;
+  max-width: 320px;
+  flex: 1 1 260px;
+  transition: all 0.2s ease-in-out;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
 .contact-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 60px rgba(63, 144, 240, 0.15);
-}
-
-.contact-card h3 {
-  margin-top: 1rem;
-  color: #222;
-  font-size: 1.2rem;
-}
-
-.contact-card a,
-.contact-card p,
-.contact-card ul li a {
-  color: #3f90f0;
-  font-size: 1rem;
-  text-decoration: none;
-  display: block;
-  margin: 0.2rem 0;
+  border-color: #3f90f0;
+  box-shadow: 0 4px 16px rgba(63, 144, 240, 0.1);
 }
 
 .contact-card .icon {
-  font-size: 1.8rem;
+  font-size: 2rem;
   color: #3f90f0;
+  margin-bottom: 0.75rem;
 }
 
-/* Quick Links List */
+.contact-card h3 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #222;
+  margin-bottom: 0.75rem;
+}
+
+.contact-card a,
+.contact-card p {
+  font-size: 0.95rem;
+  color: #3f90f0;
+  text-decoration: none;
+  word-break: break-word;
+  text-align: center;
+}
+
+.contact-card a:hover {
+  text-decoration: underline;
+}
+
+/* Link List – Minimal List Look */
 .link-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  margin: 1rem auto 0;
-  padding: 0;
   list-style: none;
-  align-items: stretch;
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
 
-.link-list li a {
-  display: block;
-  padding: 0.5rem 1rem;
-  background: #f5f8ff;
-  color: #2a70c5;
-  border-radius: 6px;
+.link-list li {
+  border-top: 1px solid #e3e7f0;
+  padding: 0.75rem 0;
+  text-align: left;
+}
+
+.link-list li:first-child {
+  border-top: none;
+}
+
+.link-list a {
+  color: #3f90f0;
   text-decoration: none;
   font-weight: 500;
   font-size: 0.95rem;
-  border: 1px solid #dbe5f5;
-  box-shadow: 0 2px 4px rgba(63, 144, 240, 0.06);
-  transition: all 0.2s ease-in-out;
+  padding-left: 0.5rem;
+  display: inline-block;
+  transition: color 0.2s ease;
 }
 
-.link-list li a:hover {
-  background: #eaf2ff;
-  border-color: #c9dbf4;
-  color: #1a5fb4;
-  transform: translateX(3px);
+.link-list a:hover {
+  color: #2a70c5;
+  text-decoration: underline;
 }
+
 
 
 
