@@ -151,15 +151,37 @@
 .link-list {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  margin: 1rem auto 0;
+  gap: 0.75rem;
+  margin: 1.5rem auto 0;
   padding: 0;
   list-style: none;
   align-items: center;
 }
 
-.link-list a {
+.link-list li {
+  width: 200px; /* or any fixed/shared width */
   position: relative;
+  text-align: center;
+}
+
+.link-list li::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(to right, transparent, #3f90f0, transparent);
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+.link-list li:hover::before {
+  opacity: 1;
+}
+
+.link-list a {
+  display: block;
   color: #3f90f0;
   font-weight: 500;
   font-size: 0.95rem;
@@ -168,27 +190,10 @@
   transition: color 0.3s ease;
 }
 
-.link-list a::before,
-.link-list a::after {
-  content: "";
-  position: absolute;
-  height: 1px;
-  width: 100%;
-  left: 0;
-  bottom: 0;
-  background: linear-gradient(to right, transparent, #3f90f0, transparent);
-  opacity: 0.5;
-  transition: opacity 0.3s ease;
-}
-
 .link-list a:hover {
   color: #2a70c5;
 }
 
-.link-list a:hover::before,
-.link-list a:hover::after {
-  opacity: 1;
-}
 
 
 
