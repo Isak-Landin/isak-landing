@@ -46,10 +46,14 @@
   border-radius: 6px;
   border: none;
   text-align: center;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2; /* prevents text from sinking */
   box-shadow: 0 0 20px rgba(63, 144, 240, 0.25);
   transition: all 0.3s ease;
 }
+
 
 .button.primary.large:hover {
   background-color: #2a70c5;
