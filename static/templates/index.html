@@ -1,6 +1,9 @@
 {% extends "layouts/base.html" %}
 
 {% block title %}Home | Isak Landin{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
 
 {% block content %}
 
@@ -100,17 +103,17 @@
 					</section>
 
 				<!-- Two -->
-					<section id="two">
-						<div class="inner">
-							<header class="major">
-								<h2>Your Website, Your Server, Your Rules</h2>
-							</header>
-							<p>I offer complete, custom-built web solutions that you control — from backend logic and frontend design to hosting and deployment. No subscription fees, no walled gardens — just high-quality work, full transparency, and long-term support when you need it.</p>
-							<ul class="actions">
-								<li><a href="{{ url_for('contact_blueprint.contact') }}" class="button next">Get Started</a></li>
-							</ul>
+				<section id="cta-section-index" class="cta-banner dark-gradient">
+					<div class="container">
+						<h2>Your Website, Your Server, Your Rules</h2>
+						<div class="hero-marker"></div>
+						<p class="lead">Custom-built web solutions — backend, frontend, and hosting — all under your control. No subscriptions, no bloat. Just clean code and real ownership.</p>
+						<div class="cta-buttons">
+						  <a href="{{ url_for('contact_blueprint.contact') }}" class="button primary large">Get Started</a>
 						</div>
-					</section>
+					</div>
+				</section>
+
 
 			</div>
 
