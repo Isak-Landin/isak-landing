@@ -126,31 +126,35 @@
 
 /* Quick Links List */
 .link-list {
-  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem auto 0;
   padding: 0;
-  margin: 1rem 0 0 0;
+  list-style: none;
+  align-items: center;
 }
 
 .link-list li {
-  margin: 0.5rem 0;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #eee;
-}
-
-.link-list li:last-child {
-  border-bottom: none;
+  width: 100%;
 }
 
 .link-list a {
+  display: inline-block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  background: #f1f4fc;
   color: #3f90f0;
   text-decoration: none;
+  border-radius: 6px;
   font-weight: 500;
-  transition: color 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .link-list a:hover {
+  background: #e6eefc;
   color: #2a70c5;
-  text-decoration: underline dotted;
+  transform: translateX(3px);
 }
 
 
