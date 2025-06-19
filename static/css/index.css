@@ -55,8 +55,10 @@
 }
 
 
+/* Contact Section */
+
 .contact-section {
-  background: #f9f9fb;
+  background: radial-gradient(ellipse at center, #f4f6fc 0%, #f9f9fb 100%);
   padding: 5rem 2rem;
   border-top: 1px solid #e5e5e5;
   text-align: center;
@@ -91,13 +93,14 @@
   padding: 2rem 1.5rem;
   max-width: 300px;
   flex: 1 1 250px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.03);
-  transition: transform 0.3s ease;
+  box-shadow: 0 10px 20px rgba(63, 144, 240, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-align: center;
 }
 
 .contact-card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 20px 60px rgba(63, 144, 240, 0.15);
 }
 
 .contact-card h3 {
@@ -121,11 +124,35 @@
   color: #3f90f0;
 }
 
+/* Quick Links List */
 .link-list {
   list-style: none;
   padding: 0;
   margin: 1rem 0 0 0;
 }
+
+.link-list li {
+  margin: 0.5rem 0;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.link-list li:last-child {
+  border-bottom: none;
+}
+
+.link-list a {
+  color: #3f90f0;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.link-list a:hover {
+  color: #2a70c5;
+  text-decoration: underline dotted;
+}
+
 
 /* Responsive */
 @media screen and (max-width: 768px) {
