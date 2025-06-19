@@ -161,7 +161,7 @@
 .link-list li {
   width: 220px; /* fixed width for all */
   position: relative;
-  text-align: center;
+  text-align: left;
   padding-bottom: 0.25rem;
 }
 
