@@ -151,26 +151,45 @@
 .link-list {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  margin-top: 1rem;
   gap: 0.5rem;
+  margin: 1rem auto 0;
+  padding: 0;
+  list-style: none;
+  align-items: center;
 }
 
 .link-list a {
-  background: #f0f4fa;
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
+  position: relative;
+  color: #3f90f0;
   font-weight: 500;
-  color: #2a70c5;
-  text-decoration: none;
   font-size: 0.95rem;
-  transition: background 0.2s ease, transform 0.2s ease;
+  text-decoration: none;
+  padding: 0.4rem 0;
+  transition: color 0.3s ease;
+}
+
+.link-list a::before,
+.link-list a::after {
+  content: "";
+  position: absolute;
+  height: 1px;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  background: linear-gradient(to right, transparent, #3f90f0, transparent);
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
 }
 
 .link-list a:hover {
-  background: #dce9f9;
-  transform: translateX(3px);
+  color: #2a70c5;
 }
+
+.link-list a:hover::before,
+.link-list a:hover::after {
+  opacity: 1;
+}
+
 
 
 
