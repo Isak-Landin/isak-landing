@@ -155,14 +155,14 @@
   margin: 1.5rem auto 0;
   padding: 0;
   list-style: none;
-  align-items: center;
+  align-items: leftg;
 }
 
 .link-list li {
   width: 220px; /* fixed width for all */
   position: relative;
   text-align: left;
-  padding-bottom: 0.25rem;
+  padding-bottom: 0.1rem;
 }
 
 .link-list li::after {
