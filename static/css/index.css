@@ -151,7 +151,7 @@
 .link-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
   margin: 1.5rem auto 0;
   padding: 0;
   list-style: none;
@@ -159,12 +159,13 @@
 }
 
 .link-list li {
-  width: 200px; /* or any fixed/shared width */
+  width: 220px; /* fixed width for all */
   position: relative;
   text-align: center;
+  padding-bottom: 0.25rem;
 }
 
-.link-list li::before {
+.link-list li::after {
   content: "";
   position: absolute;
   bottom: 0;
@@ -172,21 +173,20 @@
   height: 1px;
   width: 100%;
   background: linear-gradient(to right, transparent, #3f90f0, transparent);
-  opacity: 0.5;
+  opacity: 0.4;
   transition: opacity 0.3s ease;
 }
 
-.link-list li:hover::before {
+.link-list li:hover::after {
   opacity: 1;
 }
 
 .link-list a {
-  display: block;
+  display: inline-block;
   color: #3f90f0;
   font-weight: 500;
   font-size: 0.95rem;
   text-decoration: none;
-  padding: 0.4rem 0;
   transition: color 0.3s ease;
 }
 
