@@ -1,10 +1,75 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "layouts/base.html" %}
 
-</body>
-</html>
+{% block title %}About | Isak Landin{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<!-- Section 1: Hero -->
+<section class="radial-dark-section hero-condensed">
+  <div class="container">
+    <h1>Meet Isak Landin</h1>
+    <div class="hero-marker"></div>
+    <p class="intro-lead">Developer. Builder. Problem-solver. I turn ideas into practical software for real-world use.</p>
+    <p class="intro-subline">Rooted in simplicity, performance, and full user ownership.</p>
+  </div>
+</section>
+
+<!-- Section 2: My Background -->
+<section class="split-section alt">
+  <div class="split-content">
+    <div class="split-text">
+      <h2>My Story</h2>
+      <p>I’m based in Malmö, Sweden, and I specialize in building streamlined software for individuals and small businesses. My background is in Linux systems, Python development, and full-stack web applications using tools like Flask, PostgreSQL, and Docker.</p>
+      <p>I enjoy making software that’s not just powerful, but understandable — things you can actually use, host, and modify yourself.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Section 3: Skills Overview -->
+<section class="split-section">
+  <div class="split-content">
+    <div class="split-text">
+      <h2>What I Work With</h2>
+      <p>I mostly work in:</p>
+      <ul>
+        <li>💻 Python, Flask, and PostgreSQL</li>
+        <li>🐧 Linux (especially Ubuntu Server)</li>
+        <li>🌐 HTML, CSS, JavaScript</li>
+        <li>📦 Docker, custom VPS setups, system automation</li>
+        <li>📲 NFC-based systems and Raspberry Pi deployments</li>
+      </ul>
+    </div>
+    <div class="split-image">
+      <img src="{{ url_for('static', filename='images/about_skills.png') }}" alt="Tech Stack" />
+    </div>
+  </div>
+</section>
+
+<!-- Section 4: Philosophy -->
+<section class="split-section alt">
+  <div class="split-content reverse">
+    <div class="split-text">
+      <h2>How I Work</h2>
+      <p>I focus on three things: clarity, speed, and control. That means every system I build is fast to use, easy to understand, and completely yours to own. I don’t rely on third-party platforms unless they actually improve the result — and I always prioritize performance over fluff.</p>
+      <p>My goal is to deliver tools that feel like they were made for you — because they are.</p>
+    </div>
+    <div class="split-image">
+      <img src="{{ url_for('static', filename='images/about_philosophy.png') }}" alt="Work Philosophy" />
+    </div>
+  </div>
+</section>
+
+<!-- Section 5: Call to Action -->
+<section class="radial-dark-section">
+  <div class="container">
+    <h2>Let's Build Something Real</h2>
+    <p class="intro-lead">If you need a clean, custom software solution — something you understand and actually control — I can help you build it.</p>
+    <p class="intro-subline">No lock-ins. No surprises. Just your idea, made real.</p>
+    <div class="cta-buttons">
+      <a href="{{ url_for('contact_blueprint.contact') }}" class="button primary large">Contact Me</a>
+    </div>
+  </div
