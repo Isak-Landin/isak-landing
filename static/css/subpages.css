@@ -1,4 +1,4 @@
-/* Universal Layout & Typography */
+/* Core container and layout */
 .container {
   max-width: 960px;
   margin: 0 auto;
@@ -37,7 +37,9 @@ p {
   border-radius: 6px;
   display: inline-block;
   font-size: 1rem;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
+  text-align: center;
   transition: background 0.3s ease;
 }
 
@@ -55,7 +57,7 @@ p {
   box-shadow: 0 0 30px rgba(63, 144, 240, 0.4);
 }
 
-/* Shared Radial Hero / CTA Section */
+/* Shared radial gradient hero / CTA */
 .radial-dark-section {
   background: radial-gradient(ellipse at center, #252a3a 0%, #1f2331 100%);
   color: #fff;
@@ -69,6 +71,7 @@ p {
   font-size: 2.5rem;
   margin-bottom: 1.2rem;
   animation: fadeInUp 0.8s ease-out forwards;
+  color: #fff;
 }
 
 .radial-dark-section p {
@@ -78,11 +81,8 @@ p {
   margin: 1.5rem auto 2.5rem auto;
   line-height: 1.8;
   font-weight: 400;
+  text-align: center;
   letter-spacing: 0.2px;
-  animation: fadeInUp 0.8s ease-out forwards;
-}
-
-.radial-dark-section .cta-buttons {
   animation: fadeInUp 0.8s ease-out forwards;
 }
 
@@ -94,6 +94,58 @@ p {
   border-radius: 2px;
   animation: pulse 5s ease-in-out infinite;
   opacity: 0.7;
+}
+
+.radial-dark-section .cta-buttons {
+  text-align: center;
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* Split Sections */
+.split-section {
+  background-color: #f7f7f7;
+  padding: 4rem 2rem;
+}
+
+.split-section.alt {
+  background-color: #ffffff;
+}
+
+.split-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 3rem;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.split-content.reverse {
+  flex-direction: row-reverse;
+}
+
+.split-image {
+  flex: 0 0 42%;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.split-image img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 0.5rem;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.split-text {
+  flex: 1;
+  text-align: left;
 }
 
 /* CTA Buttons Layout */
@@ -121,6 +173,27 @@ p {
 
 /* Responsive Adjustments */
 @media screen and (max-width: 768px) {
+  .split-content,
+  .split-content.reverse {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .split-image,
+  .split-text {
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .split-text {
+    text-align: center;
+    padding: 0;
+  }
+
+  .split-image {
+    padding: 0;
+  }
+
   h1 {
     font-size: 2rem;
   }
@@ -135,7 +208,7 @@ p {
   }
 }
 
-/* Hero Section Variants */
+/* Hero variants */
 .radial-dark-section .intro-lead {
   font-weight: 500;
   line-height: 1.8;
