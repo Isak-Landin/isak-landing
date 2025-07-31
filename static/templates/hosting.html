@@ -1,10 +1,65 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "layouts/base.html" %}
 
-</body>
-</html>
+{% block title %}Hosting & Domains | Isak Landin{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/hosting.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Section 1: Hero -->
+<section class="radial-dark-section hero-condensed">
+  <div class="container">
+    <h1>Hosting That Works for You</h1>
+    <div class="hero-marker"></div>
+    <p class="intro-lead">Fast, reliable VPS hosting with full control — designed for developers and businesses who want performance without the overhead.</p>
+    <p class="intro-subline">No bloat. No upsells. Just your server, your way.</p>
+    <div class="cta-buttons">
+      <a href="{{ url_for('contact_blueprint.contact') }}" class="button primary large">Get Started</a>
+    </div>
+  </div>
+</section>
+
+<!-- Section 2: Split Section - Why My Hosting -->
+<section class="split-section alt">
+  <div class="split-content">
+    <div class="split-text">
+      <h2>Simple, Powerful, and Yours</h2>
+      <p>I offer clean VPS setups with root access, static IPs, full IPv6 support, and Docker-ready systems. You can run your apps, websites, or custom stacks exactly how you want — without relying on bloated panels or overpriced third-party platforms.</p>
+      <p>Need something preconfigured? I’ll set it up and hand it over, fully documented and ready to scale.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Section 3: Pricing or Feature Block -->
+<section class="split-section">
+  <div class="split-content">
+    <div class="split-text">
+      <h2>Hosting Options</h2>
+      <p>Whether you're launching a small project or deploying production infrastructure, I provide flexible hosting tiers designed to scale with your needs.</p>
+      <ul>
+        <li>🔹 Lightweight servers for simple sites and apps</li>
+        <li>🔹 High-performance nodes with dedicated CPU and RAM</li>
+        <li>🔹 Optional backups, monitoring, and uptime alerts</li>
+        <li>🔹 Free help with domain connection and SSL</li>
+      </ul>
+    </div>
+    <div class="split-image">
+      <img src="{{ url_for('static', filename='images/hosting_section.png') }}" alt="Hosting Features">
+    </div>
+  </div>
+</section>
+
+<!-- Section 4: Final CTA -->
+<section class="radial-dark-section">
+  <div class="container">
+    <h2>Ready to Host With Confidence?</h2>
+    <p class="intro-lead">No bloated dashboards. No upsells. Just solid infrastructure and full control, with help when you need it.</p>
+    <p class="intro-subline">Let's launch something that’s actually yours.</p>
+    <div class="cta-buttons">
+      <a href="{{ url_for('contact_blueprint.contact') }}" class="button primary large">Get in Touch</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
