@@ -245,5 +245,5 @@ p {
 }
 
 .no-shadow-img{
-    box-shadow: none;
+    box-shadow: none !important;
 }
