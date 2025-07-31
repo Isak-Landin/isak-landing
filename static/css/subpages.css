@@ -244,6 +244,6 @@ p {
   padding: 3.5rem 2rem;
 }
 
-#no-shadow-img{
+.no-shadow-img{
     box-shadow: none;
 }
