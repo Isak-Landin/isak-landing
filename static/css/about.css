@@ -6,6 +6,10 @@
     background-color: #F3F4F5;
 }
 
-.highlight-background {
-    color: #222;
+.section-story p {
+  font-size: 1.15rem;
+  line-height: 1.9;
+  letter-spacing: 0.15px;
+  color: #2c2c2c;
+  font-weight: 400;
 }
