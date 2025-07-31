@@ -4,6 +4,10 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+{% endblock %}
+
+{% block extra_js %}
 {% endblock %}
 
 {% block content %}
@@ -44,7 +48,7 @@
       </ul>
     </div>
     <div class="split-image">
-      <img src="{{ url_for('static', filename='images/about-doing.png') }}" alt="Tech Stack" />
+      <img id="about-img" src="{{ url_for('static', filename='images/about-doing.png') }}" alt="Tech Stack" />
     </div>
   </div>
 </section>
