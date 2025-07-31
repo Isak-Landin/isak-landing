@@ -243,3 +243,7 @@ p {
 .radial-dark-section.hero-condensed {
   padding: 3.5rem 2rem;
 }
+
+#no-shadow-img{
+    box-shadow: none;
+}
