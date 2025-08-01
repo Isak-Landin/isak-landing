@@ -114,7 +114,9 @@ p {
 .split-section {
   background-color: #f7f7f7;
   padding: 4rem 2rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
+
 
 .split-section.alt {
   background-color: #ffffff;
