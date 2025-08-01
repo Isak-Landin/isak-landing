@@ -1,0 +1,69 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Server & System Setup | Isak Landin{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/server.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+{% include 'components/menu.html' %}
+
+<!-- Section 1: Hero -->
+<section class="radial-dark-section hero-condensed">
+  <div class="container">
+    <h1>Server & System Setup</h1>
+    <div class="hero-marker"></div>
+    <p class="intro-lead">Lightweight, secure, and purpose-built systems. I help you run your infrastructure on your own terms — whether that's bare metal, KVM, or containers.</p>
+    <p class="intro-subline">No noise. No bloat. Just your stack, your way.</p>
+    <div class="cta-buttons">
+      <a href="{{ url_for('contact_blueprint.contact') }}" class="button primary large">Get Started</a>
+    </div>
+  </div>
+</section>
+
+<!-- Section 2: What I Offer -->
+<section class="split-section alt">
+  <div class="split-content">
+    <div class="split-text">
+      <h2>Lean Systems, Full Control</h2>
+      <p>I deploy custom Linux environments — whether on local hardware or cloud instances. That means KVM, Docker, custom Ubuntu images, and hardened services — with everything documented and under your control.</p>
+      <p>No reliance on bloated dashboards or one-size-fits-all installers.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Section 3: Use Cases -->
+<section class="split-section">
+  <div class="split-content">
+    <div class="split-text">
+      <h2>Use Cases I Set Up</h2>
+      <ul>
+        <li class="split-list-object">🏠 Local-only internal tools, reverse proxy routing, and VPN access</li>
+        <li class="split-list-object">📦 Self-hosted stacks like Nextcloud, Gitea, and Nginx with SSL</li>
+        <li class="split-list-object">🧩 KVM-based infrastructure to replace Azure/Proxmox dependencies</li>
+        <li class="split-list-object">🔐 Locked-down systems that just boot and work</li>
+      </ul>
+    </div>
+    <div class="split-image">
+      <img class="no-shadow-img" src="{{ url_for('static', filename='images/server_usecases.png') }}" alt="Server Use Cases">
+    </div>
+  </div>
+</section>
+
+<!-- Section 4: Final CTA -->
+<section class="radial-dark-section">
+  <div class="container">
+    <h2>Need a Server That Works Like You Do?</h2>
+    <p class="intro-lead">From local-only LAN stacks to fully-deployed internet services, I’ll help you build the infrastructure you actually need — nothing more.</p>
+    <p class="intro-subline">Let’s make it yours.</p>
+    <div class="cta-buttons">
+      <a href="{{ url_for('contact_blueprint.contact') }}" class="button primary large">Contact Me</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
