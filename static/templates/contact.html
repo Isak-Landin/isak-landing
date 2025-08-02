@@ -1,10 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "layouts/base.html" %}
 
-</body>
-</html>
+{% block title %}Contact | Isak Landin{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/contact.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+{% include 'components/menu.html' %}
+
+<!-- Section 1: Hero -->
+<section class="radial-dark-section hero-condensed">
+  <div class="container">
+    <h1>Contact</h1>
+    <div class="hero-marker"></div>
+    <p class="intro-lead">Want to start a project, need tech help, or just curious about my work?</p>
+    <p class="intro-subline">Here’s how to get in touch with me directly.</p>
+  </div>
+</section>
+
+<!-- Section 2: Contact Info -->
+<section class="split-section alt">
+  <div class="split-content">
+    <div class="split-text">
+      <h2>Reach Out</h2>
+      <ul class="split-list">
+        <li><span class="emoji">📬</span> <span class="text">contact@isaklandin.com</span></li>
+        <li><span class="emoji">🌍</span> <span class="text">Based in Malmö, Sweden</span></li>
+        <li><span class="emoji">🛠</span> <span class="text">Available for freelance & project work</span></li>
+        <li><span class="emoji">💡</span> <span class="text">Happy to discuss ongoing ideas or technical challenges</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Section 3: Final CTA -->
+<section class="radial-dark-section">
+  <div class="container">
+    <h2>Let’s Build Something</h2>
+    <p class="intro-lead">From server deployments to web development — I bring clarity and execution to technical work.</p>
+    <p class="intro-subline">Shoot me an email or outline what you're working on — I'll get back shortly.</p>
+    <div class="cta-buttons">
+      <a href="mailto:contact@isaklandin.com" class="button primary large">Email Me</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
