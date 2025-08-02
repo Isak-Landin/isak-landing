@@ -163,6 +163,8 @@ p {
   list-style: none;
   padding: 0;
   margin: 0;
+  margin-left: -0.7rem;
+  white-space: nowrap;
 }
 
 .split-list li {
