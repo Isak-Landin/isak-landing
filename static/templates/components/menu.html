@@ -11,13 +11,14 @@
 
         {% if current_user.is_authenticated %}
           <li><a href="{{ url_for('users_blueprint.dashboard') }}">Dashboard</a></li>
-          <li><a href="{{ url_for('auth_blueprint.logout') }}">Log out</a></li>
-        {% else %}
-          <li><a href="{{ url_for('auth_blueprint.login') }}">Log in</a></li>
         {% endif %}
     </ul>
     <ul class="actions stacked">
         <li><a href="#" class="button primary fit">Get Started</a></li>
-        <li><a href="{{ url_for('users_blueprint.dashboard') }}" class="button fit">Log In</a></li>
+        {% if current_user.is_authenticated %}
+          <li><a href="{{ url_for('logout') }}" class="button fit">Log Out</a></li>
+        {% else %}
+          <li><a href="{{ url_for('users_blueprint.login') }}" class="button fit">Log In</a></li>
+        {% endif %}
     </ul>
 </nav>
