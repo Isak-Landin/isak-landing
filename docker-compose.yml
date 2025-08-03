@@ -21,6 +21,7 @@ services:
       - web_network
     depends_on:
       - flask-app-isak-landing
+      - dashboard-db
 
 
   dashboard-db:
