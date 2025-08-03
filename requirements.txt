@@ -4,4 +4,4 @@ flask-sqlalchemy
 python-dotenv  # Ensures Flask loads .env correctly
 importlib-metadata
 Flask-Login
-
+psycopg2-binary
