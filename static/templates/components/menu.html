@@ -1,5 +1,11 @@
 <!-- Menu -->
 <nav id="menu">
+    {% if current_user.is_authenticated %}
+      <a href="{{ url_for('users_blueprint.dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('auth_blueprint.logout') }}">Log out</a>
+    {% else %}
+      <a href="{{ url_for('auth_blueprint.login') }}">Login</a>
+    {% endif %}
     <ul class="links">
         <li><a href="index.html">Home</a></li>
         <li><a href="landing.html">Landing</a></li>
