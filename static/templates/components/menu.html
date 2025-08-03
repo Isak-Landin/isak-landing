@@ -18,7 +18,7 @@
         {% if current_user.is_authenticated %}
           <li><a href="{{ url_for('logout') }}" class="button fit">Log Out</a></li>
         {% else %}
-          <li><a href="{{ url_for('users_blueprint.login') }}" class="button fit">Log In</a></li>
+          <li><a href="{{ url_for('auth_blueprint.login') }}" class="button fit">Log In</a></li>
         {% endif %}
     </ul>
 </nav>
