@@ -50,4 +50,4 @@ def register():
             login_user(user)
             return redirect(url_for('users_blueprint.dashboard'))
 
-    return render_template('auth/register.html')
+    return render_template('register.html')
