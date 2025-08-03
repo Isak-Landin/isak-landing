@@ -13,6 +13,7 @@ class VPS(db.Model):
     status = db.Column(db.String(20), default='active')  # e.g. active, suspended, terminated
     created_at = db.Column(db.DateTime, default=datetime.now)
 
+
     # Optional extras
     os = db.Column(db.String(64))  # e.g. 'Ubuntu 24.04'
     location = db.Column(db.String(64))  # e.g. 'DE - Frankfurt'
