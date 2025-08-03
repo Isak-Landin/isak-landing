@@ -31,6 +31,8 @@ def create_app():
 
     login_manager.init_app(_app)
 
+    _app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+
     _app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
     _app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
