@@ -22,7 +22,7 @@ def login():
         else:
             flash('Invalid credentials')
 
-    return render_template('auth/login.html')
+    return render_template('login.html')
 
 
 @auth_blueprint.route('/logout')
