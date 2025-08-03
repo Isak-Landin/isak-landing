@@ -1,16 +1,20 @@
 <!-- Menu -->
 <nav id="menu">
-    {% if current_user.is_authenticated %}
-      <a href="{{ url_for('users_blueprint.dashboard') }}">Dashboard</a>
-      <a href="{{ url_for('auth_blueprint.logout') }}">Log out</a>
-    {% else %}
-      <a href="{{ url_for('auth_blueprint.login') }}">Login</a>
-    {% endif %}
     <ul class="links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="landing.html">Landing</a></li>
-        <li><a href="generic.html">Generic</a></li>
-        <li><a href="elements.html">Elements</a></li>
+        <li><a href="{{ url_for('home_blueprint.home') }}">Home</a></li>
+        <li><a href="{{ url_for('websites_blueprint.websites') }}">Websites</a></li>
+        <li><a href="{{ url_for('about_blueprint.about') }}">About</a></li>
+        <li><a href="{{ url_for('contact_blueprint.contact') }}">Contact</a></li>
+        <li><a href="{{ url_for('support_blueprint.support') }}">Support</a></li>
+        <li><a href="{{ url_for('hosting_blueprint.hosting') }}">Hosting</a></li>
+        <li><a href="{{ url_for('server_blueprint.server') }}">Server Setup</a></li>
+
+        {% if current_user.is_authenticated %}
+          <li><a href="{{ url_for('users_blueprint.dashboard') }}">Dashboard</a></li>
+          <li><a href="{{ url_for('auth_blueprint.logout') }}">Log out</a></li>
+        {% else %}
+          <li><a href="{{ url_for('auth_blueprint.login') }}">Log in</a></li>
+        {% endif %}
     </ul>
     <ul class="actions stacked">
         <li><a href="#" class="button primary fit">Get Started</a></li>
