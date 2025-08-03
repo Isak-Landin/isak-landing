@@ -37,6 +37,8 @@ services:
       - "5437:5437"  # host:container
     command: postgres -p 5437
     restart: always
+    networks:
+      - web_network
 
 volumes:
   dashboard-postgres-data:
