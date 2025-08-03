@@ -22,6 +22,25 @@ services:
     depends_on:
       - flask-app-isak-landing
 
+
+  dashboard-db:
+    image: postgres:latest
+    container_name: dashboard-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: P4cQVW6aLQYYr4bJtZjZq
+      POSTGRES_DB: IsakLandingDB
+    volumes:
+      - dashboard-postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5434:5434"  # host:container
+    command: postgres -p 5434
+    restart: always
+
+volumes:
+  dashboard-postgres-data:
+
+
 networks:
   web_network:
     driver: bridge

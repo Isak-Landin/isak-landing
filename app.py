@@ -15,6 +15,7 @@ from apps.Users.users import blueprint as users_bp
 from apps.Users.models import User
 
 from flask_login import LoginManager
+import os
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth_blueprint.login'
@@ -29,6 +30,9 @@ def create_app():
     _app = Flask(__name__, template_folder='static/templates', static_folder='static')
 
     login_manager.init_app(_app)
+
+    _app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+    _app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # Load environment variables
     load_dotenv()
