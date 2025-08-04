@@ -16,7 +16,7 @@
     <ul class="actions stacked">
         <li><a href="#" class="button primary fit">Get Started</a></li>
         {% if current_user.is_authenticated %}
-          <li><a href="{{ url_for('logout') }}" class="button fit">Log Out</a></li>
+          <li><a href="{{ url_for('auth_blueprint.logout') }}" class="button fit">Log Out</a></li>
         {% else %}
           <li><a href="{{ url_for('auth_blueprint.login') }}" class="button fit">Log In</a></li>
         {% endif %}
