@@ -1,0 +1,87 @@
+/* register.css */
+.register-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.register-card {
+  background-color: #2b3045;
+  padding: 2.5rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.register-card h2 {
+  font-size: 2rem;
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.register-card .hero-marker {
+  margin: 0 auto 2rem auto;
+}
+
+.register-card form input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1.25rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #1e2233;
+  color: white;
+  font-size: 1rem;
+}
+
+.register-card form input::placeholder {
+  color: #aaa;
+}
+
+#password-error {
+  color: #f66;
+  font-size: 0.9rem;
+  display: none;
+  margin-bottom: 1.25rem;
+}
+
+.register-card form button {
+  width: 100%;
+  padding: 0.9rem;
+  background-color: #3f90f0;
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  box-shadow: 0 0 10px rgba(63, 144, 240, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.register-card form button:hover {
+  background-color: #2a70c5;
+}
+
+.register-footer {
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+  color: #ccc;
+}
+
+.register-footer a {
+  color: #ffffff;
+  border-bottom: 1px dotted #ccc;
+  text-decoration: none;
+}
+
+.register-footer a:hover {
+  color: #3f90f0;
+  border-bottom: 1px solid #3f90f0;
+}

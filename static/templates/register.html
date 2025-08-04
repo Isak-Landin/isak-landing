@@ -4,29 +4,30 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
 {% endblock %}
 
 {% block content %}
 <section class="radial-dark-section hero-condensed">
-  <div class="container" style="max-width: 480px;">
-    <h1>Create Account</h1>
-    <div class="hero-marker"></div>
+  <div class="register-wrapper">
+    <div class="register-card">
+      <h2>Create Account</h2>
+      <div class="hero-marker"></div>
 
-    <form method="POST" id="register-form" style="margin-top: 2rem;">
-      <input type="email" name="email" placeholder="Email" required style="width: 100%; padding: 0.75rem; margin-bottom: 1.5rem;">
+      <form method="POST" id="register-form">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" id="password" placeholder="Password" required>
+        <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required>
 
-      <input type="password" name="password" id="password" placeholder="Password" required style="width: 100%; padding: 0.75rem; margin-bottom: 1.5rem;">
+        <p id="password-error">Passwords do not match.</p>
 
-      <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required style="width: 100%; padding: 0.75rem; margin-bottom: 1.5rem;">
+        <button type="submit">Register</button>
+      </form>
 
-      <p id="password-error" style="color: #f66; font-size: 0.9rem; display: none; margin-bottom: 1.5rem;">Passwords do not match.</p>
-
-      <button type="submit" class="button primary large" style="width: 100%;">Register</button>
-    </form>
-
-    <p style="text-align: center; margin-top: 1.5rem;">
-      Already have an account? <a href="{{ url_for('auth_blueprint.login') }}">Log in here</a>
-    </p>
+      <p class="register-footer">
+        Already have an account? <a href="{{ url_for('auth_blueprint.login') }}">Log in here</a>
+      </p>
+    </div>
   </div>
 </section>
 
