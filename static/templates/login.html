@@ -4,21 +4,26 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
 {% endblock %}
 
 {% block content %}
 <section class="radial-dark-section hero-condensed">
-  <div class="container" style="max-width: 480px;">
-    <h1>Login</h1>
-    <div class="hero-marker"></div>
-    <form method="POST" style="margin-top: 2rem;">
-      <input type="email" name="email" placeholder="Email" required style="width: 100%; padding: 0.75rem; margin-bottom: 1.5rem;">
-      <input type="password" name="password" placeholder="Password" required style="width: 100%; padding: 0.75rem; margin-bottom: 2rem;">
-      <button type="submit" class="button primary large" style="width: 100%;">Log In</button>
-    </form>
-    <p style="text-align: center; margin-top: 1.5rem;">
-      No account? <a href="{{ url_for('auth_blueprint.register') }}">Register here</a>
-    </p>
+  <div class="login-wrapper">
+    <div class="login-card">
+      <h2>Login</h2>
+      <div class="hero-marker"></div>
+
+      <form method="POST">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Log In</button>
+      </form>
+
+      <p class="login-footer">
+        No account? <a href="{{ url_for('auth_blueprint.register') }}">Register here</a>
+      </p>
+    </div>
   </div>
 </section>
 {% endblock %}
