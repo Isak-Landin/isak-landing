@@ -13,6 +13,7 @@ from apps.support.support import blueprint as support_bp
 from apps.Users.auth import auth_blueprint
 from apps.Users.users import blueprint as users_bp
 from apps.Users.models import User
+from apps.store.store import store_blueprint
 
 from flask_login import LoginManager
 import os
@@ -48,6 +49,7 @@ def create_app():
     _app.register_blueprint(support_bp)
     _app.register_blueprint(auth_blueprint)
     _app.register_blueprint(users_bp)
+    _app.register_blueprint(store_blueprint)
 
     # Initialize the database here if needed
     db.init_app(_app)
