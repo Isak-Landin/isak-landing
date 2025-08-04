@@ -53,7 +53,12 @@
   cursor: pointer;
   transition: background 0.2s ease;
   box-shadow: 0 0 10px rgba(63, 144, 240, 0.3);
+  line-height: 1.2; /* ADD THIS LINE */
+  display: flex;    /* ADD THESE */
+  align-items: center;
+  justify-content: center;
 }
+
 
 .login-card form button:hover {
   background-color: #2a70c5;
