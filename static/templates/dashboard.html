@@ -30,10 +30,22 @@
     <section class="radial-dark-section hero-condensed">
       <div class="container">
         <h1>Welcome, {{ user.email }}</h1>
+        <div class="user-meta">
+          <span class="avatar-emoji">👤</span>
+          <span class="email">{{ user.email }}</span>
+        </div>
+
         <div class="hero-marker"></div>
         <p class="intro-lead">Here are your active servers.</p>
       </div>
     </section>
+
+    <div class="dashboard-summary">
+      <div class="card">🖥️ <strong>{{ vps|length }}</strong> Servers</div>
+      <div class="card">⚙️ Active</div>
+      <div class="card">💬 Chat Enabled</div>
+    </div>
+
 
     <section class="split-section">
       <div class="container">
@@ -50,7 +62,11 @@
             {% endfor %}
           </ul>
         {% else %}
-          <p>You don't have any VPSes yet.</p>
+          <div class="empty-state">
+            <div class="emoji">🛰️</div>
+            <p class="empty-text">You don’t have any servers yet.</p>
+            <a href="{{ url_for('store_blueprint.store') }}" class="button primary">Launch Your First VPS</a>
+          </div>
         {% endif %}
       </div>
     </section>
