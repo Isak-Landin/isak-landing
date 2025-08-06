@@ -85,9 +85,13 @@
   background-color: #f44336;
   color: white;
   padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
-  border-radius: 6px;
+  margin: 0 auto 1.25rem auto;
+  border-radius: 4px; /* smaller than button’s 8px */
   font-size: 0.95rem;
+  max-width: 90%;
+  width: fit-content;
   text-align: center;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
 }
+
 
