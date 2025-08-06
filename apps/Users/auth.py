@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_user, current_user, login_required, logout_user
 from apps.Users.models import User
 from extensions import db
@@ -9,20 +9,29 @@ auth_blueprint = Blueprint('auth_blueprint', __name__, url_prefix='/auth')
 
 @auth_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('users_blueprint.dashboard'))
-
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        user = User.query.filter_by(email=email).first()
-        if user and user.check_password(password):
-            login_user(user)
+    if request.method == 'GET':
+        if current_user.is_authenticated:
             return redirect(url_for('users_blueprint.dashboard'))
-        else:
-            flash('Invalid credentials')
+        return render_template('login.html')
 
-    return render_template('login.html')
+    # POST: JSON-based login logic
+    try:
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '').strip()
+
+        if not email or not password:
+            return jsonify(success=False, error="Email and password are required."), 400
+
+        user = User.query.filter_by(email=email).first()
+
+        if not user or not user.check_password(password):
+            return jsonify(success=False, error="Invalid email or password."), 401
+
+        login_user(user)
+        return jsonify(success=True, redirect=url_for('users_blueprint.dashboard')), 200
+
+    except Exception:
+        return jsonify(success=False, error="Internal server error. Please try again later."), 500
 
 
 @auth_blueprint.route('/logout')
