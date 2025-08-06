@@ -85,3 +85,20 @@
   color: #3f90f0;
   border-bottom: 1px solid #3f90f0;
 }
+
+.form-error {
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  text-align: left;
+  padding-left: 0.1rem;
+}
+
+.form-error::before {
+  content: "⚠️";
+  display: inline-block;
+  margin-right: 0.5rem;
+  font-size: 1rem;
+  vertical-align: middle;
+}
+

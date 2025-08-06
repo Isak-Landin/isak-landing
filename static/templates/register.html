@@ -23,10 +23,11 @@
         <input type="password" name="password" id="password" placeholder="Password" required>
         <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required>
 
-        <p id="password-error">Passwords do not match.</p>
+        <div id="register-error" class="form-error" style="display: none;"></div>
 
         <button type="submit">Register</button>
       </form>
+
 
       <p class="register-footer">
         Already have an account? <a href="{{ url_for('auth_blueprint.login') }}">Log in here</a>
@@ -50,4 +51,7 @@
     }
   });
 </script>
+
+<script src="{{ url_for('static', filename='js/register.js') }}"></script>
+
 {% endblock %}

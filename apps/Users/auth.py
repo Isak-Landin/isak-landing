@@ -43,20 +43,33 @@ def logout():
 
 @auth_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('users_blueprint.dashboard'))
-
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        if User.query.filter_by(email=email).first():
-            flash('Email already exists')
-        else:
-            user = User(email=email)
-            user.set_password(password)
-            db.session.add(user)
-            db.session.commit()
-            login_user(user)
+    if request.method == 'GET':
+        if current_user.is_authenticated:
             return redirect(url_for('users_blueprint.dashboard'))
+        return render_template('register.html')
 
-    return render_template('register.html')
+    # POST: handle register via JS (expecting JSON)
+    try:
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '').strip()
+        confirm = request.form.get('confirm_password', '').strip()
+
+        if not email or not password or not confirm:
+            return jsonify(success=False, error="All fields are required."), 400
+
+        if password != confirm:
+            return jsonify(success=False, error="Passwords do not match."), 401
+
+        if User.query.filter_by(email=email).first():
+            return jsonify(success=False, error="Email is already registered."), 429
+
+        user = User(email=email)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+        login_user(user)
+
+        return jsonify(success=True, redirect=url_for('users_blueprint.dashboard')), 200
+
+    except Exception:
+        return jsonify(success=False, error="Internal server error. Please try again later."), 500
