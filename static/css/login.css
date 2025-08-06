@@ -89,6 +89,14 @@
   padding-left: 0.1rem;
 }
 
+.form-error::before {
+  content: "⚠️";
+  display: inline-block;
+  margin-right: 0.5rem;
+  font-size: 1rem;
+  vertical-align: middle;
+}
+
 
 
 
