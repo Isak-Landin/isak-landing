@@ -21,6 +21,9 @@
       <form method="POST">
         <input type="email" name="email" placeholder="Email" required>
         <input type="password" name="password" placeholder="Password" required>
+
+        <div id="login-error" class="form-error" style="display: none;"></div>
+
         <button type="submit">Log In</button>
       </form>
 
@@ -30,4 +33,7 @@
     </div>
   </div>
 </section>
+
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+
 {% endblock %}
