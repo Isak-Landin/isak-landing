@@ -3,6 +3,7 @@ from flask_login import login_user, current_user, login_required, logout_user
 from apps.Users.models import User
 from apps.admin.models import AdminUser
 from extensions import db
+import traceback
 
 from werkzeug.security import check_password_hash
 
@@ -38,10 +39,10 @@ def login():
 
             # 🔐 2FA already setup → prompt for code
             if admin.totp_secret:
-                return jsonify(success=True, redirect=url_for('admin.otp_verify')), 200
+                return jsonify(success=True, redirect=url_for('admin_blueprint.otp_verify')), 200
 
             # ⚙️ No 2FA setup → redirect to setup flow
-            return jsonify(success=True, redirect=url_for('admin.setup_2fa')), 200
+            return jsonify(success=True, redirect=url_for('admin_blueprint.setup_2fa')), 200
 
         # 👤 Fallback to regular user
         user = User.query.filter_by(email=email).first()
@@ -54,7 +55,7 @@ def login():
 
     except Exception as e:
         print(f"Login error: {e}")
-        print(e.with_traceback(__import__('traceback').format_exc()))
+        traceback.print_exc()  # This prints the full traceback nicely
         return jsonify(success=False, error="Internal server error. Please try again later."), 500
 
 

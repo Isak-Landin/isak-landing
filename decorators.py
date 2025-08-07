@@ -16,7 +16,7 @@ def admin_2fa_required(view_func):
 
         # 2FA activated → require validation
         if not session.get('admin_2fa_passed'):
-            return redirect(url_for('admin.otp_verify'))
+            return redirect(url_for('admin_blueprint.otp_verify'))
 
         return view_func(*args, **kwargs)
     return wrapper
