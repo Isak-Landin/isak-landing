@@ -90,7 +90,7 @@ def admin_inbox():
     # Subquery to prioritize unread messages
     unread_priority = func.max(
         case(
-            [(SupportMessage.is_read == False, 1)],
+            (SupportMessage.is_read == False, 1),  # ✅ Fixed
             else_=0
         )
     )
