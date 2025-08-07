@@ -85,26 +85,22 @@ def view_user_chat():
 @admin_required
 @admin_2fa_required
 def admin_inbox():
-    # Get all open chats with at least one message
-    chats = (
-        SupportChat.query
-        .filter_by(status='open')
-        .join(SupportMessage)
-        .all()
-    )
+    # Get ALL open chats regardless of unread status
+    chats = SupportChat.query.filter_by(status='open').all()
 
-    # Build inbox data
     inbox = []
     for chat in chats:
-        last_message = max(chat.messages, key=lambda m: m.timestamp, default=None)
-        unread = any(m.sender == 'user' and not m.is_read for m in chat.messages)
+        messages = sorted(chat.messages, key=lambda m: m.timestamp)
+        last_message = messages[-1] if messages else None
+        unread = any(m.sender == 'user' and not m.is_read for m in messages)
+
         inbox.append({
             'chat': chat,
             'last_message': last_message,
             'unread': unread
         })
 
-    # Sort inbox: unread first, then by most recent message
+    # Sort: unread first, then by most recent message
     inbox.sort(key=lambda entry: (
         0 if entry['unread'] else 1,
         entry['last_message'].timestamp if entry['last_message'] else datetime.min

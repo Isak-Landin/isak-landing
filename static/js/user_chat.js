@@ -1,15 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
   const socket = io({ transports: ['websocket'] });
 
-  const chatId = document.getElementById("chat-messages").dataset.chatId;
   const form = document.querySelector(".chat-form");
-  const textarea = form.querySelector("textarea");
+  const textarea = form?.querySelector("textarea");
   const messagesContainer = document.getElementById("chat-messages");
+  const chatId = messagesContainer?.dataset.chatId;
+
+  if (!form || !textarea || !messagesContainer || !chatId) {
+    console.warn("Missing elements for chat. Aborting chat JS.");
+    return;
+  }
+
+  // Scroll to bottom on load
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
   // Join the chat room
-  socket.emit("join_chat", { chat_id: chatId });
+  socket.emit("join_chat", { chat_id: parseInt(chatId) });
 
   // Handle incoming messages
   socket.on("receive_message", data => {
