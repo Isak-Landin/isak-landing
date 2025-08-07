@@ -45,34 +45,62 @@
 
     <section class="split-section">
       <div class="container">
-        <h2 style="color: white; margin-bottom: 1rem;">Registered Users</h2>
-        <ul class="split-list">
-          {% for user in users %}
-          <li>
-            <span class="emoji">👤</span>
-            <span class="text">
-              <strong>{{ user.email }}</strong><br>
-              VPS Count: {{ user.vps|length }}
-            </span>
-          </li>
-          {% endfor %}
-        </ul>
+        <!-- Tab Selectors -->
+        <div class="admin-tabs">
+          <button class="tab-button active" id="tab-users">👥 Registered Users</button>
+          <button class="tab-button" id="tab-vps">🖥️ All VPS Instances</button>
+        </div>
 
-        <h2 style="color: white; margin: 2rem 0 1rem;">All VPS Instances</h2>
-        <ul class="split-list">
-          {% for vps in vps_list %}
-          <li>
-            <span class="emoji">🖥️</span>
-            <span class="text">
-              <strong>{{ vps.hostname }}</strong> – {{ vps.ip_address }}<br>
-              Owner: {{ vps.user.email if vps.user else "Unknown" }}<br>
-              OS: {{ vps.os }} | CPU: {{ vps.cpu_cores }} cores | RAM: {{ vps.ram_mb }}MB
-            </span>
-          </li>
-          {% endfor %}
-        </ul>
+        <!-- Users Table -->
+        <div class="table-container" id="users-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>VPS Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for user in users %}
+              <tr>
+                <td>{{ user.email }}</td>
+                <td>{{ user.vps|length }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- VPS Table -->
+        <div class="table-container hidden" id="vps-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Hostname</th>
+                <th>IP Address</th>
+                <th>OS</th>
+                <th>CPU</th>
+                <th>RAM</th>
+                <th>Owner</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for vps in vps_list %}
+              <tr>
+                <td>{{ vps.hostname }}</td>
+                <td>{{ vps.ip_address }}</td>
+                <td>{{ vps.os }}</td>
+                <td>{{ vps.cpu_cores }} cores</td>
+                <td>{{ vps.ram_mb }} MB</td>
+                <td>{{ vps.user.email if vps.user else "Unknown" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
+
   </main>
 </div>
 {% endblock %}
