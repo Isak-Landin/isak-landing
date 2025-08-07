@@ -52,7 +52,9 @@ def login():
         login_user(user)
         return jsonify(success=True, redirect=url_for('users_blueprint.dashboard')), 200
 
-    except Exception:
+    except Exception as e:
+        print(f"Login error: {e}")
+        print(e.with_traceback(__import__('traceback').format_exc()))
         return jsonify(success=False, error="Internal server error. Please try again later."), 500
 
 

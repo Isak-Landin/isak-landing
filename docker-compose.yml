@@ -9,6 +9,9 @@ services:
     networks:
       - web_network
 
+    environment:
+      - PYTHONBUFFERED=1
+
     depends_on:
       - dashboard-db
 
