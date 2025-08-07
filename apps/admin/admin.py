@@ -77,15 +77,6 @@ def otp_verify():
 @admin_2fa_required
 def dashboard():
     users = User.query.all()
-    return render_template('admin/dashboard.html', users=users)
-
-
-@admin_blueprint.route('/dashboard')
-@login_required
-@admin_required
-@admin_2fa_required
-def dashboard():
-    users = User.query.all()
     vps_list = VPS.query.all()  # Adjust if your model is named differently
     return render_template('admin/dashboard.html', users=users, vps_list=vps_list)
 
