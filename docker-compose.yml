@@ -9,6 +9,9 @@ services:
     networks:
       - web_network
 
+    depends_on:
+      - dashboard-db
+
   nginx-isak-landing:
     container_name: nginx-isak-landing
     restart: always
