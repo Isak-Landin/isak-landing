@@ -2,7 +2,7 @@ import pyotp
 import qrcode
 import io
 import base64
-from flask import Blueprint, render_template, request, session, redirect, url_for
+from flask import Blueprint, render_template, request, session, redirect, url_for, jsonify
 from flask_login import current_user, login_required
 from apps.admin.models import AdminUser
 from apps.Users.models import User
@@ -79,4 +79,29 @@ def dashboard():
     users = User.query.all()
     vps_list = VPS.query.all()  # Adjust if your model is named differently
     return render_template('admin_dashboard.html', users=users, vps_list=vps_list)
+
+
+@admin_blueprint.route('/api/dashboard-data')
+def get_admin_dashboard_data():
+    if not session.get('is_admin'):
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    users = User.query.all()
+    vps_list = VPS.query.all()
+
+    user_data = [{
+        "email": user.email,
+        "vps_count": len(user.vps)
+    } for user in users]
+
+    vps_data = [{
+        "hostname": vps.hostname,
+        "ip_address": vps.ip_address,
+        "os": vps.os,
+        "cpu_cores": vps.cpu_cores,
+        "ram_mb": vps.ram_mb,
+        "owner_email": vps.user.email if vps.user else "Unknown"
+    } for vps in vps_list]
+
+    return jsonify({"users": user_data, "vps": vps_data})
 
