@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("✅ user_chat_start.js loaded");
   const form = document.getElementById('start-chat-form');
   if (!form) return;
 
