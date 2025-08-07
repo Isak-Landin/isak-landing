@@ -61,7 +61,7 @@ def create_app():
     _app.register_blueprint(store_blueprint)
     _app.register_blueprint(admin_blueprint)
 
-    app.register_blueprint(chat_blueprint)
+    _app.register_blueprint(chat_blueprint)
 
     # Initialize the database here if needed
     db.init_app(_app)
