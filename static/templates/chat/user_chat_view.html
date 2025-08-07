@@ -27,6 +27,7 @@
     </div>
 
     <form id="chat-form" class="chat-form">
+      <input type="hidden" id="chat-id" value="{{ chat.id }}">
       <textarea name="message" placeholder="Type your message..." required></textarea>
       <button type="submit" class="button primary">Send</button>
     </form>
