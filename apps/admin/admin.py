@@ -18,21 +18,19 @@ admin_blueprint = Blueprint("admin_blueprint", __name__, url_prefix="/admin")
 @login_required
 @admin_required
 def setup_2fa():
-    # Ensure the current user is actually an admin
     if not isinstance(current_user, AdminUser):
         return redirect(url_for('users_blueprint.dashboard'))
 
-    # Generate a TOTP secret if it doesn't exist yet
     if not current_user.totp_secret:
-        current_user.totp_secret = pyotp.random_base32()
-        db.session.commit()
+        # Only create the secret in session
+        if 'pending_2fa_secret' not in session:
+            session['pending_2fa_secret'] = pyotp.random_base32()
+        totp = pyotp.TOTP(session['pending_2fa_secret'])
+    else:
+        # Already verified user
+        totp = pyotp.TOTP(current_user.totp_secret)
 
-    totp = pyotp.TOTP(current_user.totp_secret)
-
-    # Generate provisioning URI for Google/MS Authenticator
     otp_uri = totp.provisioning_uri(name=current_user.email, issuer_name="Isaklandin Admin")
-
-    # Generate base64-encoded QR code
     img = qrcode.make(otp_uri)
     buffer = io.BytesIO()
     img.save(buffer, format="PNG")
@@ -41,12 +39,19 @@ def setup_2fa():
     if request.method == 'POST':
         code = request.form.get('code', '').strip()
         if totp.verify(code):
+            # Save secret only after successful verification
+            if not current_user.totp_secret:
+                current_user.totp_secret = session['pending_2fa_secret']
+                db.session.commit()
+                session.pop('pending_2fa_secret', None)
+
             session['admin_2fa_passed'] = True
             return redirect(url_for('admin_blueprint.dashboard'))
         else:
             return render_template('setup_2fa.html', qr_code=qr_b64, error="Invalid code")
 
     return render_template('setup_2fa.html', qr_code=qr_b64)
+
 
 
 @admin_blueprint.route('/2fa', methods=['GET', 'POST'])
