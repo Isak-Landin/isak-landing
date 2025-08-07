@@ -36,9 +36,14 @@ document.addEventListener('DOMContentLoaded', function () {
         return res.json();
       })
       .then(data => {
-        populateUsers(data.users);
-        populateVps(data.vps);
-        dataLoaded = true;
+            populateUsers(data.users);
+          populateVps(data.vps);
+
+          // ✅ Update the dashboard summary counts
+          document.getElementById('user-count').textContent = data.users.length;
+          document.getElementById('vps-count').textContent = data.vps.length;
+
+  dataLoaded = true;
       })
       .catch(err => {
         alert("Failed to load admin data:\n" + err.message);
