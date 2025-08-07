@@ -1,4 +1,4 @@
-{% extends "layouts/base.html" %}
+{% extends "layouts/dashboard_base.html" %}
 
 {% block title %}Start a Chat{% endblock %}
 
@@ -7,31 +7,17 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
 {% endblock %}
 
-{% block content %}
-<div class="dashboard-layout">
-  <aside class="dashboard-sidenav">
-    <h2 class="nav-title">Dashboard</h2>
-    <ul class="nav-links">
-      <li><a href="{{ url_for('users_blueprint.dashboard') }}">🖥️ My Servers</a></li>
-      <li><a href="{{ url_for('store_blueprint.store') }}">🛒 Store</a></li>
-      <li><a href="{{ url_for('store_blueprint.order_history') }}">📦 Purchases</a></li>
-      <li><a href="{{ url_for('chat_blueprint.view_user_chat') }}" class="active">💬 Chat</a></li>
-      <li><a href="{{ url_for('auth_blueprint.logout') }}">🔓 Log Out</a></li>
-    </ul>
-  </aside>
-
-  <main class="dashboard-main">
-    <section class="radial-dark-section hero-condensed">
-      <div class="container">
-        <h1>Support Chat</h1>
-        <p class="intro-lead">Need help with something? Start a chat with support.</p>
-        <form id="start-chat-form" action="{{ url_for('chat_blueprint.start_chat') }}" method="post">
-          <button type="submit" class="button primary">Start Chat</button>
-        </form>
-      </div>
-    </section>
-  </main>
-</div>
+{% block dashboard_content %}
+<section class="radial-dark-section hero-condensed">
+  <div class="container">
+    <h1>Support Chat</h1>
+    <p class="intro-lead">Need help with something? Start a chat with support.</p>
+    <form id="start-chat-form" action="{{ url_for('chat_blueprint.start_chat') }}" method="post">
+      <button type="submit" class="button primary">Start Chat</button>
+    </form>
+  </div>
+</section>
+{% endblock %}
 
 {% block extra_js %}
 <script>
@@ -40,12 +26,10 @@
     const response = await fetch(this.action, { method: 'POST' });
     const result = await response.json();
     if (result.chat_id) {
-      window.location.href = `/chat/view`;  // Will now load the open chat
+      window.location.href = `/chat/view`;
     } else {
       alert("Something went wrong starting your chat.");
     }
   });
 </script>
 {% endblock %}
-{% endblock %}
-

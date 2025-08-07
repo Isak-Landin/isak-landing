@@ -1,4 +1,4 @@
-{% extends "layouts/base.html" %}
+{% extends "layouts/dashboard_base.html" %}
 
 {% block title %}Support Chat{% endblock %}
 
@@ -7,34 +7,30 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
 {% endblock %}
 
-{% block content %}
-<div class="dashboard-layout">
-  <main class="dashboard-main">
-    <section class="radial-dark-section hero-condensed">
-      <div class="container">
-        <h1>Support Chat</h1>
-        <p class="intro-lead">Your conversation with support.</p>
-      </div>
-    </section>
+{% block dashboard_content %}
+<section class="radial-dark-section hero-condensed">
+  <div class="container">
+    <h1>Support Chat</h1>
+    <p class="intro-lead">Your conversation with support.</p>
+  </div>
+</section>
 
-    <section class="split-section">
-      <div class="container">
-        <div id="chat-messages" class="chat-history">
-          {% for msg in messages %}
-            <div class="chat-message {{ msg.sender }}">
-              <strong>{{ msg.sender.capitalize() }}:</strong> {{ msg.message }}
-              <br><small>{{ msg.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>
-            </div>
-          {% endfor %}
+<section class="split-section">
+  <div class="container">
+    <div id="chat-messages" class="chat-history">
+      {% for msg in messages %}
+        <div class="chat-message {{ msg.sender }}">
+          <strong>{{ msg.sender.capitalize() }}:</strong> {{ msg.message }}
+          <br><small>{{ msg.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>
         </div>
+      {% endfor %}
+    </div>
 
-        <form action="{{ url_for('chat_blueprint.send_message') }}" method="post" class="chat-form">
-          <input type="hidden" name="chat_id" value="{{ chat.id }}">
-          <textarea name="message" placeholder="Type your message..." required></textarea>
-          <button type="submit" class="button primary">Send</button>
-        </form>
-      </div>
-    </section>
-  </main>
-</div>
+    <form action="{{ url_for('chat_blueprint.send_message') }}" method="post" class="chat-form">
+      <input type="hidden" name="chat_id" value="{{ chat.id }}">
+      <textarea name="message" placeholder="Type your message..." required></textarea>
+      <button type="submit" class="button primary">Send</button>
+    </form>
+  </div>
+</section>
 {% endblock %}
