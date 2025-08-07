@@ -155,57 +155,32 @@
   text-align: center;
 }
 
-.admin-tabs {
+.admin-tab-bar {
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
+  border-bottom: 1px solid #444;
   margin-bottom: 1.5rem;
 }
 
-.tab-button {
-  padding: 0.75rem 1.25rem;
+.tab-pill {
+  padding: 0.5rem 0;
   font-size: 1rem;
-  background-color: #1e1e1e;
-  border: 1px solid #444;
-  color: #fff;
+  color: #ccc;
   cursor: pointer;
-  border-radius: 8px;
-  transition: background-color 0.3s;
+  position: relative;
 }
 
-.tab-button:hover {
-  background-color: #2c2c2c;
+.tab-pill.active {
+  color: #fff;
+  font-weight: 600;
 }
 
-.tab-button.active {
+.tab-pill.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 3px;
   background-color: #007bff;
-  color: white;
-  border-color: #007bff;
-}
-
-.table-container {
-  overflow-x: auto;
-}
-
-.table-container table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #121212;
-  color: white;
-  font-size: 0.95rem;
-  margin-bottom: 2rem;
-}
-
-.table-container th,
-.table-container td {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #333;
-  text-align: left;
-}
-
-.table-container tr:hover {
-  background-color: #1f1f1f;
-}
-
-.hidden {
-  display: none;
 }
