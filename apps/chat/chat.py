@@ -141,5 +141,5 @@ def admin_reply(chat_id):
     db.session.add(msg)
     db.session.commit()
 
-    return redirect(url_for('chat/chat_blueprint.view_chat', chat_id=chat.id))
+    return redirect(url_for('chat/chat_blueprint.admin_view_chat', chat_id=chat.id))
 
