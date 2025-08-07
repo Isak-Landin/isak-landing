@@ -87,10 +87,9 @@ def dashboard():
 
 
 @admin_blueprint.route('/api/dashboard-data')
+@login_required
+@admin_required
 def get_admin_dashboard_data():
-    if not session.get('is_admin'):
-        return jsonify({'error': 'Unauthorized'}), 403
-
     users = User.query.all()
     vps_list = VPS.query.all()
 
@@ -109,4 +108,5 @@ def get_admin_dashboard_data():
     } for vps in vps_list]
 
     return jsonify({"users": user_data, "vps": vps_data})
+
 
