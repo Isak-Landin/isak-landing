@@ -59,12 +59,10 @@ def login():
         return jsonify(success=False, error="Internal server error. Please try again later."), 500
 
 
-
 @auth_blueprint.route('/logout')
-@login_required
 def logout():
-    logout_user()
-    return redirect(url_for('auth_blueprint.login'))
+    session.clear()
+    return redirect(url_for('auth_blueprint.login'))  # or admin login depending on who is logging out
 
 
 @auth_blueprint.route('/register', methods=['GET', 'POST'])
