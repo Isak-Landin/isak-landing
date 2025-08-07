@@ -1,6 +1,6 @@
 from flask import Flask, session
 from dotenv import load_dotenv
-from extensions import db
+from extensions import db, socketio
 from apps.admin.models import AdminUser
 
 # Import blueprints from different apps
@@ -17,8 +17,11 @@ from apps.Users.models import User
 from apps.store.store import store_blueprint
 from apps.admin.admin import admin_blueprint
 
+from apps.chat.chat import chat_blueprint
+
 from flask_login import LoginManager
 import os
+
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth_blueprint.login'
@@ -41,6 +44,8 @@ def create_app():
     _app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
     _app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+    socketio.init_app(_app)
+
     # Load environment variables
     load_dotenv()
 
@@ -55,6 +60,8 @@ def create_app():
     _app.register_blueprint(users_bp)
     _app.register_blueprint(store_blueprint)
     _app.register_blueprint(admin_blueprint)
+
+    app.register_blueprint(chat_blueprint)
 
     # Initialize the database here if needed
     db.init_app(_app)

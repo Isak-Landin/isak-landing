@@ -1,0 +1,49 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Support Chat with {{ chat.user.email }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  <!-- Side Nav (optional) -->
+  <aside class="dashboard-sidenav">
+    <h2 class="nav-title">Admin Panel</h2>
+    <ul class="nav-links">
+      <li><a href="{{ url_for('chat_blueprint.admin_inbox') }}">💬 Inbox</a></li>
+      <li><a href="{{ url_for('admin_blueprint.dashboard') }}">🏠 Dashboard</a></li>
+      <li><a href="{{ url_for('auth_blueprint.logout') }}">🔓 Log Out</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Chat Content -->
+  <main class="dashboard-main">
+    <section class="radial-dark-section hero-condensed">
+      <div class="container">
+        <h1>Support Chat with {{ chat.user.email }}</h1>
+      </div>
+    </section>
+
+    <section class="split-section">
+      <div class="container">
+        <div id="chat-messages" class="chat-history">
+          {% for msg in messages %}
+            <div class="chat-message {{ msg.sender }}">
+              <strong>{{ msg.sender.capitalize() }}:</strong> {{ msg.message }}
+              <br><small>{{ msg.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+            </div>
+          {% endfor %}
+        </div>
+
+        <form action="{{ url_for('chat_blueprint.admin_reply', chat_id=chat.id) }}" method="post" class="chat-form">
+          <textarea name="message" placeholder="Type your reply here..." required></textarea>
+          <button type="submit" class="button primary">Send</button>
+        </form>
+      </div>
+    </section>
+  </main>
+</div>
+{% endblock %}
