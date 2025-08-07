@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const usersTable = document.getElementById('users-table');
   const vpsTable = document.getElementById('vps-table');
 
+  let dataLoaded = false;
+
   function switchTab(target) {
     if (target === 'users') {
       tabUsers.classList.add('active');
@@ -16,14 +18,15 @@ document.addEventListener('DOMContentLoaded', function () {
       vpsTable.classList.remove('hidden');
       usersTable.classList.add('hidden');
     }
+
+    if (!dataLoaded) {
+      loadDashboardData();
+    }
   }
 
-  tabUsers.addEventListener('click', () => switchTab('users'));
-  tabVps.addEventListener('click', () => switchTab('vps'));
-
-  // Fetch admin data securely
-     fetch('/admin/api/dashboard-data', {
-      credentials: 'same-origin' // <-- important!
+  function loadDashboardData() {
+    fetch('/admin/api/dashboard-data', {
+      credentials: 'same-origin'
     })
       .then(async res => {
         if (!res.ok) {
@@ -35,16 +38,16 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(data => {
         populateUsers(data.users);
         populateVps(data.vps);
+        dataLoaded = true;
       })
       .catch(err => {
         alert("Failed to load admin data:\n" + err.message);
         console.error("Admin data fetch error:", err);
       });
-
-
+  }
 
   function populateUsers(users) {
-    const tbody = usersTable.querySelector('tbody');
+    const tbody = document.getElementById('users-body');
     tbody.innerHTML = '';
     users.forEach(user => {
       const row = document.createElement('tr');
@@ -57,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function populateVps(vpsList) {
-    const tbody = vpsTable.querySelector('tbody');
+    const tbody = document.getElementById('vps-body');
     tbody.innerHTML = '';
     vpsList.forEach(vps => {
       const row = document.createElement('tr');
@@ -72,4 +75,10 @@ document.addEventListener('DOMContentLoaded', function () {
       tbody.appendChild(row);
     });
   }
+
+  tabUsers.addEventListener('click', () => switchTab('users'));
+  tabVps.addEventListener('click', () => switchTab('vps'));
+
+  // Set initial visible tab
+  switchTab('users');
 });

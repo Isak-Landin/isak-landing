@@ -9,7 +9,6 @@
 
 {% block content %}
 
-
 <div class="dashboard-layout">
   <!-- Side Nav -->
   <aside class="dashboard-sidenav">
@@ -36,9 +35,10 @@
       </div>
     </section>
 
+    <!-- Optional: remove summary or update it to use JS later -->
     <div class="dashboard-summary">
-      <div class="card">👥 <strong>{{ users|length }}</strong> Users</div>
-      <div class="card">🖥️ <strong>{{ vps_list|length }}</strong> VPSes</div>
+      <div class="card">👥 <strong id="user-count">–</strong> Users</div>
+      <div class="card">🖥️ <strong id="vps-count">–</strong> VPSes</div>
     </div>
 
     <section class="split-section">
@@ -58,13 +58,8 @@
                 <th>VPS Count</th>
               </tr>
             </thead>
-            <tbody>
-              {% for user in users %}
-              <tr>
-                <td>{{ user.email }}</td>
-                <td>{{ user.vps|length }}</td>
-              </tr>
-              {% endfor %}
+            <tbody id="users-body">
+              <!-- Filled dynamically -->
             </tbody>
           </table>
         </div>
@@ -82,24 +77,13 @@
                 <th>Owner</th>
               </tr>
             </thead>
-            <tbody>
-              {% for vps in vps_list %}
-              <tr>
-                <td>{{ vps.hostname }}</td>
-                <td>{{ vps.ip_address }}</td>
-                <td>{{ vps.os }}</td>
-                <td>{{ vps.cpu_cores }} cores</td>
-                <td>{{ vps.ram_mb }} MB</td>
-                <td>{{ vps.user.email if vps.user else "Unknown" }}</td>
-              </tr>
-              {% endfor %}
+            <tbody id="vps-body">
+              <!-- Filled dynamically -->
             </tbody>
           </table>
         </div>
       </div>
     </section>
-
-
   </main>
 </div>
 
