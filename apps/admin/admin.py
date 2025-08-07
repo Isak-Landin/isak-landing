@@ -11,7 +11,7 @@ from extensions import db
 
 from decorators import admin_2fa_required, admin_required
 
-admin_blueprint = Blueprint("admin", __name__, url_prefix="/admin")
+admin_blueprint = Blueprint("admin_blueprint", __name__, url_prefix="/admin")
 
 
 @admin_blueprint.route('/setup-2fa', methods=['GET', 'POST'])
@@ -42,11 +42,11 @@ def setup_2fa():
         code = request.form.get('code', '').strip()
         if totp.verify(code):
             session['admin_2fa_passed'] = True
-            return redirect(url_for('admin.dashboard'))
+            return redirect(url_for('admin_blueprint.dashboard'))
         else:
-            return render_template('admin/setup_2fa.html', qr_code=qr_b64, error="Invalid code")
+            return render_template('setup_2fa.html', qr_code=qr_b64, error="Invalid code")
 
-    return render_template('admin/setup_2fa.html', qr_code=qr_b64)
+    return render_template('setup_2fa.html', qr_code=qr_b64)
 
 
 @admin_blueprint.route('/2fa', methods=['GET', 'POST'])
@@ -57,7 +57,7 @@ def otp_verify():
         return redirect(url_for('users_blueprint.dashboard'))
 
     if not current_user.totp_secret:
-        return redirect(url_for('admin.setup_2fa'))
+        return redirect(url_for('admin_blueprint.setup_2fa'))
 
     totp = pyotp.TOTP(current_user.totp_secret)
 
@@ -65,10 +65,10 @@ def otp_verify():
         code = request.form.get('code', '').strip()
         if totp.verify(code):
             session['admin_2fa_passed'] = True
-            return redirect(url_for('admin.dashboard'))
-        return render_template('admin/verify_2fa.html', error="Invalid 2FA code.")
+            return redirect(url_for('admin_blueprint.dashboard'))
+        return render_template('verify_2fa.html', error="Invalid 2FA code.")
 
-    return render_template('admin/verify_2fa.html')
+    return render_template('verify_2fa.html')
 
 
 @admin_blueprint.route('/dashboard')
@@ -78,5 +78,5 @@ def otp_verify():
 def dashboard():
     users = User.query.all()
     vps_list = VPS.query.all()  # Adjust if your model is named differently
-    return render_template('admin/dashboard.html', users=users, vps_list=vps_list)
+    return render_template('admin_dashboard.html', users=users, vps_list=vps_list)
 
