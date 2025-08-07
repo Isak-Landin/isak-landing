@@ -42,6 +42,11 @@
 				</nav>
 			</header>
 
+            <!-- Optional override -->
+            {% block menu %}
+                {% include 'components/menu.html' %}
+            {% endblock %}
+
             {% block content %}{% endblock %}
 
             <!-- Footer -->
