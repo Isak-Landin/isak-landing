@@ -20,17 +20,7 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-  document.getElementById('start-chat-form').addEventListener('submit', async function (e) {
-    e.preventDefault();
-    const response = await fetch(this.action, { method: 'POST' });
-    const result = await response.json();
-    if (result.chat_id) {
-      window.location.href = `/chat/view`;
-    } else {
-      alert("Something went wrong starting your chat.");
-    }
-  });
-</script>
+<script src="{{ url_for('static', filename='js/user_chat_start.js') }}"></script>
 {% endblock %}
+
 
