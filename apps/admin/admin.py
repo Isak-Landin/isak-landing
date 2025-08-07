@@ -95,7 +95,7 @@ def get_admin_dashboard_data():
 
     user_data = [{
         "email": user.email,
-        "vps_count": len(user.vps)
+        "vps_count": len(user.vps_list)  # <-- correct backref name
     } for user in users]
 
     vps_data = [{

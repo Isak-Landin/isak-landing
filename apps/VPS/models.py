@@ -5,6 +5,10 @@ from datetime import datetime
 class VPS(db.Model):
     __tablename__ = 'vps'
 
+    @property
+    def vps(self):
+        return self.vps_list
+
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
