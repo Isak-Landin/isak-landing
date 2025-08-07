@@ -1,10 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "layouts/dashboard_base.html" %}
 
-</body>
-</html>
+{% block title %}Order History{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block dashboard_content %}
+<section class="radial-dark-section hero-condensed">
+  <div class="container">
+    <h1>Order History</h1>
+    <p class="intro-lead">A list of your completed purchases will appear here.</p>
+  </div>
+</section>
+
+<section class="split-section">
+  <div class="container">
+    <div class="empty-state">
+      <div class="emoji">📦</div>
+      <p class="empty-text">You haven’t made any purchases yet.</p>
+      <a href="{{ url_for('store_blueprint.store') }}" class="button primary">Visit Store</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

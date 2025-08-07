@@ -5,6 +5,8 @@ from apps.chat.models import SupportChat, SupportMessage
 
 from decorators import admin_required, admin_2fa_required
 
+from sqlalchemy import case, func
+
 
 chat_blueprint = Blueprint("chat_blueprint", __name__, url_prefix="/chat")
 
@@ -82,17 +84,29 @@ def view_user_chat():
 @admin_required
 @admin_2fa_required
 def admin_inbox():
-    # Sort chats by most recent message
+    # Subquery to get max timestamp per chat
+    latest_timestamp = func.max(SupportMessage.timestamp)
+
+    # Subquery to prioritize unread messages
+    unread_priority = func.max(
+        case(
+            [(SupportMessage.is_read == False, 1)],
+            else_=0
+        )
+    )
+
     chats = (
         SupportChat.query
         .filter_by(status='open')
         .join(SupportMessage)
         .group_by(SupportChat.id)
-        .order_by(db.func.max(SupportMessage.timestamp).desc())
+        .order_by(
+            unread_priority.desc(),  # ⬆️ unread first
+            latest_timestamp.desc()  # ⬇️ then most recent
+        )
         .all()
     )
 
-    # Build view data
     inbox = []
     for chat in chats:
         unread = any(m.sender == 'user' and not m.is_read for m in chat.messages)
@@ -115,7 +129,7 @@ def admin_view_chat(chat_id):
     # Fetch messages ordered by time
     messages = SupportMessage.query.filter_by(chat_id=chat.id).order_by(SupportMessage.timestamp).all()
 
-    # Mark all user messages as read (optional: only if page loads)
+    # ✅ Mark user messages as read
     for msg in messages:
         if msg.sender == 'user' and not msg.is_read:
             msg.is_read = True

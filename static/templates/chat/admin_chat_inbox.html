@@ -15,7 +15,7 @@
     {% if chats %}
       <ul class="split-list">
         {% for entry in chats %}
-          <li>
+          <li class="{% if entry.unread %}unread-chat{% endif %}">
             <span class="emoji">💬</span>
             <span class="text">
               <strong>{{ entry.chat.user.email }}</strong><br>

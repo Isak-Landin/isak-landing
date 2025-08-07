@@ -189,3 +189,18 @@
 .hidden {
   display: none !important;
 }
+
+
+.unread-chat {
+  border-left: 4px solid #ff5e5e;
+  background-color: #fdf1f1;
+}
+
+.unread-chat .badge {
+  background-color: #ff5e5e;
+  color: white;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+}

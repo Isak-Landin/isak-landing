@@ -2,11 +2,6 @@
 
 {% block title %}Support Chat with {{ chat.user.email }}{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
-{% endblock %}
-
 {% block dashboard_content %}
 <section class="radial-dark-section hero-condensed">
   <div class="container">
@@ -16,7 +11,7 @@
 
 <section class="split-section">
   <div class="container">
-    <div id="chat-messages" class="chat-history">
+    <div id="chat-messages" class="chat-history" data-chat-id="{{ chat.id }}">
       {% for msg in messages %}
         <div class="chat-message {{ msg.sender }}">
           <strong>{{ msg.sender.capitalize() }}:</strong> {{ msg.message }}
@@ -25,10 +20,15 @@
       {% endfor %}
     </div>
 
-    <form action="{{ url_for('chat_blueprint.admin_reply', chat_id=chat.id) }}" method="post" class="chat-form">
+    <form id="admin-chat-form" class="chat-form">
       <textarea name="message" placeholder="Type your reply here..." required></textarea>
       <button type="submit" class="button primary">Send</button>
     </form>
   </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script src="{{ url_for('static', filename='js/admin_chat.js') }}"></script>
 {% endblock %}

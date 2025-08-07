@@ -17,7 +17,7 @@
 
 <section class="split-section">
   <div class="container">
-    <div id="chat-messages" class="chat-history">
+    <div id="chat-messages" class="chat-history" data-chat-id="{{ chat.id }}">
       {% for msg in messages %}
         <div class="chat-message {{ msg.sender }}">
           <strong>{{ msg.sender.capitalize() }}:</strong> {{ msg.message }}
@@ -26,11 +26,15 @@
       {% endfor %}
     </div>
 
-    <form action="{{ url_for('chat_blueprint.send_message') }}" method="post" class="chat-form">
-      <input type="hidden" name="chat_id" value="{{ chat.id }}">
+    <form id="chat-form" class="chat-form">
       <textarea name="message" placeholder="Type your message..." required></textarea>
       <button type="submit" class="button primary">Send</button>
     </form>
   </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script src="{{ url_for('static', filename='js/user_chat.js') }}"></script>
 {% endblock %}

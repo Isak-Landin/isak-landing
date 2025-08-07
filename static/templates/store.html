@@ -1,0 +1,26 @@
+{% extends "layouts/dashboard_base.html" %}
+
+{% block title %}Store{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block dashboard_content %}
+<section class="radial-dark-section hero-condensed">
+  <div class="container">
+    <h1>Browse the Store</h1>
+    <p class="intro-lead">Select from available VPS templates, domains, or hosting plans.</p>
+  </div>
+</section>
+
+<section class="split-section">
+  <div class="container">
+    <div class="empty-state">
+      <div class="emoji">🛒</div>
+      <p class="empty-text">Our store is still being set up. Please check back soon!</p>
+    </div>
+  </div>
+</section>
+{% endblock %}
