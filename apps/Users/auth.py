@@ -34,7 +34,7 @@ def login():
             login_user(admin)
 
             # 🚨 Bypass for default admin
-            if admin.email == 'admin':
+            if admin.email == 'admin@admin.com':
                 return jsonify(success=True, redirect=url_for('admin_blueprint.dashboard')), 200
 
             # 🔐 2FA already setup → prompt for code
