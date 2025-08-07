@@ -68,12 +68,10 @@ with app.app_context():
 
     if not AdminUser.query.first():
         from werkzeug.security import generate_password_hash
-        import pyotp
 
         default_admin = AdminUser(
-            email='admin',
-            password=generate_password_hash('changeme'),
-            totp_secret=pyotp.random_base32()  # optional, only if 2FA is active
+            email='admin@admin.com',
+            password=generate_password_hash('changeme')
         )
         db.session.add(default_admin)
         db.session.commit()
