@@ -15,7 +15,7 @@ def login():
     if request.method == 'GET':
         if current_user.is_authenticated:
             if session.get('login_type') == 'admin':
-                return redirect(url_for('admin.dashboard'))
+                return redirect(url_for('admin_blueprint.dashboard'))
             return redirect(url_for('users_blueprint.dashboard'))
         return render_template('login.html')
 
@@ -34,7 +34,7 @@ def login():
 
             # 🚨 Bypass for default admin
             if admin.email == 'admin':
-                return jsonify(success=True, redirect=url_for('admin.dashboard')), 200
+                return jsonify(success=True, redirect=url_for('admin_blueprint.dashboard')), 200
 
             # 🔐 2FA already setup → prompt for code
             if admin.totp_secret:
