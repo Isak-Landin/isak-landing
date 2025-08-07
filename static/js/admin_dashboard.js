@@ -23,18 +23,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Fetch admin data securely
   fetch('/admin/api/dashboard-data')
-    .then(res => {
-      if (!res.ok) throw new Error('Not authorized');
-      return res.json();
-    })
-    .then(data => {
-      populateUsers(data.users);
-      populateVps(data.vps);
-    })
-    .catch(err => {
-      alert("Failed to load admin data");
-      console.error(err);
-    });
+  .then(async res => {
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`Status ${res.status}: ${errorText}`);
+    }
+    return res.json();
+  })
+  .then(data => {
+    populateUsers(data.users);
+    populateVps(data.vps);
+  })
+  .catch(err => {
+    alert("Failed to load admin data:\n" + err.message);
+    console.error("Admin data fetch error:", err);
+  });
+
 
   function populateUsers(users) {
     const tbody = usersTable.querySelector('tbody');
