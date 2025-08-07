@@ -6,6 +6,7 @@ from apps.chat.models import SupportChat, SupportMessage
 from decorators import admin_required, admin_2fa_required
 
 from sqlalchemy import case, func
+from datetime import datetime
 
 
 chat_blueprint = Blueprint("chat_blueprint", __name__, url_prefix="/chat")
@@ -84,38 +85,30 @@ def view_user_chat():
 @admin_required
 @admin_2fa_required
 def admin_inbox():
-    # Subquery to get max timestamp per chat
-    latest_timestamp = func.max(SupportMessage.timestamp)
-
-    # Subquery to prioritize unread messages
-    unread_priority = func.max(
-        case(
-            (SupportMessage.is_read == False, 1),  # ✅ Fixed
-            else_=0
-        )
-    )
-
+    # Get all open chats with at least one message
     chats = (
         SupportChat.query
         .filter_by(status='open')
         .join(SupportMessage)
-        .group_by(SupportChat.id)
-        .order_by(
-            unread_priority.desc(),  # ⬆️ unread first
-            latest_timestamp.desc()  # ⬇️ then most recent
-        )
         .all()
     )
 
+    # Build inbox data
     inbox = []
     for chat in chats:
+        last_message = max(chat.messages, key=lambda m: m.timestamp, default=None)
         unread = any(m.sender == 'user' and not m.is_read for m in chat.messages)
-        last_message = chat.messages[-1] if chat.messages else None
         inbox.append({
             'chat': chat,
             'last_message': last_message,
             'unread': unread
         })
+
+    # Sort inbox: unread first, then by most recent message
+    inbox.sort(key=lambda entry: (
+        0 if entry['unread'] else 1,
+        entry['last_message'].timestamp if entry['last_message'] else datetime.min
+    ))
 
     return render_template('chat/admin_chat_inbox.html', chats=inbox)
 
