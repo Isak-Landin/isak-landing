@@ -1,0 +1,60 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Chat Inbox{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  <aside class="dashboard-sidenav">
+    <h2 class="nav-title">Admin Panel</h2>
+    <ul class="nav-links">
+      <li><a href="{{ url_for('admin_blueprint.dashboard') }}">👥 Users</a></li>
+      <li><a href="{{ url_for('admin_blueprint.dashboard') }}">🖥️ VPS Instances</a></li>
+      <li><a href="{{ url_for('chat_blueprint.admin_inbox') }}">💬 Chat Inbox</a></li>
+      <li><a href="{{ url_for('auth_blueprint.logout') }}">🔓 Log Out</a></li>
+    </ul>
+  </aside>
+
+  <main class="dashboard-main">
+    <section class="radial-dark-section hero-condensed">
+      <div class="container">
+        <h1>Support Chats</h1>
+        <p class="intro-lead">Manage all active conversations with users.</p>
+      </div>
+    </section>
+
+    <section class="split-section">
+      <div class="container">
+        {% if chats %}
+          <ul class="split-list">
+            {% for entry in chats %}
+              <li>
+                <span class="emoji">💬</span>
+                <span class="text">
+                  <strong>{{ entry.chat.user.email }}</strong><br>
+                  {{ entry.last_message.message[:50] }}{% if entry.last_message.message|length > 50 %}...{% endif %}
+                  <br>
+                  <small>{{ entry.last_message.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                  {% if entry.unread %}
+                    <span class="badge">Unread</span>
+                  {% endif %}
+                </span>
+                <a href="{{ url_for('chat_blueprint.admin_view_chat', chat_id=entry.chat.id) }}" class="button small">Open</a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="empty-state">
+            <div class="emoji">📭</div>
+            <p class="empty-text">No active support chats.</p>
+          </div>
+        {% endif %}
+      </div>
+    </section>
+  </main>
+</div>
+{% endblock %}
