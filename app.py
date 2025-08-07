@@ -1,6 +1,7 @@
-from flask import Flask
+from flask import Flask, session
 from dotenv import load_dotenv
 from extensions import db
+from apps.admin.models import AdminUser
 
 # Import blueprints from different apps
 from apps.home.home import blueprint as home_bp
@@ -24,7 +25,9 @@ login_manager.login_view = 'auth_blueprint.login'
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    if session.get('login_type') == 'admin':
+        return AdminUser.query.get(user_id)
+    return User.query.get(user_id)
 
 
 def create_app():
@@ -62,6 +65,19 @@ app = create_app()
 # Initialize the database
 with app.app_context():
     db.create_all()
+
+    if not AdminUser.query.first():
+        from werkzeug.security import generate_password_hash
+        import pyotp
+
+        default_admin = AdminUser(
+            email='admin',
+            password=generate_password_hash('changeme'),
+            totp_secret=pyotp.random_base32()  # optional, only if 2FA is active
+        )
+        db.session.add(default_admin)
+        db.session.commit()
+        print("✅ Default admin user created (admin / changeme)")
 
 
 if __name__ == '__main__':

@@ -1,0 +1,26 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Verify 2FA | Admin{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="radial-dark-section hero-condensed">
+  <div class="login-wrapper">
+    <div class="login-card">
+      <h2>Two-Factor Authentication</h2>
+      <p>Enter the 6-digit code from your authenticator app:</p>
+
+      <form method="POST">
+        <input type="text" name="code" placeholder="123456" required>
+        {% if error %}
+          <div class="form-error">{{ error }}</div>
+        {% endif %}
+        <button type="submit">Verify</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

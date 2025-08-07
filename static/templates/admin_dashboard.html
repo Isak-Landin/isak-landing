@@ -1,0 +1,78 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+{% include 'components/menu.html' %}
+
+<div class="dashboard-layout">
+  <!-- Side Nav -->
+  <aside class="dashboard-sidenav">
+    <h2 class="nav-title">Admin Panel</h2>
+    <ul class="nav-links">
+      <li><a href="{{ url_for('admin.dashboard') }}">👥 Users</a></li>
+      <li><a href="{{ url_for('admin.dashboard') }}">🖥️ VPS Instances</a></li>
+      <li><a href="{{ url_for('auth_blueprint.logout') }}">🔓 Log Out</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <section class="radial-dark-section hero-condensed">
+      <div class="container">
+        <h1>Admin Overview</h1>
+        <div class="user-meta">
+          <span class="avatar-emoji">🛡️</span>
+          <span class="email">Logged in as Admin</span>
+        </div>
+
+        <div class="hero-marker"></div>
+        <p class="intro-lead">Manage users and VPS instances.</p>
+      </div>
+    </section>
+
+    <div class="dashboard-summary">
+      <div class="card">👥 <strong>{{ users|length }}</strong> Users</div>
+      <div class="card">🖥️ <strong>{{ vps_list|length }}</strong> VPSes</div>
+    </div>
+
+    <section class="split-section">
+      <div class="container">
+        <h2 style="color: white; margin-bottom: 1rem;">Registered Users</h2>
+        <ul class="split-list">
+          {% for user in users %}
+          <li>
+            <span class="emoji">👤</span>
+            <span class="text">
+              <strong>{{ user.email }}</strong><br>
+              VPS Count: {{ user.vps|length }}
+            </span>
+          </li>
+          {% endfor %}
+        </ul>
+
+        <h2 style="color: white; margin: 2rem 0 1rem;">All VPS Instances</h2>
+        <ul class="split-list">
+          {% for vps in vps_list %}
+          <li>
+            <span class="emoji">🖥️</span>
+            <span class="text">
+              <strong>{{ vps.hostname }}</strong> – {{ vps.ip_address }}<br>
+              Owner: {{ vps.user.email if vps.user else "Unknown" }}<br>
+              OS: {{ vps.os }} | CPU: {{ vps.cpu_cores }} cores | RAM: {{ vps.ram_mb }}MB
+            </span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+  </main>
+</div>
+{% endblock %}

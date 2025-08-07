@@ -25,3 +25,21 @@ class VPS(db.Model):
 
     # Relationship (optional if backref)
     user = db.relationship('User', backref=db.backref('vps_list', lazy=True))
+
+
+class VPSPlan(db.Model):
+    __tablename__ = 'vps_plan'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), nullable=False)  # e.g. 'Basic', 'Pro'
+    cpu_cores = db.Column(db.Integer, nullable=False)
+    ram_mb = db.Column(db.Integer, nullable=False)
+    disk_gb = db.Column(db.Integer, nullable=False)
+    price_per_month = db.Column(db.Numeric(10, 2), nullable=False)
+
+    description = db.Column(db.Text)
+    stripe_price_id = db.Column(db.String(128))
+    is_active = db.Column(db.Boolean, default=True)
+
+    def __repr__(self):
+        return f"<VPSPlan {self.name} - {self.cpu_cores} cores, {self.ram_mb}MB RAM, {self.disk_gb}GB Disk>"

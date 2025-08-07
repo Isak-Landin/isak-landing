@@ -1,7 +1,10 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, session
 from flask_login import login_user, current_user, login_required, logout_user
 from apps.Users.models import User
+from apps.admin.models import AdminUser
 from extensions import db
+
+from werkzeug.security import check_password_hash
 
 
 auth_blueprint = Blueprint('auth_blueprint', __name__, url_prefix='/auth')
@@ -11,10 +14,11 @@ auth_blueprint = Blueprint('auth_blueprint', __name__, url_prefix='/auth')
 def login():
     if request.method == 'GET':
         if current_user.is_authenticated:
+            if session.get('login_type') == 'admin':
+                return redirect(url_for('admin.dashboard'))
             return redirect(url_for('users_blueprint.dashboard'))
         return render_template('login.html')
 
-    # POST: JSON-based login logic
     try:
         email = request.form.get('email', '').strip()
         password = request.form.get('password', '').strip()
@@ -22,16 +26,35 @@ def login():
         if not email or not password:
             return jsonify(success=False, error="Email and password are required."), 400
 
-        user = User.query.filter_by(email=email).first()
+        # 🔐 Admin check first
+        admin = AdminUser.query.filter_by(email=email).first()
+        if admin and check_password_hash(admin.password, password):
+            session['login_type'] = 'admin'
+            login_user(admin)
 
+            # 🚨 Bypass for default admin
+            if admin.email == 'admin':
+                return jsonify(success=True, redirect=url_for('admin.dashboard')), 200
+
+            # 🔐 2FA already setup → prompt for code
+            if admin.totp_secret:
+                return jsonify(success=True, redirect=url_for('admin.otp_verify')), 200
+
+            # ⚙️ No 2FA setup → redirect to setup flow
+            return jsonify(success=True, redirect=url_for('admin.setup_2fa')), 200
+
+        # 👤 Fallback to regular user
+        user = User.query.filter_by(email=email).first()
         if not user or not user.check_password(password):
             return jsonify(success=False, error="Invalid email or password."), 401
 
+        session['login_type'] = 'user'
         login_user(user)
         return jsonify(success=True, redirect=url_for('users_blueprint.dashboard')), 200
 
     except Exception:
         return jsonify(success=False, error="Internal server error. Please try again later."), 500
+
 
 
 @auth_blueprint.route('/logout')
