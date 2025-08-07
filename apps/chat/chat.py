@@ -8,7 +8,6 @@ from decorators import admin_required, admin_2fa_required
 from sqlalchemy import case, func
 from datetime import datetime
 
-
 chat_blueprint = Blueprint("chat_blueprint", __name__, url_prefix="/chat")
 
 
@@ -31,7 +30,7 @@ def start_chat():
 
 
 # --------------------------
-# USER: Send a message
+# USER: Send a message (requires chat_id)
 # --------------------------
 @chat_blueprint.route('/send', methods=['POST'])
 @login_required
@@ -43,6 +42,9 @@ def send_message():
     else:
         chat_id = request.form.get('chat_id')
         message = request.form.get('message')
+
+    if not chat_id or not message:
+        return jsonify({'error': 'Missing chat_id or message'}), 400
 
     chat = SupportChat.query.get_or_404(chat_id)
     if chat.user_id != current_user.id:
@@ -57,35 +59,53 @@ def send_message():
     db.session.add(msg)
     db.session.commit()
 
-    # Redirect after form submission
     if request.is_json:
         return jsonify({'success': True})
-    return redirect(url_for('chat_blueprint.view_user_chat'))
+    return redirect(url_for('chat_blueprint.view_user_chat', chat_id=chat.id))
 
 
 # --------------------------
-# USER: View chat (if exists)
+# USER: View specific chat (requires chat_id)
 # --------------------------
 @chat_blueprint.route('/view')
 @login_required
 def view_user_chat():
-    chat = SupportChat.query.filter_by(user_id=current_user.id, status='open').first()
-    if not chat:
-        return render_template('chat/user_chat_empty.html')  # Prompt to start chat
+    chat_id = request.args.get('chat_id', type=int)
+    if not chat_id:
+        # No chat selected yet — prompt to start one
+        return render_template('chat/user_chat_empty.html')
+
+    chat = SupportChat.query.get_or_404(chat_id)
+    if chat.user_id != current_user.id:
+        abort(403)
 
     messages = SupportMessage.query.filter_by(chat_id=chat.id).order_by(SupportMessage.timestamp).all()
     return render_template('chat/user_chat_view.html', chat=chat, messages=messages)
 
 
+# --------------------------
+# USER: Redirect to open chat
+# --------------------------
+@chat_blueprint.route('/redirect')
+@login_required
+def chat_redirect():
+    """
+    Redirects the user to their currently open chat, if one exists.
+    Otherwise, takes them to the empty chat view where they can start one.
+    """
+    chat = SupportChat.query.filter_by(user_id=current_user.id, status='open').first()
+    if chat:
+        return redirect(url_for('chat_blueprint.view_user_chat', chat_id=chat.id))
+    return redirect(url_for('chat_blueprint.view_user_chat'))
+
 
 # --------------------------
-# ADMIN: View inbox (list of all chats)
+# ADMIN: View inbox (list of all open chats)
 # --------------------------
 @chat_blueprint.route('/admin/inbox')
 @admin_required
 @admin_2fa_required
 def admin_inbox():
-    # Get ALL open chats regardless of unread status
     chats = SupportChat.query.filter_by(status='open').all()
 
     inbox = []
@@ -109,16 +129,16 @@ def admin_inbox():
     return render_template('chat/admin_chat_inbox.html', chats=inbox)
 
 
+# --------------------------
+# ADMIN: View specific chat
+# --------------------------
 @chat_blueprint.route('/admin/view/<int:chat_id>', methods=['GET'])
 @admin_required
 @admin_2fa_required
 def admin_view_chat(chat_id):
     chat = SupportChat.query.get_or_404(chat_id)
-
-    # Fetch messages ordered by time
     messages = SupportMessage.query.filter_by(chat_id=chat.id).order_by(SupportMessage.timestamp).all()
 
-    # ✅ Mark user messages as read
     for msg in messages:
         if msg.sender == 'user' and not msg.is_read:
             msg.is_read = True
@@ -128,6 +148,9 @@ def admin_view_chat(chat_id):
     return render_template('chat/admin_view_chat.html', chat=chat, messages=messages)
 
 
+# --------------------------
+# ADMIN: Reply to chat
+# --------------------------
 @chat_blueprint.route('/admin/reply/<int:chat_id>', methods=['POST'])
 @admin_required
 @admin_2fa_required
@@ -135,14 +158,16 @@ def admin_reply(chat_id):
     chat = SupportChat.query.get_or_404(chat_id)
     message = request.form.get('message')
 
+    if not message:
+        return jsonify({'error': 'Message is required'}), 400
+
     msg = SupportMessage(
         chat_id=chat.id,
         sender='admin',
         message=message,
-        is_read=False  # unread by user
+        is_read=False
     )
     db.session.add(msg)
     db.session.commit()
 
-    return redirect(url_for('chat/chat_blueprint.admin_view_chat', chat_id=chat.id))
-
+    return redirect(url_for('chat_blueprint.admin_view_chat', chat_id=chat.id))

@@ -11,15 +11,17 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  const parsedChatId = parseInt(chatId);
+
   // Scroll to bottom on load
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
   // Join the chat room
-  socket.emit("join_chat", { chat_id: parseInt(chatId) });
+  socket.emit("join_chat", { chat_id: parsedChatId });
 
   // Handle incoming messages
   socket.on("receive_message", data => {
-    if (data.chat_id !== parseInt(chatId)) return;
+    if (data.chat_id !== parsedChatId) return;
 
     const msgDiv = document.createElement("div");
     msgDiv.classList.add("chat-message", data.sender);
@@ -31,6 +33,12 @@ document.addEventListener("DOMContentLoaded", () => {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   });
 
+  // Optional: Handle error messages from socket
+  socket.on("error", data => {
+    console.error("Socket error:", data?.error || "Unknown error");
+    alert(data?.error || "An unknown error occurred in the chat.");
+  });
+
   // Handle sending message
   form.addEventListener("submit", e => {
     e.preventDefault();
@@ -38,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!message) return;
 
     socket.emit("send_message", {
-      chat_id: parseInt(chatId),
+      chat_id: parsedChatId,
       sender: "user",
       message: message
     });
