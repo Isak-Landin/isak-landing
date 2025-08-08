@@ -1,17 +1,8 @@
 // static/js/chat/chat-typing.js
 (function () {
-  // tiny debounce
-  function debounce(fn, wait = 250) {
-    let t;
-    return (...args) => {
-      clearTimeout(t);
-      t = setTimeout(() => fn(...args), wait);
-    };
-  }
-
   function autoInit() {
     const socket = window.socket;
-    if (!socket || !socket.emit) return;                 // require shared global socket
+    if (!socket || !socket.emit) return;
 
     const chatEl = document.getElementById('chat-messages');
     if (!chatEl) return;
@@ -26,46 +17,70 @@
     const textarea = form.querySelector('textarea');
     if (!textarea) return;
 
-    // Create or find the indicator row (placed just above the form)
+    // --- Create/find UI row just above the form
     let typingRow = form.parentElement.querySelector('.typing-indicator');
     if (!typingRow) {
       typingRow = document.createElement('div');
       typingRow.className = 'typing-indicator';
       typingRow.style.display = 'none';
-      // Label differs by page: show the *other side* is typing
       const isAdminPage = form.id === 'admin-chat-form';
       typingRow.textContent = isAdminPage ? 'User is typing…' : 'Support is typing…';
       form.parentElement.insertBefore(typingRow, form);
     }
 
-    // Emit local typing state (debounced start/stop)
-    const sendTyping = (isTyping) => {
-      socket.emit('typing', { chat_id: chatId, isTyping });
-    };
-    const debouncedStart = debounce(() => sendTyping(true), 150);
-    const debouncedStop  = debounce(() => sendTyping(false), 350);
-
+    // ====== LOCAL EMIT SMOOTHING ======
+    const START_THROTTLE_MS = 1000;  // don't spam "true"
+    const STOP_IDLE_MS      = 12000;  // emit "false" after idle
+    let lastStartSent = 0;
+    let stopTimer = null;
     let isFocused = false;
+
+    const sendStart = () => {
+      const now = Date.now();
+      if (now - lastStartSent >= START_THROTTLE_MS) {
+        socket.emit('typing', { chat_id: chatId, isTyping: true });
+        lastStartSent = now;
+      }
+    };
+    const scheduleStop = () => {
+      if (stopTimer) clearTimeout(stopTimer);
+      stopTimer = setTimeout(() => {
+        socket.emit('typing', { chat_id: chatId, isTyping: false });
+      }, STOP_IDLE_MS);
+    };
+
+    textarea.addEventListener('focus', () => { isFocused = true; });
+    textarea.addEventListener('blur',  () => {
+      isFocused = false;
+      if (stopTimer) clearTimeout(stopTimer);
+      socket.emit('typing', { chat_id: chatId, isTyping: false });
+    });
+
     textarea.addEventListener('input', () => {
       if (!isFocused) return;
-      debouncedStart();
-      // schedule a stop a bit after last keystroke
-      debouncedStop();
+      sendStart();     // immediate (throttled) start
+      scheduleStop();  // restart idle-stop timer
     });
-    textarea.addEventListener('focus', () => { isFocused = true; });
-    textarea.addEventListener('blur',  () => { isFocused = false; sendTyping(false); });
 
-    // Receive remote typing (server should NOT echo to sender)
+    // ====== REMOTE DISPLAY SMOOTHING ======
+    const REMOTE_HIDE_DELAY_MS = 12000; // keep visible for a bit after last TRUE
+    let remoteHideTimer = null;
+
+    function showTyping() {
+      typingRow.style.display = 'block';
+      if (remoteHideTimer) clearTimeout(remoteHideTimer);
+      remoteHideTimer = setTimeout(() => {
+        typingRow.style.display = 'none';
+      }, REMOTE_HIDE_DELAY_MS);
+    }
+
     socket.on('typing', (payload) => {
-      if (!payload) return;
-      if (Number(payload.chat_id) !== chatId) return;
-
-      const show = !!payload.isTyping;
-      typingRow.style.display = show ? 'block' : 'none';
+      if (!payload || Number(payload.chat_id) !== chatId) return;
+      // Only react to TRUE to prevent flicker; the timer will hide it.
+      if (payload.isTyping) showTyping();
     });
   }
 
-  // run on DOM ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', autoInit);
   } else {
