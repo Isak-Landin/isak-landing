@@ -1,4 +1,3 @@
-{# static/templates/chat/user_chat_empty.html #}
 {% extends "layouts/dashboard_base.html" %}
 
 {% block title %}Support Chat{% endblock %}
@@ -12,28 +11,24 @@
 <section class="radial-dark-section hero-condensed">
   <div class="container">
     <h1>Support Chat</h1>
-    <p class="intro-lead">Your conversation with support.</p>
+    <p class="intro-lead">Start a conversation with support.</p>
   </div>
 </section>
 
 <section class="split-section">
   <div class="container">
-    <div id="chat-messages"
-         class="chat-history"
-         data-chat-id="">
-      <div class="empty-state">No messages yet. Type a message to start the chat.</div>
+    <div id="chat-messages" class="chat-history">
+      <div class="empty-state">No chat yet. Click “Start chat”.</div>
     </div>
 
-    <form id="chat-form" class="chat-form">
-      <input type="hidden" id="chat-id" value="">
-      <textarea id="message-input" name="message" placeholder="Type your message..." required></textarea>
-      <button type="submit" class="button primary" id="send-button">Send</button>
-    </form>
+    <div class="chat-form">
+      <button type="button" class="button primary" id="start-chat-btn">Start chat</button>
+    </div>
   </div>
 </section>
 {% endblock %}
 
 {% block extra_js %}
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-<script src="{{ url_for('static', filename='js/user_chat.js') }}"></script>
+<script src="{{ url_for('static', filename='js/user_chat_start.js') }}"></script>
 {% endblock %}
