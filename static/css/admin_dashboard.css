@@ -204,3 +204,16 @@
   border-radius: 4px;
   margin-left: 0.5rem;
 }
+
+
+
+/* existing */
+.unread-chat {
+  border-left: 4px solid #ff5e5e;
+  background-color: #fdf1f1;
+}
+
+/* add these to make text readable on light bg */
+.unread-chat .text { color: #222; }
+.unread-chat .text strong { color: #111; }
+.unread-chat small { color: #555; }
