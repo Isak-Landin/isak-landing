@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, session, request, jsonify, abort
 from flask_login import current_user, login_required
 from extensions import db
-from apps.chat.models import SupportChat, SupportMessage
+from apps.chat.models import SupportChat, SupportMessage, SenderRole
 
 from decorators import admin_required, admin_2fa_required
 
@@ -52,7 +52,8 @@ def send_message():
 
     msg = SupportMessage(
         chat_id=chat.id,
-        sender='user',
+        sender=SenderRole.user,
+        sender_email=current_user.email,
         message=message,
         is_read=False
     )
@@ -233,7 +234,8 @@ def admin_reply(chat_id):
 
     msg = SupportMessage(
         chat_id=chat.id,
-        sender='admin',
+        sender=SenderRole.admin,
+        sender_email=current_user.email,
         message=message,
         is_read=False
     )

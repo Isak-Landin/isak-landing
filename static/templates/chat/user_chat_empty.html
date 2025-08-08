@@ -1,6 +1,6 @@
 {% extends "layouts/dashboard_base.html" %}
 
-{% block title %}Start a Chat{% endblock %}
+{% block title %}Support Chat{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
@@ -11,16 +11,37 @@
 <section class="radial-dark-section hero-condensed">
   <div class="container">
     <h1>Support Chat</h1>
-    <p class="intro-lead">Need help with something? Start a chat with support.</p>
-    <form id="start-chat-form" action="{{ url_for('chat_blueprint.start_chat') }}" method="post">
-      <button type="submit" class="button primary">Start Chat</button>
+    <p class="intro-lead">Your conversation with support.</p>
+  </div>
+</section>
+
+<section class="split-section">
+  <div class="container">
+    <!-- Chat history -->
+    <div id="chat-messages"
+         class="chat-history"
+         data-chat-id="{{ chat.id }}">
+      {% for msg in messages %}
+        <div class="chat-message {{ msg.sender.value }}">
+          <span class="sender">{{ msg.sender_label }}:</span>
+          <span class="body">{{ msg.message }}</span>
+          <br>
+          <small class="timestamp">{{ msg.timestamp | dt_short }}</small>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Send box -->
+    <form id="chat-form" class="chat-form">
+      <input type="hidden" id="chat-id" value="{{ chat.id }}">
+      <textarea id="message-input" name="message" placeholder="Type your message..." required></textarea>
+      <button type="submit" class="button primary">Send</button>
     </form>
   </div>
 </section>
 {% endblock %}
 
 {% block extra_js %}
-<script src="{{ url_for('static', filename='js/user_chat_start.js') }}"></script>
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script src="{{ url_for('static', filename='js/user_chat.js') }}"></script>
 {% endblock %}
-
-
