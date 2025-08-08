@@ -69,26 +69,57 @@ def send_message():
 # USER: View specific chat (requires chat_id)
 # --------------------------
 # /chat/view?chat_id=<id>
-@chat_blueprint.route('/view')
+@chat_blueprint.route('/view', methods=['GET'])
 @login_required
 def view_user_chat():
     chat_id = request.args.get('chat_id', type=int)
     if not chat_id:
-        # No chat selected yet — prompt to start one
+        # empty page – no chat context
         return render_template('chat/user_chat_empty.html')
 
     chat = SupportChat.query.get_or_404(chat_id)
     if chat.user_id != current_user.id:
         abort(403)
 
-    # Ensure ASC ordering
-    messages = (
-        SupportMessage.query
-        .filter_by(chat_id=chat.id)
-        .order_by(SupportMessage.timestamp.asc())
-        .all()
-    )
-    return render_template('chat/user_chat_view.html', chat=chat, messages=messages)
+    raw_msgs = (SupportMessage.query
+                .filter_by(chat_id=chat.id)
+                .order_by(SupportMessage.timestamp.asc())
+                .all())
+
+    me_email = getattr(current_user, "email", None)
+
+    def label_for(m):
+        if m.sender == SenderRole.admin:
+            # prefer stored email; fallback if legacy rows are NULL
+            email = m.sender_email or "admin"
+            return f"{email} (admin)"
+        else:
+            # user message
+            return m.sender_email or me_email or "user"
+
+    msgs = []
+    for m in raw_msgs:
+        sender_email = m.sender_email  # can be None on legacy rows
+        is_admin = (m.sender == SenderRole.admin)
+        sender_label = label_for(m)
+
+        # “mine” if email matches me (best) else role matches
+        is_mine = False
+        if sender_email and me_email:
+            is_mine = sender_email.lower() == me_email.lower()
+        else:
+            is_mine = not is_admin  # on user page, non-admin is me
+
+        msgs.append({
+            "id": m.id,
+            "content": m.message,
+            "timestamp": m.timestamp,        # keep datetime; template can filter later
+            "sender_label": sender_label,
+            "sender_is_admin": is_admin,
+            "is_mine": is_mine,
+        })
+
+    return render_template('chat/user_chat_view.html', chat=chat, messages=msgs)
 
 
 # /chat/redirect: jump to the user's open chat if present, else to the empty view
@@ -187,7 +218,6 @@ def admin_inbox():
     return render_template('chat/admin_chat_inbox.html', chats=inbox)
 
 
-
 # --------------------------
 # ADMIN: View specific chat
 # --------------------------
@@ -197,25 +227,44 @@ def admin_inbox():
 def admin_view_chat(chat_id):
     chat = SupportChat.query.get_or_404(chat_id)
 
-    messages = (
-        SupportMessage.query
-        .filter_by(chat_id=chat.id)
-        .order_by(SupportMessage.timestamp.asc())
-        .all()
-    )
-    print(f"[admin_view_chat] chat_id={chat.id} messages={len(messages)}")
+    raw_msgs = (SupportMessage.query
+                .filter_by(chat_id=chat.id)
+                .order_by(SupportMessage.timestamp.asc())
+                .all())
 
-    # Mark all user messages as read on view (optional)
-    changed = 0
-    for msg in messages:
-        if msg.sender == 'user' and not msg.is_read:
-            msg.is_read = True
-            changed += 1
-    if changed:
-        db.session.commit()
-        print(f"[admin_view_chat] marked_user_msgs_read={changed}")
+    me_email = getattr(current_user, "email", None)
 
-    return render_template('chat/admin_view_chat.html', chat=chat, messages=messages)
+    def label_for(m):
+        if m.sender == SenderRole.admin:
+            email = m.sender_email or "admin"
+            return f"{email} (admin)"
+        else:
+            # show the user's email if present; fallback to “user”
+            return m.sender_email or "user"
+
+    msgs = []
+    for m in raw_msgs:
+        sender_email = m.sender_email
+        is_admin = (m.sender == SenderRole.admin)
+        sender_label = label_for(m)
+
+        # “mine” on admin page means admin messages (or email match)
+        is_mine = False
+        if sender_email and me_email:
+            is_mine = sender_email.lower() == me_email.lower()
+        else:
+            is_mine = is_admin
+
+        msgs.append({
+            "id": m.id,
+            "content": m.message,
+            "timestamp": m.timestamp,
+            "sender_label": sender_label,
+            "sender_is_admin": is_admin,
+            "is_mine": is_mine,
+        })
+
+    return render_template('chat/admin_view_chat.html', chat=chat, messages=msgs)
 
 
 # --------------------------
