@@ -13,13 +13,21 @@
     if (!chatEl) return null;
     if (getComputedStyle(chatEl).position === 'static') chatEl.style.position = 'relative';
 
-    // Create the floating chip
+    // --- Sticky overlay anchor at bottom of the scrollport ---
+    let overlay = chatEl.querySelector('.chat-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.className = 'chat-overlay';
+      chatEl.appendChild(overlay);
+    }
+
+    // --- The chip lives inside the overlay (bottom-center, never “rides” content) ---
     const indicator = document.createElement('button');
     indicator.type = 'button';
     indicator.className = 'new-messages-indicator';
     indicator.setAttribute('aria-label', 'Jump to latest messages');
     indicator.innerHTML = `<span class="text"></span> <span class="count"></span> ↓`;
-    chatEl.appendChild(indicator);
+    overlay.appendChild(indicator);
 
     const textSpan = indicator.querySelector('.text');
     const countSpan = indicator.querySelector('.count');
@@ -83,7 +91,6 @@
       observer = new MutationObserver((mutations) => {
         let sawMessage = false;
         for (const m of mutations) {
-          // Only watch direct children being added
           for (const n of m.addedNodes) {
             if (!(n instanceof HTMLElement)) continue;
             if (n.classList?.contains('chat-message')) {
