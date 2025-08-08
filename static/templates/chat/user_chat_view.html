@@ -42,5 +42,6 @@
 {% block extra_js %}
 <!-- Socket.IO client must load before our chat JS -->
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script src="{{ url_for('static', filename='js/chat_shared.js') }}"></script>
 <script src="{{ url_for('static', filename='js/user_chat.js') }}"></script>
 {% endblock %}

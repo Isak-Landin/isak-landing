@@ -104,3 +104,31 @@
   border-radius: 3px;
 }
 
+/* Ensure the indicator can sit inside the scroll area */
+.chat-history {
+  position: relative;            /* required for absolute child */
+  /* you already added max-height + overflow-y earlier */
+}
+
+/* The floating chip */
+.new-messages-indicator {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  display: none;                 /* hidden by default */
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  background: #0b5ed7;
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(0,0,0,.15);
+  cursor: pointer;
+  user-select: none;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+.new-messages-indicator.show { display: inline-flex; gap: 6px; align-items: center; }
+.new-messages-indicator .count { opacity: .9; font-variant-numeric: tabular-nums; }
+
