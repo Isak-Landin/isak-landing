@@ -267,7 +267,7 @@ def admin_view_chat(chat_id):
 
     return render_template('chat/admin_view_chat.html', chat=chat, messages=msgs)
 
-
+"""
 # --------------------------
 # ADMIN: Reply to chat
 # --------------------------
@@ -298,4 +298,4 @@ def admin_reply(chat_id):
     print(f"[admin_reply] saved msg_id={msg.id} for chat_id={chat.id}")
 
     return redirect(url_for('chat_blueprint.admin_view_chat', chat_id=chat.id))
-
+"""
