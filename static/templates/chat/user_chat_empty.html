@@ -1,3 +1,4 @@
+{# static/templates/chat/user_chat_empty.html #}
 {% extends "layouts/dashboard_base.html" %}
 
 {% block title %}Support Chat{% endblock %}
@@ -17,29 +18,16 @@
 
 <section class="split-section">
   <div class="container">
-    <!-- Chat history -->
     <div id="chat-messages"
          class="chat-history"
-         data-chat-id="{{ chat.id if chat is defined and chat }}">
-      {% if messages is defined and messages %}
-        {% for msg in messages %}
-          <div class="chat-message {{ msg.sender if msg.sender is string else msg.sender.value }}">
-            <span class="sender">{{ msg.sender_label if msg.sender_label is defined else '' }}{% if msg.sender_label is defined %}:{% endif %}</span>
-            <span class="body">{{ msg.message }}</span>
-            <br>
-            <small class="timestamp">{{ msg.timestamp | dt_short }}</small>
-          </div>
-        {% endfor %}
-      {% else %}
-        <div class="empty-state">No messages yet. Start the conversation below.</div>
-      {% endif %}
+         data-chat-id="">
+      <div class="empty-state">No messages yet. Type a message to start the chat.</div>
     </div>
 
-    <!-- Send box -->
     <form id="chat-form" class="chat-form">
-      <input type="hidden" id="chat-id" value="{{ chat.id if chat is defined and chat }}">
+      <input type="hidden" id="chat-id" value="">
       <textarea id="message-input" name="message" placeholder="Type your message..." required></textarea>
-      <button type="submit" class="button primary">Send</button>
+      <button type="submit" class="button primary" id="send-button">Send</button>
     </form>
   </div>
 </section>
