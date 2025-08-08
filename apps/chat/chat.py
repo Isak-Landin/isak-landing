@@ -29,6 +29,7 @@ def start_chat():
     return jsonify({'chat_id': new_chat.id})
 
 
+"""
 # --------------------------
 # USER: Send a message (requires chat_id)
 # --------------------------
@@ -63,6 +64,7 @@ def send_message():
     if request.is_json:
         return jsonify({'success': True})
     return redirect(url_for('chat_blueprint.view_user_chat', chat_id=chat.id))
+"""
 
 
 # --------------------------
