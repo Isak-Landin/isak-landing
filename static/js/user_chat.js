@@ -1,62 +1,92 @@
+// static/js/user_chat.js
 document.addEventListener("DOMContentLoaded", () => {
+  const messagesContainer = document.getElementById("chat-messages");
   const form = document.querySelector(".chat-form");
   const textarea = form?.querySelector("textarea");
-  const messagesContainer = document.getElementById("chat-messages");
-  const chatIdRaw = messagesContainer?.dataset.chatId;
 
-  if (!form || !textarea || !messagesContainer || !chatIdRaw) {
-    console.warn("Chat: missing required DOM elements / chatId", { form, textarea, messagesContainer, chatIdRaw });
+  if (!messagesContainer || !form || !textarea) {
+    console.warn("[chat] Missing required DOM elements, aborting user_chat.js");
     return;
   }
 
-  const chatId = parseInt(chatIdRaw, 10);
+  const chatIdRaw = messagesContainer.dataset.chatId;
+  const chatId = Number.parseInt(chatIdRaw, 10);
+  if (!Number.isInteger(chatId)) {
+    console.error("[chat] Invalid chat id:", chatIdRaw);
+    return;
+  }
 
-  // IMPORTANT: let Socket.IO manage transports, and set the path to match Nginx
+  // Auto-scroll to bottom on load
+  const scrollToBottom = () => {
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  };
+  scrollToBottom();
+
+  // Create socket.io client (path must match your Nginx location)
   const socket = io({
-    path: '/socket.io/' // <- make sure this matches your Nginx location (see server fix below)
-    // DO NOT force transports here; allow fallback while you confirm proxy
+    path: "/socket.io/",
+    // transports: ['websocket'], // optional; let Socket.IO choose while stabilizing
+    withCredentials: true
   });
 
-  socket.on('connect', () => {
-    console.log('Socket connected', socket.id);
-    socket.emit('join_chat', { chat_id: chatId });
+  const join = () => {
+    socket.emit("join_chat", { chat_id: chatId });
+  };
+
+  socket.on("connect", () => {
+    console.log("[chat] connected:", socket.id);
+    join();
   });
 
-  socket.on('connect_error', (err) => {
-    console.error('Socket connect_error', err);
+  socket.on("reconnect", () => {
+    console.log("[chat] reconnected:", socket.id);
+    join();
   });
 
-  socket.on('error', (err) => {
-    console.error('Socket error event', err);
+  socket.on("connect_error", (err) => {
+    console.error("[chat] connect_error:", err?.message || err);
   });
 
-  socket.on("receive_message", data => {
-    console.log('receive_message', data);
-    console.log("📩 receive_message event fired:", data);
-    if (data.chat_id !== chatId) return;
+  socket.on("error", (data) => {
+    console.error("[chat] server error:", data?.error || data);
+    // You can surface this to the user if you want:
+    // alert(data?.error || "Chat error");
+  });
 
-    const msgDiv = document.createElement("div");
-    msgDiv.classList.add("chat-message", data.sender);
-    msgDiv.innerHTML = `
-      <strong>${data.sender.charAt(0).toUpperCase() + data.sender.slice(1)}:</strong> ${data.message}
+  socket.on("info", (data) => {
+    console.log("[chat] info:", data);
+  });
+
+  // Receive and render new messages (from room emit + direct echo)
+  socket.on("receive_message", (data) => {
+    // Hard-guard in case multiple chats are open in other tabs
+    if (Number(data.chat_id) !== chatId) return;
+
+    const msg = document.createElement("div");
+    msg.className = `chat-message ${data.sender}`;
+    msg.innerHTML = `
+      <strong>${data.sender.charAt(0).toUpperCase() + data.sender.slice(1)}:</strong>
+      ${data.message}
       <br><small>${data.timestamp}</small>
     `;
-    messagesContainer.appendChild(msgDiv);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    messagesContainer.appendChild(msg);
+    scrollToBottom();
   });
 
-  form.addEventListener("submit", e => {
+  // Send message
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
     const message = textarea.value.trim();
     if (!message) return;
 
-    console.log('emit send_message', { chat_id: chatId, sender: 'user', message });
-    socket.emit('send_message', {
+    // Emit; server will save + echo back to this client AND broadcast to room
+    socket.emit("send_message", {
       chat_id: chatId,
-      sender: 'user',
+      sender: "user",
       message
     });
 
     textarea.value = "";
+    textarea.focus();
   });
 });

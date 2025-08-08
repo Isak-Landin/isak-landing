@@ -1,36 +1,35 @@
+from flask_socketio import join_room, emit
+from flask import request
 from flask_login import current_user
 from extensions import socketio, db
 from apps.chat.models import SupportChat, SupportMessage
-from flask_socketio import emit, join_room
-from sqlalchemy.orm.exc import NoResultFound
 from apps.admin.models import AdminUser
-from flask import request
 
 
 @socketio.on('join_chat')
-def on_join_chat(data):
+def handle_join_chat(data):
     chat_id = data.get('chat_id')
     if not chat_id:
-        emit('error', {'error': 'Missing chat_id'})
+        emit('error', {'error': 'Missing chat_id'}, to=request.sid)
         return
 
     chat = SupportChat.query.get(chat_id)
     if not chat:
-        emit('error', {'error': 'Chat not found'})
+        emit('error', {'error': 'Chat not found'}, to=request.sid)
         return
 
     if not current_user.is_authenticated:
-        emit('error', {'error': 'Not authenticated'})
+        emit('error', {'error': 'Not authenticated'}, to=request.sid)
         return
 
     is_admin = isinstance(current_user, AdminUser) or getattr(current_user, 'is_admin', False)
-    # user must own the chat OR be an admin
+
     if not is_admin and chat.user_id != current_user.id:
-        emit('error', {'error': 'Not authorized to join this chat'})
+        emit('error', {'error': 'Not authorized for this chat'}, to=request.sid)
         return
 
     join_room(f"chat_{chat_id}")
-    print(f"[socket] join_chat ok: user={getattr(current_user, 'email', 'anon')} chat_id={chat_id}")
+    emit('info', {'message': f'Joined chat {chat_id}'}, to=request.sid)
 
 
 @socketio.on('send_message')
@@ -66,7 +65,7 @@ def handle_send_message(data):
         emit('error', {'error': 'Invalid sender'}, to=request.sid)
         return
 
-    # Save to DB
+    # Save message to DB
     msg = SupportMessage(
         chat_id=chat_id,
         sender=sender,
@@ -83,9 +82,8 @@ def handle_send_message(data):
         'timestamp': msg.timestamp.strftime('%Y-%m-%d %H:%M:%S')
     }
 
-    # Emit to everyone in the room
+    # Emit to everyone in room
     emit('receive_message', payload, room=f"chat_{chat_id}")
 
-    # Also emit directly to sender so they see their own message instantly
+    # Emit directly to sender so they see it instantly even if alone
     emit('receive_message', payload, to=request.sid)
-

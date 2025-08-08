@@ -67,6 +67,7 @@ def send_message():
 # --------------------------
 # USER: View specific chat (requires chat_id)
 # --------------------------
+# /chat/view?chat_id=<id>
 @chat_blueprint.route('/view')
 @login_required
 def view_user_chat():
@@ -79,24 +80,25 @@ def view_user_chat():
     if chat.user_id != current_user.id:
         abort(403)
 
-    messages = SupportMessage.query.filter_by(chat_id=chat.id).order_by(SupportMessage.timestamp).all()
+    # Ensure ASC ordering
+    messages = (
+        SupportMessage.query
+        .filter_by(chat_id=chat.id)
+        .order_by(SupportMessage.timestamp.asc())
+        .all()
+    )
     return render_template('chat/user_chat_view.html', chat=chat, messages=messages)
 
 
-# --------------------------
-# USER: Redirect to open chat
-# --------------------------
+# /chat/redirect: jump to the user's open chat if present, else to the empty view
 @chat_blueprint.route('/redirect')
 @login_required
 def chat_redirect():
-    """
-    Redirects the user to their currently open chat, if one exists.
-    Otherwise, takes them to the empty chat view where they can start one.
-    """
     chat = SupportChat.query.filter_by(user_id=current_user.id, status='open').first()
     if chat:
         return redirect(url_for('chat_blueprint.view_user_chat', chat_id=chat.id))
     return redirect(url_for('chat_blueprint.view_user_chat'))
+
 
 
 # --------------------------
