@@ -218,6 +218,7 @@ def _is_admin_sender(m):
     # tolerant to legacy rows where sender might be stored as string
     return (m.sender == SenderRole.admin) or (m.sender == "admin")
 
+
 # ----------------------------
 # Admin chat view
 # ----------------------------
