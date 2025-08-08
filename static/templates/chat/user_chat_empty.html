@@ -20,20 +20,24 @@
     <!-- Chat history -->
     <div id="chat-messages"
          class="chat-history"
-         data-chat-id="{{ chat.id }}">
-      {% for msg in messages %}
-        <div class="chat-message {{ msg.sender.value }}">
-          <span class="sender">{{ msg.sender_label }}:</span>
-          <span class="body">{{ msg.message }}</span>
-          <br>
-          <small class="timestamp">{{ msg.timestamp | dt_short }}</small>
-        </div>
-      {% endfor %}
+         data-chat-id="{{ chat.id if chat is defined and chat }}">
+      {% if messages is defined and messages %}
+        {% for msg in messages %}
+          <div class="chat-message {{ msg.sender if msg.sender is string else msg.sender.value }}">
+            <span class="sender">{{ msg.sender_label if msg.sender_label is defined else '' }}{% if msg.sender_label is defined %}:{% endif %}</span>
+            <span class="body">{{ msg.message }}</span>
+            <br>
+            <small class="timestamp">{{ msg.timestamp | dt_short }}</small>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">No messages yet. Start the conversation below.</div>
+      {% endif %}
     </div>
 
     <!-- Send box -->
     <form id="chat-form" class="chat-form">
-      <input type="hidden" id="chat-id" value="{{ chat.id }}">
+      <input type="hidden" id="chat-id" value="{{ chat.id if chat is defined and chat }}">
       <textarea id="message-input" name="message" placeholder="Type your message..." required></textarea>
       <button type="submit" class="button primary">Send</button>
     </form>
