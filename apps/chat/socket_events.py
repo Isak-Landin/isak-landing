@@ -76,16 +76,34 @@ def handle_send_message(data):
         emit('error', {'error': 'Invalid sender'}, to=request.sid)
         return
 
-    # Save to DB
-    msg = SupportMessage(chat_id=chat_id, sender=sender, message=message, is_read=False)
-    db.session.add(msg)
-    db.session.commit()
-    print(f"[send_message] Saved message to DB (id={msg.id}) at {msg.timestamp}")
+    # --- Save to DB with sender_email ---
+    try:
+        from apps.chat.models import SenderRole
+        sender_role = SenderRole.admin if sender == 'admin' else SenderRole.user
+
+        msg = SupportMessage(
+            chat_id=chat_id,
+            sender=sender_role,  # Keep enum for consistency
+            sender_email=current_user.email,  # NEW: store email for history display
+            message=message,
+            is_read=False
+        )
+        db.session.add(msg)
+        db.session.commit()
+        print(f"[send_message] Saved message to DB (id={msg.id}) at {msg.timestamp}")
+    except Exception as e:
+        print(f"[send_message] DB error: {e}")
+        emit('error', {'error': 'Database error'}, to=request.sid)
+        return
+
+    # --- Build payload with sender_label for live UI ---
+    sender_label = f"{current_user.email} (admin)" if sender == 'admin' else current_user.email
 
     payload = {
         'chat_id': chat_id,
         'message': message,
-        'sender': sender,
+        'sender': sender,  # Keep for compatibility if JS still uses it
+        'sender_label': sender_label,  # NEW: lets JS display email immediately
         'timestamp': msg.timestamp.strftime('%Y-%m-%d %H:%M:%S')
     }
 
