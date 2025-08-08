@@ -70,12 +70,6 @@ def create_app():
     # Register Jinja filters
     register_jinja_filters(_app)
 
-    @app.before_request
-    def set_request_timezone():
-        tz_cookie = request.cookies.get("tz")
-        if tz_cookie:
-            g.tzname = tz_cookie
-
     # Initialize the database here if needed
     db.init_app(_app)
 
@@ -83,6 +77,14 @@ def create_app():
 
 
 app = create_app()
+
+
+@app.before_request
+def set_request_timezone():
+    tz_cookie = request.cookies.get("tz")
+    if tz_cookie:
+        g.tzname = tz_cookie
+
 
 # Initialize the database
 with app.app_context():
