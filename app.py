@@ -68,7 +68,7 @@ def create_app():
     _app.register_blueprint(chat_blueprint)
 
     # Register Jinja filters
-    register_jinja_filters(app)
+    register_jinja_filters(_app)
 
     @app.before_request
     def set_request_timezone():
