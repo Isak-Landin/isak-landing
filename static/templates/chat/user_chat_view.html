@@ -2,10 +2,10 @@
 
 {% block title %}Support Chat{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% block extra_css %}{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
 {% endblock %}
+
 
 {% block dashboard_content %}
 <section class="radial-dark-section hero-condensed">
@@ -17,14 +17,15 @@
 
 <section class="split-section">
   <div class="container">
-    <div id="chat-messages"
-         class="chat-history"
-         data-chat-id="{{ chat.id }}">
+
+    <div id="chat-messages" class="chat-history" data-chat-id="{{ chat.id }}">
       {% for msg in messages %}
         <div class="chat-message {{ 'me' if msg.is_mine else 'them' }}">
-          <strong>{{ msg.sender_label }}:</strong> {{ msg.content }}
-          <br>
-          <small class="timestamp">{{ msg.timestamp | dt_short }}</small>
+          <div class="msg-header">
+            <span class="sender">{{ msg.sender_label }}</span>
+            <span class="timestamp">{{ msg.timestamp | dt_short }}</span>
+          </div>
+          <div class="msg-body">{{ msg.content }}</div>
         </div>
       {% endfor %}
     </div>

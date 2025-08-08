@@ -2,6 +2,11 @@
 
 {% block title %}Support Chat with {{ chat.user.email }}{% endblock %}
 
+{% block extra_css %}{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+{% endblock %}
+
+
 {% block admin_dashboard_content %}
 <section class="radial-dark-section hero-condensed">
   <div class="container">
@@ -14,13 +19,15 @@
     <div id="chat-messages" class="chat-history" data-chat-id="{{ chat.id }}">
       {% for msg in messages %}
         <div class="chat-message {{ 'me' if msg.is_mine else 'them' }}">
-          <span class="sender">{{ msg.sender_label }}:</span>
-          <span class="body">{{ msg.content }}</span>
-          <br>
-          <small class="timestamp">{{ msg.timestamp | dt_short }}</small>
+          <div class="msg-header">
+            <span class="sender">{{ msg.sender_label }}</span>
+            <span class="timestamp">{{ msg.timestamp | dt_short }}</span>
+          </div>
+          <div class="msg-body">{{ msg.content }}</div>
         </div>
       {% endfor %}
     </div>
+
 
     <form id="admin-chat-form" class="chat-form">
       <textarea name="message" placeholder="Type your reply here..." required></textarea>

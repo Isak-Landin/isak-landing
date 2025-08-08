@@ -1,0 +1,26 @@
+/* Common chat styles for both user & admin views */
+
+.chat-history { font-size: 14px; line-height: 1.45; }
+
+.chat-message { margin: 10px 0; }
+
+/* Header: name + time on one line */
+.msg-header {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.msg-header .sender { font-weight: 600; }
+.msg-header .timestamp {
+  margin-left: auto;           /* push time to the right */
+  opacity: 0.75;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Body text */
+.msg-body { white-space: pre-wrap; word-break: break-word; }
+
+/* Optional “who sent it” accent via me/them */
+.chat-message.me .sender { color: #0b5ed7; }
+.chat-message.them .sender { color: #6c757d; }
