@@ -1,4 +1,4 @@
-from flask import Flask, session
+from flask import Flask, session, request, g
 from dotenv import load_dotenv
 from extensions import db, socketio
 from apps.admin.models import AdminUser
@@ -21,6 +21,8 @@ from apps.chat.chat import chat_blueprint
 
 from flask_login import LoginManager
 import os
+
+from apps.common.filters import register_jinja_filters
 
 
 login_manager = LoginManager()
@@ -64,6 +66,15 @@ def create_app():
     _app.register_blueprint(admin_blueprint)
 
     _app.register_blueprint(chat_blueprint)
+
+    # Register Jinja filters
+    register_jinja_filters(app)
+
+    @app.before_request
+    def set_request_timezone():
+        tz_cookie = request.cookies.get("tz")
+        if tz_cookie:
+            g.tzname = tz_cookie
 
     # Initialize the database here if needed
     db.init_app(_app)
