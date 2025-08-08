@@ -11,25 +11,26 @@ def handle_join_chat(data):
     chat_id = data.get('chat_id')
     if not chat_id:
         emit('error', {'error': 'Missing chat_id'}, to=request.sid)
-        return
+        return {"ok": False, "error": "missing_chat_id"}
 
     chat = SupportChat.query.get(chat_id)
     if not chat:
         emit('error', {'error': 'Chat not found'}, to=request.sid)
-        return
+        return {"ok": False, "error": "chat_not_found"}
 
     if not current_user.is_authenticated:
         emit('error', {'error': 'Not authenticated'}, to=request.sid)
-        return
+        return {"ok": False, "error": "not_authenticated"}
 
     is_admin = isinstance(current_user, AdminUser) or getattr(current_user, 'is_admin', False)
-
     if not is_admin and chat.user_id != current_user.id:
         emit('error', {'error': 'Not authorized for this chat'}, to=request.sid)
-        return
+        return {"ok": False, "error": "not_authorized"}
 
     join_room(f"chat_{chat_id}")
     emit('info', {'message': f'Joined chat {chat_id}'}, to=request.sid)
+    return {"ok": True}
+
 
 
 @socketio.on('send_message')
@@ -42,21 +43,22 @@ def handle_send_message(data):
     sender = data.get('sender')  # 'user' or 'admin'
     print(f"chat_id={chat_id}, message={message}, sender={sender}")
 
+    # Validate basic fields
     if not all([chat_id, message, sender]):
         print("[send_message] Missing required fields")
         emit('error', {'error': 'Missing chat_id, message, or sender'}, to=request.sid)
-        return
+        return {"ok": False, "error": "missing_fields"}
 
     chat = SupportChat.query.get(chat_id)
     if not chat:
         print("[send_message] Chat not found")
         emit('error', {'error': 'Chat not found'}, to=request.sid)
-        return
+        return {"ok": False, "error": "chat_not_found"}
 
     if not current_user.is_authenticated:
         print("[send_message] Not authenticated")
         emit('error', {'error': 'Not authenticated'}, to=request.sid)
-        return
+        return {"ok": False, "error": "not_authenticated"}
 
     is_admin = isinstance(current_user, AdminUser) or getattr(current_user, 'is_admin', False)
     print(f"is_admin={is_admin}, current_user_id={current_user.id}")
@@ -65,16 +67,16 @@ def handle_send_message(data):
         if chat.user_id != current_user.id:
             print("[send_message] User not authorized for this chat")
             emit('error', {'error': 'User not authorized for this chat'}, to=request.sid)
-            return
+            return {"ok": False, "error": "not_authorized_user"}
     elif sender == 'admin':
         if not is_admin:
             print("[send_message] Admin not authorized")
             emit('error', {'error': 'Admin not authorized'}, to=request.sid)
-            return
+            return {"ok": False, "error": "not_authorized_admin"}
     else:
         print("[send_message] Invalid sender value")
         emit('error', {'error': 'Invalid sender'}, to=request.sid)
-        return
+        return {"ok": False, "error": "invalid_sender"}
 
     # --- Save to DB with sender_email ---
     try:
@@ -83,8 +85,8 @@ def handle_send_message(data):
 
         msg = SupportMessage(
             chat_id=chat_id,
-            sender=sender_role,  # Keep enum for consistency
-            sender_email=current_user.email,  # NEW: store email for history display
+            sender=sender_role,
+            sender_email=current_user.email,
             message=message,
             is_read=False
         )
@@ -94,7 +96,7 @@ def handle_send_message(data):
     except Exception as e:
         print(f"[send_message] DB error: {e}")
         emit('error', {'error': 'Database error'}, to=request.sid)
-        return
+        return {"ok": False, "error": "db_error"}
 
     # --- Build payload with sender_label for live UI ---
     sender_label = f"{current_user.email} (admin)" if sender == 'admin' else current_user.email
@@ -102,19 +104,25 @@ def handle_send_message(data):
     payload = {
         'chat_id': chat_id,
         'message': message,
-        'sender': sender,  # Keep for compatibility if JS still uses it
-        'sender_label': sender_label,  # NEW: lets JS display email immediately
-        'timestamp': msg.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+        'sender': sender,
+        'sender_label': sender_label,
+        'timestamp': msg.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+        'id': msg.id,
     }
 
-    # Send to everyone else in the room
-    print(f"[send_message] Emitting to room chat_{chat_id} (others only)")
-    emit('receive_message', payload, room=f"chat_{chat_id}", include_self=False)
+    # Broadcast to others in the room and echo to sender
+    room_name = f"chat_{chat_id}"
+    print(f"[send_message] Emitting to room {room_name} (others only)")
+    emit('receive_message', payload, room=room_name, include_self=False)
 
-    # Send directly back to sender so they see it instantly
     print(f"[send_message] Echoing message back to sender SID={request.sid}")
     emit('receive_message', payload, to=request.sid)
+
     print("--- [send_message] Done ---\n")
+
+    # IMPORTANT: Return an ACK so the client resolves its promise/callback
+    return {"ok": True, "id": msg.id, "timestamp": payload["timestamp"]}
+
 
 
 @socketio.on('connect')
