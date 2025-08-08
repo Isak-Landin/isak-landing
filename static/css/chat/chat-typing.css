@@ -4,3 +4,50 @@
   font-size: 12px;
   opacity: 0.75;
 }
+
+/* Typing line base */
+.typing-indicator {
+  margin-top: 6px;
+  font-size: 12px;
+  opacity: 0.85;
+  line-height: 1.2;
+}
+
+/* Dots container sits right after the label */
+.typing-indicator .dots {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: 6px;
+  vertical-align: baseline;
+}
+
+/* Each dot */
+.typing-indicator .dots span {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.35;
+  transform: translateY(0);
+  animation: typing-bounce 1.2s infinite ease-in-out;
+}
+
+/* Staggered delays for the wave */
+.typing-indicator .dots span:nth-child(1) { animation-delay: 0s;   }
+.typing-indicator .dots span:nth-child(2) { animation-delay: 0.15s;}
+.typing-indicator .dots span:nth-child(3) { animation-delay: 0.30s;}
+
+/* Bounce keyframes */
+@keyframes typing-bounce {
+  0%, 60%, 100% { transform: translateY(0);     opacity: 0.35; }
+  30%           { transform: translateY(-3px);  opacity: 0.9;  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .typing-indicator .dots span {
+    animation: none;
+    opacity: 0.5;
+  }
+}

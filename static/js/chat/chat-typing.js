@@ -24,7 +24,9 @@
       typingRow.className = 'typing-indicator';
       typingRow.style.display = 'none';
       const isAdminPage = form.id === 'admin-chat-form';
-      typingRow.textContent = isAdminPage ? 'User is typing…' : 'Support is typing…';
+      typingRow.innerHTML = (isAdminPage ? 'User is typing' : 'Support is typing') + ' <span class="dots" aria-hidden="true"><span></span><span></span><span></span></span>';
+      typingRow.setAttribute('aria-live', 'polite');
+      typingRow.setAttribute('role', 'status');
       form.parentElement.insertBefore(typingRow, form);
     }
 
