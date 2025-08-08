@@ -1,27 +1,38 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const socket = io({ transports: ['websocket'] });
-
   const form = document.querySelector(".chat-form");
   const textarea = form?.querySelector("textarea");
   const messagesContainer = document.getElementById("chat-messages");
-  const chatId = messagesContainer?.dataset.chatId;
+  const chatIdRaw = messagesContainer?.dataset.chatId;
 
-  if (!form || !textarea || !messagesContainer || !chatId) {
-    console.warn("Missing elements for chat. Aborting chat JS.");
+  if (!form || !textarea || !messagesContainer || !chatIdRaw) {
+    console.warn("Chat: missing required DOM elements / chatId", { form, textarea, messagesContainer, chatIdRaw });
     return;
   }
 
-  const parsedChatId = parseInt(chatId);
+  const chatId = parseInt(chatIdRaw, 10);
 
-  // Scroll to bottom on load
-  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  // IMPORTANT: let Socket.IO manage transports, and set the path to match Nginx
+  const socket = io({
+    path: '/socket.io/' // <- make sure this matches your Nginx location (see server fix below)
+    // DO NOT force transports here; allow fallback while you confirm proxy
+  });
 
-  // Join the chat room
-  socket.emit("join_chat", { chat_id: parsedChatId });
+  socket.on('connect', () => {
+    console.log('Socket connected', socket.id);
+    socket.emit('join_chat', { chat_id: chatId });
+  });
 
-  // Handle incoming messages
+  socket.on('connect_error', (err) => {
+    console.error('Socket connect_error', err);
+  });
+
+  socket.on('error', (err) => {
+    console.error('Socket error event', err);
+  });
+
   socket.on("receive_message", data => {
-    if (data.chat_id !== parsedChatId) return;
+    console.log('receive_message', data);
+    if (data.chat_id !== chatId) return;
 
     const msgDiv = document.createElement("div");
     msgDiv.classList.add("chat-message", data.sender);
@@ -33,22 +44,16 @@ document.addEventListener("DOMContentLoaded", () => {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   });
 
-  // Optional: Handle error messages from socket
-  socket.on("error", data => {
-    console.error("Socket error:", data?.error || "Unknown error");
-    alert(data?.error || "An unknown error occurred in the chat.");
-  });
-
-  // Handle sending message
   form.addEventListener("submit", e => {
     e.preventDefault();
     const message = textarea.value.trim();
     if (!message) return;
 
-    socket.emit("send_message", {
-      chat_id: parsedChatId,
-      sender: "user",
-      message: message
+    console.log('emit send_message', { chat_id: chatId, sender: 'user', message });
+    socket.emit('send_message', {
+      chat_id: chatId,
+      sender: 'user',
+      message
     });
 
     textarea.value = "";
