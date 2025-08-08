@@ -1,5 +1,15 @@
 // static/js/user_chat.js
+
+// ---- create/share ONE global socket for all chat scripts ----
+window.socket = window.socket || io({
+  path: "/socket.io/",
+  // transports: ["websocket"], // optional; enable if you want websocket-only
+  withCredentials: true
+});
+
 document.addEventListener("DOMContentLoaded", () => {
+  const socket = window.socket; // reuse the global
+
   const messagesContainer = document.getElementById("chat-messages");
   const form = document.querySelector(".chat-form");
   const textarea = form?.querySelector("textarea");
@@ -22,13 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   scrollToBottom();
 
-  // Create socket.io client (path must match your Nginx location)
-  const socket = io({
-    path: "/socket.io/",
-    // transports: ['websocket'], // optional; let Socket.IO choose while stabilizing
-    withCredentials: true
-  });
-
   const join = () => {
     socket.emit("join_chat", { chat_id: chatId });
   };
@@ -49,8 +52,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   socket.on("error", (data) => {
     console.error("[chat] server error:", data?.error || data);
-    // You can surface this to the user if you want:
-    // alert(data?.error || "Chat error");
   });
 
   socket.on("info", (data) => {
@@ -59,7 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Receive and render new messages (from room emit + direct echo)
   socket.on("receive_message", (data) => {
-    // Hard-guard in case multiple chats are open in other tabs
     if (Number(data.chat_id) !== chatId) return;
 
     const msg = document.createElement("div");
@@ -79,7 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const message = textarea.value.trim();
     if (!message) return;
 
-    // Emit; server will save + echo back to this client AND broadcast to room
     socket.emit("send_message", {
       chat_id: chatId,
       sender: "user",
