@@ -17,19 +17,18 @@
 
 <section class="split-section">
   <div class="container">
-    <!-- Existing history rendered by server (must already be ordered ASC by timestamp in the route) -->
     <div id="chat-messages"
          class="chat-history"
          data-chat-id="{{ chat.id }}">
       {% for msg in messages %}
-        <div class="chat-message {{ msg.sender }}">
-          <strong>{{ msg.sender.capitalize() }}:</strong> {{ msg.message }}
-          <br><small>{{ msg.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+        <div class="chat-message {{ 'me' if msg.is_mine else 'them' }}">
+          <strong>{{ msg.sender_label }}:</strong> {{ msg.content }}
+          <br>
+          <small class="timestamp">{{ msg.timestamp | dt_short }}</small>
         </div>
       {% endfor %}
     </div>
 
-    <!-- Send box (handled by user_chat.js; no page reload) -->
     <form id="chat-form" class="chat-form">
       <input type="hidden" id="chat-id" value="{{ chat.id }}">
       <textarea id="message-input" name="message" placeholder="Type your message..." required></textarea>
