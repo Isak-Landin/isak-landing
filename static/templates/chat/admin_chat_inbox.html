@@ -12,16 +12,22 @@
 
 <section class="split-section">
   <div class="container">
-    {% if chats %}
+    {% if chats and chats|length > 0 %}
       <ul class="split-list">
         {% for entry in chats %}
           <li class="{% if entry.unread %}unread-chat{% endif %}">
             <span class="emoji">💬</span>
             <span class="text">
               <strong>{{ entry.chat.user.email }}</strong><br>
-              {{ entry.last_message.message[:50] }}{% if entry.last_message.message|length > 50 %}...{% endif %}
-              <br>
-              <small>{{ entry.last_message.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+
+              {% if entry.last_message %}
+                {{ entry.last_message.message[:50] }}{% if entry.last_message.message|length > 50 %}...{% endif %}
+                <br>
+                <small>{{ entry.last_message.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+              {% else %}
+                <em>No messages yet</em>
+              {% endif %}
+
               {% if entry.unread %}
                 <span class="badge">Unread</span>
               {% endif %}
@@ -33,7 +39,7 @@
     {% else %}
       <div class="empty-state">
         <div class="emoji">📭</div>
-        <p class="empty-text">No active support chats.</p>
+        <p class="empty-text">No conversations to show.</p>
       </div>
     {% endif %}
   </div>

@@ -107,52 +107,84 @@ def chat_redirect():
 @admin_required
 @admin_2fa_required
 def admin_inbox():
-    # DEBUG: how many chats exist at all?
-    total_chats = SupportChat.query.count()
-    print(f"[admin_inbox] total_chats={total_chats}")
+    """
+    Inbox: show chats that actually have messages, sorted:
+      - Unread (has at least one unread user msg) first
+      - Then by latest message timestamp (newest first)
+    Includes heavy logging so we can see what's happening.
+    """
+    print("\n[admin_inbox] ---- START ----")
+    total_chats = db.session.query(SupportChat).count()
+    total_msgs = db.session.query(SupportMessage).count()
+    print(f"[admin_inbox] totals: chats={total_chats}, messages={total_msgs}")
 
-    # Don’t filter by status for now (you can re-add once we verify data)
-    # If you DO want to filter, ensure your SupportChat.status actually defaults to 'open'
-    chats = (
-        SupportChat.query
-        .outerjoin(SupportMessage, SupportMessage.chat_id == SupportChat.id)
-        .group_by(SupportChat.id)
-        .order_by(func.max(SupportMessage.timestamp).desc())
+    # Subquery: latest timestamp per chat that has messages
+    last_ts_subq = (
+        db.session.query(
+            SupportMessage.chat_id.label('chat_id'),
+            func.max(SupportMessage.timestamp).label('last_ts')
+        )
+        .group_by(SupportMessage.chat_id)
+        .subquery()
+    )
+
+    # Join chats to that subquery so we only get chats with >= 1 message
+    rows = (
+        db.session.query(SupportChat, last_ts_subq.c.last_ts)
+        .join(last_ts_subq, last_ts_subq.c.chat_id == SupportChat.id)
+        .order_by(last_ts_subq.c.last_ts.desc())
         .all()
     )
-    print(f"[admin_inbox] chats_found={len(chats)}")
 
+    print(f"[admin_inbox] rows_from_db={len(rows)}")
     inbox = []
-    for chat in chats:
-        # Get messages ordered ascending (older -> newer)
-        msgs = sorted(chat.messages, key=lambda m: m.timestamp)
-        last_message = msgs[-1] if msgs else None
-        unread = any(m.sender == 'user' and not m.is_read for m in msgs)
+
+    for idx, (chat, last_ts) in enumerate(rows, start=1):
+        # Pull the actual last message (single query per chat; fine for now)
+        last_msg = (
+            db.session.query(SupportMessage)
+            .filter_by(chat_id=chat.id)
+            .order_by(SupportMessage.timestamp.desc())
+            .first()
+        )
+
+        # Compute unread: any user message unread?
+        unread = (
+            db.session.query(SupportMessage)
+            .filter_by(chat_id=chat.id, sender='user', is_read=False)
+            .count() > 0
+        )
+
+        print(f"[admin_inbox] #{idx} chat_id={chat.id} user_id={chat.user_id} "
+              f"last_ts={last_ts} last_msg_id={getattr(last_msg,'id',None)} unread={unread}")
 
         inbox.append({
             'chat': chat,
-            'last_message': last_message,
+            'last_message': last_msg,
             'unread': unread
         })
 
-    # Sort in Python: unread first, then by last message time (newest first)
+    # Sort: unread first, then newest last_msg
     inbox.sort(
         key=lambda e: (
             0 if e['unread'] else 1,
-            (e['last_message'].timestamp if e['last_message'] else datetime.min)
+            e['last_message'].timestamp if e['last_message'] else datetime.min
         ),
-        reverse=False  # unread (0) before read (1); within groups we’ll flip below
+        reverse=False
     )
-    # Now within each unread/read bucket, sort newest first
+    # Within groups, newest first
     inbox = sorted(
         inbox,
-        key=lambda e: (0 if e['unread'] else 1,
-                       (e['last_message'].timestamp if e['last_message'] else datetime.min)),
+        key=lambda e: (
+            0 if e['unread'] else 1,
+            e['last_message'].timestamp if e['last_message'] else datetime.min
+        ),
         reverse=True
     )
 
-    print(f"[admin_inbox] inbox_built count={len(inbox)}")
+    print(f"[admin_inbox] inbox_len={len(inbox)} ---- END ----\n")
     return render_template('chat/admin_chat_inbox.html', chats=inbox)
+
 
 
 # --------------------------
