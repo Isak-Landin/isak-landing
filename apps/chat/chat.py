@@ -100,7 +100,6 @@ def chat_redirect():
     return redirect(url_for('chat_blueprint.view_user_chat'))
 
 
-
 # --------------------------
 # ADMIN: View inbox (list of all open chats)
 # --------------------------
@@ -108,13 +107,27 @@ def chat_redirect():
 @admin_required
 @admin_2fa_required
 def admin_inbox():
-    chats = SupportChat.query.filter_by(status='open').all()
+    # DEBUG: how many chats exist at all?
+    total_chats = SupportChat.query.count()
+    print(f"[admin_inbox] total_chats={total_chats}")
+
+    # Don’t filter by status for now (you can re-add once we verify data)
+    # If you DO want to filter, ensure your SupportChat.status actually defaults to 'open'
+    chats = (
+        SupportChat.query
+        .outerjoin(SupportMessage, SupportMessage.chat_id == SupportChat.id)
+        .group_by(SupportChat.id)
+        .order_by(func.max(SupportMessage.timestamp).desc())
+        .all()
+    )
+    print(f"[admin_inbox] chats_found={len(chats)}")
 
     inbox = []
     for chat in chats:
-        messages = sorted(chat.messages, key=lambda m: m.timestamp)
-        last_message = messages[-1] if messages else None
-        unread = any(m.sender == 'user' and not m.is_read for m in messages)
+        # Get messages ordered ascending (older -> newer)
+        msgs = sorted(chat.messages, key=lambda m: m.timestamp)
+        last_message = msgs[-1] if msgs else None
+        unread = any(m.sender == 'user' and not m.is_read for m in msgs)
 
         inbox.append({
             'chat': chat,
@@ -122,12 +135,23 @@ def admin_inbox():
             'unread': unread
         })
 
-    # Sort: unread first, then by most recent message
-    inbox.sort(key=lambda entry: (
-        0 if entry['unread'] else 1,
-        entry['last_message'].timestamp if entry['last_message'] else datetime.min
-    ))
+    # Sort in Python: unread first, then by last message time (newest first)
+    inbox.sort(
+        key=lambda e: (
+            0 if e['unread'] else 1,
+            (e['last_message'].timestamp if e['last_message'] else datetime.min)
+        ),
+        reverse=False  # unread (0) before read (1); within groups we’ll flip below
+    )
+    # Now within each unread/read bucket, sort newest first
+    inbox = sorted(
+        inbox,
+        key=lambda e: (0 if e['unread'] else 1,
+                       (e['last_message'].timestamp if e['last_message'] else datetime.min)),
+        reverse=True
+    )
 
+    print(f"[admin_inbox] inbox_built count={len(inbox)}")
     return render_template('chat/admin_chat_inbox.html', chats=inbox)
 
 
@@ -139,13 +163,24 @@ def admin_inbox():
 @admin_2fa_required
 def admin_view_chat(chat_id):
     chat = SupportChat.query.get_or_404(chat_id)
-    messages = SupportMessage.query.filter_by(chat_id=chat.id).order_by(SupportMessage.timestamp).all()
 
+    messages = (
+        SupportMessage.query
+        .filter_by(chat_id=chat.id)
+        .order_by(SupportMessage.timestamp.asc())
+        .all()
+    )
+    print(f"[admin_view_chat] chat_id={chat.id} messages={len(messages)}")
+
+    # Mark all user messages as read on view (optional)
+    changed = 0
     for msg in messages:
         if msg.sender == 'user' and not msg.is_read:
             msg.is_read = True
-
-    db.session.commit()
+            changed += 1
+    if changed:
+        db.session.commit()
+        print(f"[admin_view_chat] marked_user_msgs_read={changed}")
 
     return render_template('chat/admin_view_chat.html', chat=chat, messages=messages)
 
@@ -158,9 +193,10 @@ def admin_view_chat(chat_id):
 @admin_2fa_required
 def admin_reply(chat_id):
     chat = SupportChat.query.get_or_404(chat_id)
-    message = request.form.get('message')
+    message = request.form.get('message', '').strip()
 
     if not message:
+        print("[admin_reply] empty message")
         return jsonify({'error': 'Message is required'}), 400
 
     msg = SupportMessage(
@@ -171,5 +207,7 @@ def admin_reply(chat_id):
     )
     db.session.add(msg)
     db.session.commit()
+    print(f"[admin_reply] saved msg_id={msg.id} for chat_id={chat.id}")
 
     return redirect(url_for('chat_blueprint.admin_view_chat', chat_id=chat.id))
+
