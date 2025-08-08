@@ -80,3 +80,27 @@
   );
 }
 
+
+/* Limit chat history height and make it scrollable */
+.chat-history {
+  font-size: 14px;
+  line-height: 1.45;
+
+  max-height: 60vh;         /* limit height to 60% of viewport */
+  overflow-y: auto;         /* scroll vertically if content exceeds */
+  padding-right: 8px;       /* space for scrollbar */
+  box-sizing: border-box;
+}
+
+/* Optional: nice-looking scrollbar (WebKit browsers) */
+.chat-history::-webkit-scrollbar {
+  width: 6px;
+}
+.chat-history::-webkit-scrollbar-track {
+  background: transparent;
+}
+.chat-history::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);
+  border-radius: 3px;
+}
+
