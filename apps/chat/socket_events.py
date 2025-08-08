@@ -133,3 +133,18 @@ def _on_connect():
 @socketio.on('disconnect')
 def _on_disconnect():
     print(f"[socket] disconnect sid={request.sid}")
+
+
+@socketio.on('typing')
+def handle_typing(data):
+    chat_id = data.get('chat_id')
+    is_typing = bool(data.get('isTyping'))
+
+    if not chat_id or not current_user.is_authenticated:
+        return {"ok": False}
+
+    # Don’t send typing notifications to the typist; only to the other party
+    room_name = f"chat_{chat_id}"
+    emit('typing', {'chat_id': chat_id, 'isTyping': is_typing}, room=room_name, include_self=False)
+    return {"ok": True}
+

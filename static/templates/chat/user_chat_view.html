@@ -4,8 +4,8 @@
 
 {% block extra_css %}{{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/chat/chat.css') }}">
-{# optional #}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/chat/chat-input.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chat/chat-typing.css') }}">
 {% endblock %}
 
 
@@ -45,5 +45,6 @@
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script src="{{ url_for('static', filename='js/chat/chat-core.js') }}"></script>
 <script src="{{ url_for('static', filename='js/chat/chat-input.js') }}"></script>
+<script src="{{ url_for('static', filename='js/chat/chat-typing.js') }}"></script>
 <script src="{{ url_for('static', filename='js/chat/user_chat.js') }}"></script>
 {% endblock %}

@@ -1,0 +1,6 @@
+/* static/css/chat/chat-typing.css */
+.typing-indicator {
+  margin-top: 6px;
+  font-size: 12px;
+  opacity: 0.75;
+}
