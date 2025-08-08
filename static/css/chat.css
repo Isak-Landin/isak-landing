@@ -24,3 +24,38 @@
 /* Optional “who sent it” accent via me/them */
 .chat-message.me .sender { color: #0b5ed7; }
 .chat-message.them .sender { color: #6c757d; }
+
+
+/* --- Chat form: textarea on one row, full-width button below --- */
+.chat-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;                 /* space between textarea and button */
+  margin-top: 12px;
+}
+
+.chat-form textarea {
+  width: 100%;
+  min-height: 110px;        /* comfy typing area */
+  padding: 12px;
+  resize: vertical;         /* allow user to grow it, but no horizontal scroll */
+  box-sizing: border-box;
+}
+
+.chat-form .button {
+  display: inline-block;
+  width: 100%;              /* full-width button under textarea */
+  padding: 12px 16px;
+  text-align: center;       /* in case your .button doesn't already center text */
+}
+
+/* Optional: make the send button stick to bottom of viewport on long threads */
+/*
+.split-section .container .chat-form {
+  position: sticky;
+  bottom: 0;
+  background: rgba(255,255,255,0.85);  // adjust to your theme
+  backdrop-filter: blur(4px);
+  padding-top: 8px;
+}
+*/
