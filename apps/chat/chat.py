@@ -68,13 +68,11 @@ def send_message():
 # --------------------------
 # USER: View specific chat (requires chat_id)
 # --------------------------
-# /chat/view?chat_id=<id>
 @chat_blueprint.route('/view', methods=['GET'])
 @login_required
 def view_user_chat():
     chat_id = request.args.get('chat_id', type=int)
     if not chat_id:
-        # empty page – no chat context
         return render_template('chat/user_chat_empty.html')
 
     chat = SupportChat.query.get_or_404(chat_id)
@@ -83,37 +81,35 @@ def view_user_chat():
 
     raw_msgs = (SupportMessage.query
                 .filter_by(chat_id=chat.id)
-                .order_by(SupportMessage.timestamp.asc())
+                .order_by(SupportMessage.timestamp.asc())   # or .created_at.asc()
                 .all())
 
     me_email = getattr(current_user, "email", None)
 
     def label_for(m):
-        if m.sender == SenderRole.admin:
-            # prefer stored email; fallback if legacy rows are NULL
+        if _is_admin_sender(m):
             email = m.sender_email or "admin"
             return f"{email} (admin)"
         else:
-            # user message
+            # Prefer stored sender_email; fallback to me (viewer); then "user"
             return m.sender_email or me_email or "user"
 
     msgs = []
     for m in raw_msgs:
-        sender_email = m.sender_email  # can be None on legacy rows
-        is_admin = (m.sender == SenderRole.admin)
+        sender_email = m.sender_email
+        is_admin = _is_admin_sender(m)
         sender_label = label_for(m)
 
-        # “mine” if email matches me (best) else role matches
-        is_mine = False
+        # “mine” for user page: my email match, else non-admin
         if sender_email and me_email:
             is_mine = sender_email.lower() == me_email.lower()
         else:
-            is_mine = not is_admin  # on user page, non-admin is me
+            is_mine = not is_admin
 
         msgs.append({
             "id": m.id,
             "content": m.message,
-            "timestamp": m.timestamp,        # keep datetime; template can filter later
+            "timestamp": m.timestamp,       # keep as datetime for now
             "sender_label": sender_label,
             "sender_is_admin": is_admin,
             "is_mine": is_mine,
@@ -218,9 +214,13 @@ def admin_inbox():
     return render_template('chat/admin_chat_inbox.html', chats=inbox)
 
 
-# --------------------------
-# ADMIN: View specific chat
-# --------------------------
+def _is_admin_sender(m):
+    # tolerant to legacy rows where sender might be stored as string
+    return (m.sender == SenderRole.admin) or (m.sender == "admin")
+
+# ----------------------------
+# Admin chat view
+# ----------------------------
 @chat_blueprint.route('/admin/view/<int:chat_id>', methods=['GET'])
 @admin_required
 @admin_2fa_required
@@ -229,27 +229,27 @@ def admin_view_chat(chat_id):
 
     raw_msgs = (SupportMessage.query
                 .filter_by(chat_id=chat.id)
-                .order_by(SupportMessage.timestamp.asc())
+                .order_by(SupportMessage.timestamp.asc())   # or .created_at.asc()
                 .all())
 
     me_email = getattr(current_user, "email", None)
 
     def label_for(m):
-        if m.sender == SenderRole.admin:
+        if _is_admin_sender(m):
             email = m.sender_email or "admin"
             return f"{email} (admin)"
         else:
-            # show the user's email if present; fallback to “user”
-            return m.sender_email or "user"
+            # Prefer stored sender_email; fallback to chat.user.email; then "user"
+            fallback_user_email = chat.user.email if getattr(chat, "user", None) else None
+            return m.sender_email or fallback_user_email or "user"
 
     msgs = []
     for m in raw_msgs:
         sender_email = m.sender_email
-        is_admin = (m.sender == SenderRole.admin)
+        is_admin = _is_admin_sender(m)
         sender_label = label_for(m)
 
-        # “mine” on admin page means admin messages (or email match)
-        is_mine = False
+        # “mine” on admin page: admin messages, or exact email match for safety
         if sender_email and me_email:
             is_mine = sender_email.lower() == me_email.lower()
         else:
@@ -258,7 +258,7 @@ def admin_view_chat(chat_id):
         msgs.append({
             "id": m.id,
             "content": m.message,
-            "timestamp": m.timestamp,
+            "timestamp": m.timestamp,       # keep as datetime for now
             "sender_label": sender_label,
             "sender_is_admin": is_admin,
             "is_mine": is_mine,
