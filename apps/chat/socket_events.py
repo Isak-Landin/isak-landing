@@ -69,10 +69,12 @@ def handle_send_message(data):
     db.session.add(msg)
     db.session.commit()
 
+    print(f"📥 Received message from {sender} in chat {chat_id}: {message}")
     emit('receive_message', {
         'chat_id': chat_id,
         'message': message,
         'sender': sender,
         'timestamp': msg.timestamp.strftime('%Y-%m-%d %H:%M:%S')
     }, room=f"chat_{chat_id}")
+    print(f"📤 Emitted to room chat_{chat_id}")
 

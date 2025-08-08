@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   socket.on("receive_message", data => {
     console.log('receive_message', data);
+    console.log("📩 receive_message event fired:", data);
     if (data.chat_id !== chatId) return;
 
     const msgDiv = document.createElement("div");
