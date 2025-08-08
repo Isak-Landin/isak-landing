@@ -98,3 +98,12 @@ def handle_send_message(data):
     emit('receive_message', payload, to=request.sid)
     print("--- [send_message] Done ---\n")
 
+
+@socketio.on('connect')
+def _on_connect():
+    print(f"[socket] connect sid={request.sid}")
+
+
+@socketio.on('disconnect')
+def _on_disconnect():
+    print(f"[socket] disconnect sid={request.sid}")

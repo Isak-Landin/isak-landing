@@ -46,6 +46,8 @@ def create_app():
 
     socketio.init_app(_app)
 
+    import apps.chat.socket_events
+
     # Load environment variables
     load_dotenv()
 
