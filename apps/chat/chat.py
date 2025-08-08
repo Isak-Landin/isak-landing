@@ -282,6 +282,10 @@ def admin_reply(chat_id):
         print("[admin_reply] empty message")
         return jsonify({'error': 'Message is required'}), 400
 
+    print("[DEBUG] current_user =", current_user)
+    print("[DEBUG] type:", type(current_user))
+    print("[DEBUG] email:", getattr(current_user, "email", None))
+
     msg = SupportMessage(
         chat_id=chat.id,
         sender=SenderRole.admin,
