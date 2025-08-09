@@ -47,3 +47,16 @@ class VPSPlan(db.Model):
 
     def __repr__(self):
         return f"<VPSPlan {self.name} - {self.cpu_cores} cores, {self.ram_mb}MB RAM, {self.disk_gb}GB Disk>"
+
+
+class VpsOrder(db.Model):
+    __tablename__ = "vps_orders"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False, index=True)
+    plan_id = db.Column(db.String(50), nullable=False)
+    price_cents = db.Column(db.Integer, nullable=False)
+    currency = db.Column(db.String(10), nullable=False, default="eur")
+    stripe_session_id = db.Column(db.String(255), index=True)
+    status = db.Column(db.String(20), nullable=False, default="created")  # created|paid|failed|canceled
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
