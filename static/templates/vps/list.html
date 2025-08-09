@@ -1,0 +1,50 @@
+{# static/templates/vps/list.html #}
+{% extends "layouts/base.html" %}
+{% block title %}VPS Plans{% endblock %}
+
+{% block extra_css %}{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/vps/vps.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="radial-dark-section hero-condensed">
+  <div class="container">
+    <h1>Choose your VPS</h1>
+    <p class="intro-lead">Simple monthly pricing. Scale later.</p>
+  </div>
+</section>
+
+<section class="split-section">
+  <div class="container">
+    <div class="plans-grid">
+      {% for p in plans %}
+      <article class="plan-card">
+        <header class="plan-head">
+          <h3>{{ p.name }}</h3>
+          {% if p.badge %}<span class="badge">{{ p.badge }}</span>{% endif %}
+        </header>
+
+        <div class="price">
+          €{{ '%.2f' % (p.price_cents / 100.0) }} <span class="per">/month</span>
+        </div>
+
+        <ul class="specs">
+          <li><strong>{{ p.specs.vCPU }}</strong> vCPU</li>
+          <li><strong>{{ p.specs.RAM_GB }}</strong> GB RAM</li>
+          <li><strong>{{ p.specs.SSD_GB }}</strong> GB SSD</li>
+          <li><strong>{{ p.specs.Bandwidth_TB }}</strong> TB traffic</li>
+        </ul>
+
+        <form action="{{ url_for('vps.checkout', plan_id=p.id) }}" method="post">
+          {% if current_user.is_authenticated %}
+            <button class="button primary" type="submit">Buy {{ p.name }}</button>
+          {% else %}
+            <a class="button" href="{{ url_for('users.login') }}?next={{ url_for('vps.checkout', plan_id=p.id) }}">Log in to buy</a>
+          {% endif %}
+        </form>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

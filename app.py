@@ -18,6 +18,7 @@ from apps.store.store import store_blueprint
 from apps.admin.admin import admin_blueprint
 
 from apps.chat.chat import chat_blueprint
+from apps.VPS.vps import vps_blueprint
 
 from flask_login import LoginManager
 import os
@@ -66,6 +67,8 @@ def create_app():
     _app.register_blueprint(admin_blueprint)
 
     _app.register_blueprint(chat_blueprint)
+
+    _app.register_blueprint(vps_blueprint)
 
     # Register Jinja filters
     register_jinja_filters(_app)

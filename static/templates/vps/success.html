@@ -1,0 +1,12 @@
+{# static/templates/vps/success.html #}
+{% extends "layouts/dashboard_base.html" %}
+{% block title %}Payment successful{% endblock %}
+{% block dashboard_content %}
+<section class="radial-dark-section hero-condensed">
+  <div class="container">
+    <h1>Payment successful</h1>
+    <p class="intro-lead">Your VPS order is being prepared.</p>
+    <a class="button" href="{{ url_for('dashboard') }}">Go to dashboard</a>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,12 @@
+{# static/templates/vps/cancel.html #}
+{% extends "layouts/base.html" %}
+{% block title %}Payment canceled{% endblock %}
+{% block content %}
+<section class="radial-dark-section hero-condensed">
+  <div class="container">
+    <h1>Payment canceled</h1>
+    <p class="intro-lead">No charges were made.</p>
+    <a class="button" href="{{ url_for('vps.list_plans') }}">Back to plans</a>
+  </div>
+</section>
+{% endblock %}
