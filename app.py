@@ -46,6 +46,9 @@ def create_app():
 
     login_manager.init_app(_app)
 
+    # Load environment variables
+    load_dotenv()
+
     _app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
     _app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
@@ -54,9 +57,6 @@ def create_app():
     socketio.init_app(_app)
 
     import apps.chat.socket_events
-
-    # Load environment variables
-    load_dotenv()
 
     _app.register_blueprint(home_bp)
     _app.register_blueprint(websites_bp)
