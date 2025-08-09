@@ -18,12 +18,16 @@ from apps.store.store import store_blueprint
 from apps.admin.admin import admin_blueprint
 
 from apps.chat.chat import chat_blueprint
-from apps.VPS.vps import vps_blueprint
+# from apps.VPS.vps import vps_blueprint
 
 from flask_login import LoginManager
 import os
 
 from apps.common.filters import register_jinja_filters
+
+from apps.VPS.seed import seed_vps_plans
+from apps.VPS.vps_catalog import VPS_PLANS
+from apps.VPS.models import VPSPlan
 
 
 login_manager = LoginManager()
@@ -68,7 +72,7 @@ def create_app():
 
     _app.register_blueprint(chat_blueprint)
 
-    _app.register_blueprint(vps_blueprint)
+    # _app.register_blueprint(vps_blueprint)
 
     # Register Jinja filters
     register_jinja_filters(_app)
@@ -103,6 +107,19 @@ with app.app_context():
         db.session.add(default_admin)
         db.session.commit()
         print("✅ Default admin user created (admin / changeme)")
+
+    try:
+        catalog_codes = {p["plan_code"] for p in VPS_PLANS}
+        existing_codes = {p.plan_code for p in VPSPlan.query.all()}
+
+        missing = catalog_codes - existing_codes
+        if missing:
+            seed_vps_plans()
+            print(f"✅ Seeded VPS plans (added/updated: {', '.join(sorted(missing))})")
+        else:
+            print("⏭️  VPS plans already present — skipping seed.")
+    except Exception as e:
+        print(f"⚠️  VPS plan seeding skipped due to error: {e}")
 
 
 if __name__ == '__main__':

@@ -11,6 +11,15 @@ class VPS(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
+    # NEW: 1:1 link to the billing record (subscription)
+    subscription_id = db.Column(
+        db.Integer,
+        db.ForeignKey('vps_subscriptions.id', ondelete='SET NULL'),
+        unique=True,            # enforce one VPS per subscription (MVP rule)
+        nullable=True,
+        index=True
+    )
+
     # Runtime / identity
     hostname = db.Column(db.String(64), nullable=False)
     ip_address = db.Column(db.String(45), nullable=False)  # IPv4/IPv6 safe
@@ -18,30 +27,27 @@ class VPS(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    # Optional extras (existing)
+    # Optional extras
     os = db.Column(db.String(64))                          # e.g. 'Ubuntu 24.04'
     location = db.Column(db.String(64))                    # e.g. 'DE - Frankfurt'
     cpu_cores = db.Column(db.Integer)
     ram_mb = db.Column(db.Integer)
     disk_gb = db.Column(db.Integer)
-    is_ready = db.Column(db.Boolean, default=False)        # Indicates if the VPS is ready for use
+    is_ready = db.Column(db.Boolean, default=False)
 
-    # Provider / provisioning (new, MVP-safe)
+    # Provider / provisioning
     provider = db.Column(db.String(40), nullable=False, default='hostup')
-    provider_order_id = db.Column(db.String(120))          # order/ref id from provider
-    provider_vm_id = db.Column(db.String(120))             # VM id from provider
+    provider_order_id = db.Column(db.String(120))
+    provider_vm_id = db.Column(db.String(120))
     region = db.Column(db.String(60))
-    image = db.Column(db.String(120))                      # OS image slug
+    image = db.Column(db.String(120))
     ssh_key_id = db.Column(db.String(120))
-    provisioning_status = db.Column(                       # pending|provisioned|failed|deprovisioned
-        db.String(20),
-        nullable=False,
-        default='pending'
-    )
+    provisioning_status = db.Column(db.String(20), nullable=False, default='pending')
     notes = db.Column(db.String(1000))
 
-    # Relationship (optional if backref)
+    # Relationships
     user = db.relationship('User', backref=db.backref('vps_list', lazy=True))
+    subscription = db.relationship('VpsSubscription', backref=db.backref('vps', uselist=False))
 
 
 class VPSPlan(db.Model):
