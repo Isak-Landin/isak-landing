@@ -3,8 +3,6 @@ import os
 from flask import jsonify, request, abort, Blueprint
 from apps.VPS.stripe.catalog import get_price_map, bust_cache
 
-import apps.VPS.routes
-
 
 vps_blueprint = Blueprint("vps_blueprint", __name__, url_prefix="/vps")
 
@@ -24,3 +22,6 @@ def vps_dev_price_map():
         return jsonify({"ok": True, "price_map": price_map})
     except Exception as e:
         return jsonify({"ok": False, "error": str(e)}), 500
+
+
+import apps.VPS.routes
