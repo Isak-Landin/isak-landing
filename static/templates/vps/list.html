@@ -1,8 +1,8 @@
 {# static/templates/vps/list.html #}
-{% extends "layouts/base.html" %}
+{% extends "layouts/dashboard_base.html" %}
 {% block title %}VPS Plans{% endblock %}
 
-{% block content %}
+{% block dashboard_content %}
 <section class="radial-dark-section hero-condensed">
   <div class="container">
     <h1>Choose your VPS</h1>
@@ -30,11 +30,13 @@
         {% if current_user.is_authenticated %}
           <div class="actions">
             <button class="button primary"
-                    onclick="startCheckout('{{ p.plan_code }}','month')">
+                    data-plan="{{ p.plan_code }}"
+                    data-interval="month">
               Buy monthly
             </button>
             <button class="button"
-                    onclick="startCheckout('{{ p.plan_code }}','year')">
+                    data-plan="{{ p.plan_code }}"
+                    data-interval="year">
               Buy yearly
             </button>
           </div>
@@ -51,21 +53,9 @@
 </section>
 
 {% if current_user.is_authenticated %}
-<script>
-async function startCheckout(planCode, interval) {
-  try {
-    const res = await fetch('{{ url_for("vps_blueprint.vps_checkout") }}', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ plan_code: planCode, interval })
-    });
-    const data = await res.json();
-    if (!data.ok) throw new Error(data.error || 'Checkout failed');
-    window.location = data.checkout_url;
-  } catch (e) {
-    alert(e.message || 'Something went wrong starting checkout.');
-  }
-}
-</script>
+  <script>
+    window.VPS_CHECKOUT_URL = "{{ url_for('vps_blueprint.checkout') }}";
+  </script>
+  <script src="{{ url_for('static', filename='js/vps/list.js') }}"></script>
 {% endif %}
 {% endblock %}

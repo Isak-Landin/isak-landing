@@ -2,6 +2,7 @@ from flask import jsonify, render_template
 from apps.VPS.models import VPSPlan
 from apps.VPS.vps import vps_blueprint
 
+
 @vps_blueprint.route("/", methods=["GET"])
 def vps_list_page():
     plans = (
