@@ -1,73 +1,82 @@
-/* Scope: only styles the VPS plan cards/grid; dashboard.css still handles layout */
-
-/* Responsive grid */
+/* Grid for plan cards */
 .plans-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
-/* Individual plan cards */
+/* Card */
 .plan-card {
-  background-color: #1f2331;
-  border-radius: 12px;
-  padding: 1.5rem;
-  color: #ccc;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: #1f2331;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 1.25rem 1.25rem 1rem;
+  color: #d7d8df;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.12);
   display: flex;
   flex-direction: column;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
-
 .plan-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+  border-color: rgba(116,164,255,0.35);
 }
 
-/* Card header */
-.plan-head h3 {
-  color: #fff;
-  margin-bottom: 0.25rem;
-}
+/* Head */
+.plan-title { color:#fff; margin:0 0 .25rem 0; font-size:1.15rem; }
+.plan-sub   { margin:0; color:#9aa3b2; font-size:.95rem; }
 
-.plan-head .muted {
-  color: #999;
-  font-size: 0.9rem;
-}
-
-/* Specs list */
-.specs {
-  list-style: none;
-  padding: 0;
-  margin: 1rem 0 1.5rem;
-}
-
+/* Specs */
+.specs { list-style:none; padding:0; margin:.6rem 0 1.1rem 0; }
 .specs li {
-  padding: 0.4rem 0;
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+  padding:.4rem 0;
+  border-bottom:1px dashed rgba(255,255,255,0.08);
+}
+.specs li:last-child { border-bottom:none; }
+.specs strong { color:#fff; }
+
+/* Actions – always fit inside card */
+.plan-actions {
+  margin-top:auto;
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:.6rem;
 }
 
-.specs li:last-child {
-  border-bottom: none;
-}
-
-.specs strong {
+/* Button component (no shared .button class) */
+.plan-btn {
+  display: inline-flex;
+  align-items:center;
+  justify-content:center;
+  width: 100%;
+  min-height: 40px;
+  padding: .55rem .9rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: #2f6fe4;
   color: #fff;
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
+  box-sizing: border-box; /* prevents overflow */
 }
+.plan-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.2); }
+.plan-btn:active { transform: translateY(0); box-shadow: none; }
 
-/* Actions (buttons) */
-.actions {
-  margin-top: auto;
-  display: flex;
-  gap: 0.6rem;
-}
+/* Variants */
+.plan-btn--primary { background:#3677ec; }
+.plan-btn--primary:hover { background:#3f82fb; }
 
-.button.outline {
+.plan-btn--ghost {
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.6);
-  color: #fff;
+  border-color: rgba(255,255,255,0.6);
+  color:#fff;
 }
+.plan-btn--ghost:hover { border-color:#fff; }
 
-.button.outline:hover {
-  border-color: #fff;
-}
+/* Standalone login button spacing when there's no .plan-actions */
+.plan-card > .plan-btn { margin-top: auto; }
