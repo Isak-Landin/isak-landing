@@ -1,6 +1,9 @@
-{# static/templates/vps/list.html #}
 {% extends "layouts/dashboard_base.html" %}
 {% block title %}VPS Plans{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_vps.css') }}">
+{% endblock %}
 
 {% block dashboard_content %}
 <section class="radial-dark-section hero-condensed">
@@ -10,7 +13,7 @@
   </div>
 </section>
 
-<section class="split-section">
+<section class="split-section vps-page">  {# <-- add vps-page for scoping #}
   <div class="container">
     <div class="plans-grid">
       {% for p in plans %}
@@ -29,14 +32,10 @@
 
         {% if current_user.is_authenticated %}
           <div class="actions">
-            <button class="button primary"
-                    data-plan="{{ p.plan_code }}"
-                    data-interval="month">
+            <button class="button primary" data-plan="{{ p.plan_code }}" data-interval="month">
               Buy monthly
             </button>
-            <button class="button"
-                    data-plan="{{ p.plan_code }}"
-                    data-interval="year">
+            <button class="button outline" data-plan="{{ p.plan_code }}" data-interval="year">
               Buy yearly
             </button>
           </div>
