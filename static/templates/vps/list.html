@@ -20,7 +20,7 @@
       <article class="plan-card">
         <header class="plan-head">
           <h3 class="plan-title">{{ p.name }}</h3>
-          {% if p.description %}<p class="plan-sub">{{ p.description }}</p>{% endif %}
+          {# description removed on purpose #}
         </header>
 
         <ul class="specs">
@@ -28,23 +28,20 @@
           <li><strong>{{ p.ram_gb }}</strong> GB RAM</li>
           <li><strong>{{ p.ssd_gb }}</strong> GB NVMe</li>
           <li><strong>{{ p.bandwidth_tb }}</strong> TB bandwidth</li>
+          <li><strong>OS</strong> of choice</li>
         </ul>
 
         {% if current_user.is_authenticated %}
           <div class="plan-actions">
-            <button class="plan-btn plan-btn--primary"
-                    data-plan="{{ p.plan_code }}" data-interval="month">
-              Buy monthly
-            </button>
             <button class="plan-btn plan-btn--ghost"
-                    data-plan="{{ p.plan_code }}" data-interval="year">
-              Buy yearly
+                    data-plan="{{ p.plan_code }}" data-interval="month">
+              Get
             </button>
           </div>
         {% else %}
           <a class="plan-btn plan-btn--ghost"
              href="{{ url_for('auth_blueprint.login') }}?next={{ url_for('vps_blueprint.vps_list_page') }}">
-            Log in to buy
+            Log in to get
           </a>
         {% endif %}
       </article>
@@ -55,6 +52,7 @@
 
 {% if current_user.is_authenticated %}
   <script>
+    // For now default interval = month. We can add a chooser later.
     window.VPS_CHECKOUT_URL = "{{ url_for('vps_blueprint.vps_checkout') }}";
   </script>
   <script src="{{ url_for('static', filename='js/vps/list.js') }}"></script>

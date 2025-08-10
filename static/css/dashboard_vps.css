@@ -1,82 +1,72 @@
 /* Grid for plan cards */
-.plans-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.25rem;
+.plans-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.25rem;
 }
 
 /* Card */
-.plan-card {
-  background: #1f2331;
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 14px;
-  padding: 1.25rem 1.25rem 1rem;
-  color: #d7d8df;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.12);
-  display: flex;
-  flex-direction: column;
-  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+.plan-card{
+  background:#1f2331;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:14px;
+  padding:1.1rem 1.1rem 1rem;
+  color:#d7d8df;
+  box-shadow:0 2px 10px rgba(0,0,0,.12);
+  display:flex;
+  flex-direction:column;
+  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  overflow:hidden;               /* ensures nothing spills out */
 }
-.plan-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
-  border-color: rgba(116,164,255,0.35);
+.plan-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 18px rgba(0,0,0,.25);
+  border-color:rgba(116,164,255,.35);
 }
 
 /* Head */
-.plan-title { color:#fff; margin:0 0 .25rem 0; font-size:1.15rem; }
-.plan-sub   { margin:0; color:#9aa3b2; font-size:.95rem; }
+.plan-head{margin-bottom:.2rem;}
+.plan-title{
+  color:#fff;
+  margin:0;
+  font-size:1.2rem;
+  text-align:center;             /* centered title */
+}
 
 /* Specs */
-.specs { list-style:none; padding:0; margin:.6rem 0 1.1rem 0; }
-.specs li {
-  padding:.4rem 0;
-  border-bottom:1px dashed rgba(255,255,255,0.08);
+.specs{list-style:none;padding:0;margin:.6rem 0 1.1rem 0;}
+.specs li{
+  padding:.45rem 0;
+  border-bottom:1px dashed rgba(255,255,255,.08);
 }
-.specs li:last-child { border-bottom:none; }
-.specs strong { color:#fff; }
+.specs li:last-child{border-bottom:none;}
+.specs strong{color:#fff;}
 
-/* Actions – always fit inside card */
-.plan-actions {
-  margin-top:auto;
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap:.6rem;
-}
-
-/* Button component (no shared .button class) */
-.plan-btn {
-  display: inline-flex;
+/* Actions – single button always fits */
+.plan-actions{margin-top:auto;display:block;}
+.plan-btn{
+  display:inline-flex;
   align-items:center;
   justify-content:center;
-  width: 100%;
-  min-height: 40px;
-  padding: .55rem .9rem;
-  border-radius: 10px;
-  border: 1px solid transparent;
-  background: #2f6fe4;
-  color: #fff;
-  font-weight: 700;
-  letter-spacing: .03em;
-  text-transform: uppercase;
-  text-decoration: none;
-  cursor: pointer;
-  transition: transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
-  box-sizing: border-box; /* prevents overflow */
-}
-.plan-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.2); }
-.plan-btn:active { transform: translateY(0); box-shadow: none; }
-
-/* Variants */
-.plan-btn--primary { background:#3677ec; }
-.plan-btn--primary:hover { background:#3f82fb; }
-
-.plan-btn--ghost {
-  background: transparent;
-  border-color: rgba(255,255,255,0.6);
+  width:100%;
+  min-height:40px;
+  padding:.55rem .9rem;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.7);
+  background:transparent;
   color:#fff;
+  font-weight:700;
+  letter-spacing:.03em;
+  text-transform:uppercase;
+  text-decoration:none;
+  cursor:pointer;
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  box-sizing:border-box;
 }
-.plan-btn--ghost:hover { border-color:#fff; }
+.plan-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.2);border-color:#fff;}
+.plan-btn--ghost{ /* keeps the “buy yearly” look */
+  /* already defined by base .plan-btn */
+}
 
-/* Standalone login button spacing when there's no .plan-actions */
-.plan-card > .plan-btn { margin-top: auto; }
+/* When the login link is the only child, keep spacing consistent */
+.plan-card > .plan-btn{margin-top:auto;}
