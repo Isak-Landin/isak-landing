@@ -17,9 +17,29 @@
 
 <section class="split-section">
   <div class="container">
-    <div class="empty-state">
+    <div class="cards-grid">
+      <!-- VPS entry point -->
+      <article class="card card-cta">
+        <h3>Get a VPS</h3>
+        <p>Fast NVMe storage, generous bandwidth, simple monthly pricing.</p>
+        <a class="button primary" href="{{ url_for('vps_blueprint.vps_list_page') }}">View VPS plans</a>
+      </article>
+
+      <!-- Placeholder for future products -->
+      <article class="card muted">
+        <h3>Domains</h3>
+        <p>Coming soon.</p>
+      </article>
+
+      <article class="card muted">
+        <h3>Web Hosting</h3>
+        <p>Coming soon.</p>
+      </article>
+    </div>
+
+    <div class="empty-state" style="margin-top:2rem;">
       <div class="emoji">🛒</div>
-      <p class="empty-text">Our store is still being set up. Please check back soon!</p>
+      <p class="empty-text">More products are on the way. Start with a VPS today.</p>
     </div>
   </div>
 </section>

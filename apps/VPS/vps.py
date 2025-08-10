@@ -3,12 +3,14 @@ import os
 from flask import jsonify, request, abort, Blueprint
 from apps.VPS.stripe.catalog import get_price_map, bust_cache
 
+import apps.VPS.routes
+
 
 vps_blueprint = Blueprint("vps_blueprint", __name__, url_prefix="/vps")
 
 
 # DEV: resolve all plan lookup keys to Stripe Price IDs
-@vps_blueprint.route("/vps/dev/price-map", methods=["GET"])
+@vps_blueprint.route("/dev/price-map", methods=["GET"])
 def vps_dev_price_map():
     # Simple guard so this doesn’t run in production by mistake
     if os.getenv("FLASK_ENV") not in {"development", "docker"} and not os.getenv("DEBUG"):
