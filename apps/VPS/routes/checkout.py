@@ -11,7 +11,7 @@ from extensions import db
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 
 
-@vps_blueprint.route("/vps/checkout", methods=["POST"])
+@vps_blueprint.route("/checkout", methods=["POST"])
 @login_required
 def vps_checkout():
     """
