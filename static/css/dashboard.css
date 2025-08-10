@@ -1,82 +1,157 @@
-/* Grid for plan cards */
-.plans-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.25rem;
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
 }
 
-/* Card */
-.plan-card {
-  background: #1f2331;
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 14px;
-  padding: 1.25rem 1.25rem 1rem;
-  color: #d7d8df;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+.dashboard-sidenav {
+  width: 220px;
+  background-color: #1f2331;
+  padding: 2rem 1.5rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.dashboard-sidenav .nav-title {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  color: #ccc;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.nav-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-links li {
+  margin-bottom: 1rem;
+}
+
+.nav-links a {
+  color: #ccc;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover {
+  color: white;
+}
+
+.dashboard-main {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-}
-.plan-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
-  border-color: rgba(116,164,255,0.35);
 }
 
-/* Head */
-.plan-title { color:#fff; margin:0 0 .25rem 0; font-size:1.15rem; }
-.plan-sub   { margin:0; color:#9aa3b2; font-size:.95rem; }
-
-/* Specs */
-.specs { list-style:none; padding:0; margin:.6rem 0 1.1rem 0; }
-.specs li {
-  padding:.4rem 0;
-  border-bottom:1px dashed rgba(255,255,255,0.08);
-}
-.specs li:last-child { border-bottom:none; }
-.specs strong { color:#fff; }
-
-/* Actions – always fit inside card */
-.plan-actions {
-  margin-top:auto;
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap:.6rem;
-}
-
-/* Button component (no shared .button class) */
-.plan-btn {
-  display: inline-flex;
-  align-items:center;
-  justify-content:center;
-  width: 100%;
-  min-height: 40px;
-  padding: .55rem .9rem;
-  border-radius: 10px;
-  border: 1px solid transparent;
-  background: #2f6fe4;
-  color: #fff;
-  font-weight: 700;
-  letter-spacing: .03em;
-  text-transform: uppercase;
+/* Improved Dashboard Side Nav Styling */
+.nav-links a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  color: #ccc;
   text-decoration: none;
-  cursor: pointer;
-  transition: transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
-  box-sizing: border-box; /* prevents overflow */
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
-.plan-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.2); }
-.plan-btn:active { transform: translateY(0); box-shadow: none; }
 
-/* Variants */
-.plan-btn--primary { background:#3677ec; }
-.plan-btn--primary:hover { background:#3f82fb; }
-
-.plan-btn--ghost {
-  background: transparent;
-  border-color: rgba(255,255,255,0.6);
-  color:#fff;
+.nav-links a:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #fff;
 }
-.plan-btn--ghost:hover { border-color:#fff; }
 
-/* Standalone login button spacing when there's no .plan-actions */
-.plan-card > .plan-btn { margin-top: auto; }
+.nav-links li {
+  margin-bottom: 0.6rem;
+}
+
+.dashboard-sidenav .nav-links .emoji {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.split-section {
+  background-color: #2b3045;
+  border-radius: 12px;
+  margin: 2rem;
+  padding: 3rem 2rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.split-section p {
+  color: #ccc;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.empty-state .emoji {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+}
+
+.empty-state .empty-text {
+  color: #ccc;
+  font-size: 1.05rem;
+  margin-bottom: 1rem;
+}
+
+.split-list li {
+  background-color: #1f2331;
+  padding: 1.25rem 1.5rem;
+  border-radius: 10px;
+  color: #ccc;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+  display: flex;
+  align-items: flex-start;
+}
+
+.split-list li:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.user-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  font-size: 1rem;
+  color: #ccc;
+}
+
+.avatar-emoji {
+  font-size: 1.4rem;
+}
+
+.dashboard-summary {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+}
+
+.dashboard-summary .card {
+  background-color: #1f2331;
+  padding: 1.2rem 1.8rem;
+  border-radius: 10px;
+  color: #ccc;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  font-size: 1.1rem;
+  min-width: 140px;
+  text-align: center;
+}
+
