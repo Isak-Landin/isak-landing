@@ -54,7 +54,7 @@
 
 {% if current_user.is_authenticated %}
   <script>
-    window.VPS_CHECKOUT_URL = "{{ url_for('vps_blueprint.checkout') }}";
+    window.VPS_CHECKOUT_URL = "{{ url_for('vps_blueprint.vps_checkout') }}";
   </script>
   <script src="{{ url_for('static', filename='js/vps/list.js') }}"></script>
 {% endif %}
