@@ -13,14 +13,14 @@
   </div>
 </section>
 
-<section class="split-section vps-page">  {# <-- add vps-page for scoping #}
+<section class="split-section">
   <div class="container">
     <div class="plans-grid">
       {% for p in plans %}
       <article class="plan-card">
         <header class="plan-head">
-          <h3>{{ p.name }}</h3>
-          {% if p.description %}<p class="muted">{{ p.description }}</p>{% endif %}
+          <h3 class="plan-title">{{ p.name }}</h3>
+          {% if p.description %}<p class="plan-sub">{{ p.description }}</p>{% endif %}
         </header>
 
         <ul class="specs">
@@ -31,16 +31,18 @@
         </ul>
 
         {% if current_user.is_authenticated %}
-          <div class="actions">
-            <button class="button primary" data-plan="{{ p.plan_code }}" data-interval="month">
+          <div class="plan-actions">
+            <button class="plan-btn plan-btn--primary"
+                    data-plan="{{ p.plan_code }}" data-interval="month">
               Buy monthly
             </button>
-            <button class="button outline" data-plan="{{ p.plan_code }}" data-interval="year">
+            <button class="plan-btn plan-btn--ghost"
+                    data-plan="{{ p.plan_code }}" data-interval="year">
               Buy yearly
             </button>
           </div>
         {% else %}
-          <a class="button"
+          <a class="plan-btn plan-btn--ghost"
              href="{{ url_for('auth_blueprint.login') }}?next={{ url_for('vps_blueprint.vps_list_page') }}">
             Log in to buy
           </a>
