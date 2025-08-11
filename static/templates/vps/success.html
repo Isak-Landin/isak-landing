@@ -1,15 +1,24 @@
-{# static/templates/vps/success.html #}
-{% extends "layouts/base.html" %}
-{% block title %}Payment successful{% endblock %}
-{% block content %}
-<section class="radial-dark-section hero-condensed">
-  <div class="container">
-    <h1>Payment successful</h1>
-    <p class="intro-lead">Your VPS order is being prepared.</p>
+{% extends "layouts/dashboard_base.html" %}
+{% block title %}Payment Successful{% endblock %}
+
+{% block dashboard_content %}
+<section class="split-section">
+  <div class="container" style="text-align: center;">
+    <div class="emoji" style="font-size: 2.5rem; margin-bottom: 1rem;">✅</div>
+    <h2 style="margin-bottom: 0.5rem;">Payment Successful</h2>
+    <p class="intro-lead" style="margin-bottom: 1.2rem;">
+      Your VPS order is being prepared. You will see it listed in your dashboard once set up.
+    </p>
+
     {% if session_id %}
-      <p class="small muted">Reference: {{ session_id }}</p>
+      <p class="small muted" style="margin-bottom: 1.5rem;">
+        Reference: {{ session_id }}
+      </p>
     {% endif %}
-    <a class="button" href="{{ url_for('vps_blueprint.vps_list_page') }}">Back to plans</a>
+
+    <a href="{{ url_for('users_blueprint.dashboard') }}" class="plan-btn plan-btn--ghost" style="max-width: 200px;">
+      Go to Dashboard
+    </a>
   </div>
 </section>
 {% endblock %}
