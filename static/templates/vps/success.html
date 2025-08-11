@@ -1,22 +1,22 @@
 {% extends "layouts/dashboard_base.html" %}
 {% block title %}Payment Successful{% endblock %}
 
+{% block extra_css %}{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/vps/successful_payment.css') }}">
+{% endblock %}
+
 {% block dashboard_content %}
-<section class="split-section">
-  <div class="container" style="text-align: center;">
-    <div class="emoji" style="font-size: 2.5rem; margin-bottom: 1rem;">✅</div>
-    <h2 style="margin-bottom: 0.5rem;">Payment Successful</h2>
-    <p class="intro-lead" style="margin-bottom: 1.2rem;">
-      Your VPS order is being prepared. You will see it listed in your dashboard once set up.
-    </p>
+<section class="success-container">
+  <div class="success-card">
+    <div class="success-icon">✅</div>
+    <h2>Payment Successful</h2>
+    <p>Your VPS order is being prepared. You will see it listed in your dashboard once set up.</p>
 
     {% if session_id %}
-      <p class="small muted" style="margin-bottom: 1.5rem;">
-        Reference: {{ session_id }}
-      </p>
+      <p class="reference">Reference: {{ session_id }}</p>
     {% endif %}
 
-    <a href="{{ url_for('users_blueprint.dashboard') }}" class="plan-btn plan-btn--ghost" style="max-width: 200px;">
+    <a href="{{ url_for('users_blueprint.dashboard') }}" class="success-btn">
       Go to Dashboard
     </a>
   </div>
