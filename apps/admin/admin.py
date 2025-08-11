@@ -11,6 +11,10 @@ from extensions import db
 
 from decorators import admin_2fa_required, admin_required
 
+# To present purchased VPS:s in admin panel
+from sqlalchemy import func
+from apps.VPS.models import VPS, VpsSubscription, VPSPlan
+
 admin_blueprint = Blueprint("admin_blueprint", __name__, url_prefix="/admin")
 
 
@@ -108,5 +112,115 @@ def get_admin_dashboard_data():
     } for vps in vps_list]
 
     return jsonify({"users": user_data, "vps": vps_data})
+
+
+@admin_blueprint.get("/api/dashboard-data")
+@login_required
+@admin_required
+def get_admin_dashboard_data():
+    # Users with VPS count
+    rows = (
+        db.session.query(User.id, User.email, func.count(VPS.id))
+        .outerjoin(VPS, VPS.user_id == User.id)
+        .group_by(User.id, User.email)
+        .order_by(User.email.asc())
+        .all()
+    )
+    users = [{"email": email, "vps_count": int(cnt)} for (_id, email, cnt) in rows]
+
+    # VPS list
+    vps_rows = (
+        db.session.query(
+            VPS.hostname, VPS.ip_address, VPS.os, VPS.cpu_cores, VPS.ram_mb,
+            User.email.label("owner_email")
+        )
+        .join(User, User.id == VPS.user_id)
+        .order_by(VPS.created_at.desc())
+        .all()
+    )
+    vps_list = [{
+        "hostname": h or "",
+        "ip_address": ip or "",
+        "os": os or "",
+        "cpu_cores": int(cpu or 0),
+        "ram_mb": int(ram or 0),
+        "owner_email": owner or "",
+    } for (h, ip, os, cpu, ram, owner) in vps_rows]
+
+    # Subscriptions list (these are your “orders” to provision)
+    subs = (
+        db.session.query(
+            VpsSubscription.id, VpsSubscription.status, VpsSubscription.interval,
+            VpsSubscription.currency, VpsSubscription.unit_amount,
+            VpsSubscription.stripe_subscription_id,
+            User.email.label("owner_email"),
+            VPSPlan.name.label("plan_name"),
+        )
+        .join(User, User.id == VpsSubscription.user_id)
+        .join(VPSPlan, VPSPlan.id == VpsSubscription.plan_id)
+        .order_by(VpsSubscription.created_at.desc())
+        .all()
+    )
+    subscriptions = [{
+        "id": sid,
+        "owner_email": owner,
+        "plan": plan,
+        "interval": interval,
+        "status": status,
+        "price": f"{(amount or 0):.2f} {currency.upper()}",
+        "stripe_subscription_id": ssub
+    } for (sid, status, interval, currency, amount, ssub, owner, plan) in subs]
+
+    return jsonify({"users": users, "vps": vps_list, "subscriptions": subscriptions})
+
+
+@admin_blueprint.post("/api/provision-vps")
+@login_required
+@admin_required
+@admin_2fa_required
+def provision_vps_from_subscription():
+    data = request.get_json(silent=True) or {}
+    sub_id = data.get("subscription_id")
+    hostname = data.get("hostname") or ""
+    os_choice = data.get("os") or "Ubuntu 24.04"
+
+    if not sub_id or not hostname:
+        return jsonify({"ok": False, "error": "subscription_id and hostname are required"}), 400
+
+    sub = VpsSubscription.query.filter_by(id=sub_id).first()
+    if not sub:
+        return jsonify({"ok": False, "error": "Subscription not found"}), 404
+
+    # Idempotency: one VPS per subscription (your model has unique=True on subscription_id)
+    if sub.vps:
+        return jsonify({"ok": True, "idempotent": True, "vps_id": sub.vps.id})
+
+    # Allow only good statuses
+    if sub.status not in ("active", "trialing"):
+        return jsonify({"ok": False, "error": f"Subscription status '{sub.status}' is not provisionable"}), 409
+
+    plan = sub.plan
+    user = sub.user
+    if not plan or not user:
+        return jsonify({"ok": False, "error": "Subscription missing user/plan link"}), 409
+
+    vps = VPS(
+        user_id=user.id,
+        subscription_id=sub.id,
+        hostname=hostname,
+        ip_address="pending",
+        os=os_choice,
+        cpu_cores=plan.cpu_cores,
+        ram_mb=plan.ram_mb,
+        disk_gb=plan.disk_gb,
+        provider="hostup",
+        provisioning_status="pending",
+        is_ready=False,
+    )
+    db.session.add(vps)
+    db.session.commit()
+
+    return jsonify({"ok": True, "vps_id": vps.id})
+
 
 

@@ -26,6 +26,7 @@ def _log_event(event, valid_sig: bool):
     db.session.commit()
     return row, True
 
+
 def _upsert_subscription_from_stripe(stripe_sub):
     """
     Create/update VpsSubscription row from a stripe.Subscription object.

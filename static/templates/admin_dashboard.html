@@ -1,96 +1,93 @@
-{% extends "layouts/base.html" %}
-
+{# static/templates/admin_dashboard.html #}
+{% extends "layouts/admin_dashboard_base.html" %}
 {% block title %}Admin Dashboard{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
-{% endblock %}
+{% block extra_css %}{{ super() }}{% endblock %}
 
-{% block content %}
-
-<div class="dashboard-layout">
-  <!-- Side Nav -->
-  <aside class="dashboard-sidenav">
-    <h2 class="nav-title">Admin Panel</h2>
-    <ul class="nav-links">
-      <li><a href="{{ url_for('admin_blueprint.dashboard') }}">👥 Users</a></li>
-      <li><a href="{{ url_for('admin_blueprint.dashboard') }}">🖥️ VPS Instances</a></li>
-      <li><a href="{{ url_for('chat_blueprint.admin_inbox') }}">💬 Chat Inbox</a></li>
-      <li><a href="{{ url_for('auth_blueprint.logout') }}">🔓 Log Out</a></li>
-    </ul>
-
-  </aside>
-
-  <!-- Main Content -->
-  <main class="dashboard-main">
-    <section class="radial-dark-section hero-condensed">
-      <div class="container">
-        <h1>Admin Overview</h1>
-        <div class="user-meta">
-          <span class="avatar-emoji">🛡️</span>
-          <span class="email">Logged in as Admin</span>
-        </div>
-
-        <div class="hero-marker"></div>
-        <p class="intro-lead">Manage users and VPS instances.</p>
+{% block admin_dashboard_content %}
+  <section class="radial-dark-section hero-condensed">
+    <div class="container">
+      <h1>Admin Overview</h1>
+      <div class="user-meta">
+        <span class="avatar-emoji">🛡️</span>
+        <span class="email">Logged in as Admin</span>
       </div>
-    </section>
-
-    <!-- Optional: remove summary or update it to use JS later -->
-    <div class="dashboard-summary">
-      <div class="card">👥 <strong id="user-count">–</strong> Users</div>
-      <div class="card">🖥️ <strong id="vps-count">–</strong> VPSes</div>
+      <div class="hero-marker"></div>
+      <p class="intro-lead">Manage users, subscriptions, and VPS instances.</p>
     </div>
+  </section>
 
-    <section class="split-section">
-      <div class="container">
-        <!-- Tab Controls -->
-        <div class="admin-tab-bar">
-          <div class="tab-pill active" id="tab-users">👥 Users</div>
-          <div class="tab-pill" id="tab-vps">🖥️ VPS</div>
-        </div>
+  <div class="dashboard-summary">
+    <div class="card">👥 <strong id="user-count">–</strong> Users</div>
+    <div class="card">🧾 <strong id="sub-count">–</strong> Subscriptions</div>
+    <div class="card">🖥️ <strong id="vps-count">–</strong> VPSes</div>
+  </div>
 
-        <!-- Users Table -->
-        <div class="table-container" id="users-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Email</th>
-                <th>VPS Count</th>
-              </tr>
-            </thead>
-            <tbody id="users-body">
-              <!-- Filled dynamically -->
-            </tbody>
-          </table>
-        </div>
-
-        <!-- VPS Table -->
-        <div class="table-container hidden" id="vps-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Hostname</th>
-                <th>IP</th>
-                <th>OS</th>
-                <th>CPU</th>
-                <th>RAM</th>
-                <th>Owner</th>
-              </tr>
-            </thead>
-            <tbody id="vps-body">
-              <!-- Filled dynamically -->
-            </tbody>
-          </table>
-        </div>
+  <section class="split-section">
+    <div class="container">
+      <!-- Tabs -->
+      <div class="admin-tab-bar">
+        <div class="tab-pill active" id="tab-users">👥 Users</div>
+        <div class="tab-pill" id="tab-subs">🧾 Subscriptions</div>
+        <div class="tab-pill" id="tab-vps">🖥️ VPS</div>
       </div>
-    </section>
-  </main>
-</div>
+
+      <!-- Users Table -->
+      <div class="table-container" id="users-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>VPS Count</th>
+            </tr>
+          </thead>
+          <tbody id="users-body">
+            {# filled by JS #}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Subscriptions Table -->
+      <div class="table-container hidden" id="subs-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Owner</th>
+              <th>Plan</th>
+              <th>Interval</th>
+              <th>Status</th>
+              <th>Price</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="subs-body">
+            {# filled by JS #}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- VPS Table -->
+      <div class="table-container hidden" id="vps-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Hostname</th>
+              <th>IP</th>
+              <th>OS</th>
+              <th>CPU</th>
+              <th>RAM</th>
+              <th>Owner</th>
+            </tr>
+          </thead>
+          <tbody id="vps-body">
+            {# filled by JS #}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+{% endblock %}
 
 {% block extra_js %}
-<script src="{{ url_for('static', filename='js/admin_dashboard.js') }}"></script>
-{% endblock %}
-
+<script src="{{ url_for('static', filename='js/vps_table.js') }}"></script>
 {% endblock %}
