@@ -1,11 +1,24 @@
-{% extends "layouts/base.html" %}
-{% block title %}Payment canceled{% endblock %}
-{% block content %}
-<section class="radial-dark-section hero-condensed">
-  <div class="container">
-    <h1>Payment canceled</h1>
-    <p class="intro-lead">No charges were made.</p>
-    <a class="button" href="{{ url_for('vps_blueprint.vps_list_page') }}">Back to plans</a>
+{% extends "layouts/dashboard_base.html" %}
+{% block title %}Payment Canceled{% endblock %}
+
+{% block extra_css %}{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/vps/successful_payment.css') }}">
+{% endblock %}
+
+{% block dashboard_content %}
+<section class="success-container">
+  <div class="success-card">
+    <div class="success-icon">❌</div>
+    <h2>Payment Canceled</h2>
+    <p>No charge was made. You can choose another plan anytime.</p>
+
+    {% if session_id %}
+      <p class="reference">Reference: {{ session_id }}</p>
+    {% endif %}
+
+    <a href="{{ url_for('vps_blueprint.vps_list_page') }}" class="success-btn">
+      Back to Plans
+    </a>
   </div>
 </section>
 {% endblock %}
