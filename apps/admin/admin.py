@@ -90,30 +90,6 @@ def dashboard():
     return render_template('admin_dashboard.html', users=users, vps_list=vps_list)
 
 
-@admin_blueprint.route('/api/dashboard-data')
-@login_required
-@admin_required
-def get_admin_dashboard_data():
-    users = User.query.all()
-    vps_list = VPS.query.all()
-
-    user_data = [{
-        "email": user.email,
-        "vps_count": len(user.vps_list)  # <-- correct backref name
-    } for user in users]
-
-    vps_data = [{
-        "hostname": vps.hostname,
-        "ip_address": vps.ip_address,
-        "os": vps.os,
-        "cpu_cores": vps.cpu_cores,
-        "ram_mb": vps.ram_mb,
-        "owner_email": vps.user.email if vps.user else "Unknown"
-    } for vps in vps_list]
-
-    return jsonify({"users": user_data, "vps": vps_data})
-
-
 @admin_blueprint.get("/api/dashboard-data")
 @login_required
 @admin_required
