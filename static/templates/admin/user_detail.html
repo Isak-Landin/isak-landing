@@ -1,6 +1,10 @@
 {% extends "admin_dashboard_base.html" %}
 {% block title %}Admin · User #{{ user.id }}{% endblock %}
 
+{% block extra_css %}{{ super() }}
+{ % endblock %}
+
+
 {% block content %}
 <div class="admin-header">
   <a href="/admin/dashboard" class="text-sm">&larr; Back to Admin Dashboard</a>
@@ -101,4 +105,21 @@
     {% endif %}
 
     <h3 style="margin-top:1rem;">VPS Instances</h3>
-    {% if vps_list and vps_lis
+    {% if vps_list and vps_list|length %}
+      <ul class="list">
+        {% for v in vps_list %}
+          <li>
+            <a href="/admin/vps/{{ v.id }}">VPS #{{ v.id }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="muted">No VPS instances.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %} {{ super() }}
+  <script src="{{ url_for('static', filename='js/admin/users_detail.js') }}"></script>
+{% endblock %}
