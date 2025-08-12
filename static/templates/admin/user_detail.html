@@ -1,0 +1,104 @@
+{% extends "admin_dashboard_base.html" %}
+{% block title %}Admin · User #{{ user.id }}{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+  <a href="/admin/dashboard" class="text-sm">&larr; Back to Admin Dashboard</a>
+  <h1 class="page-title">User #{{ user.id }}</h1>
+  <p class="muted">
+    Created: {{ user.created_at or "—" }} · Updated: {{ user.updated_at or "—" }} · Last login: {{ user.last_login_at or "—" }}
+  </p>
+</div>
+
+<div id="flash" class="flash" style="display:none;"></div>
+
+<div class="grid" style="display:grid;grid-template-columns:1.2fr 0.8fr;gap:1.25rem;">
+  <!-- Left: Editable profile -->
+  <section class="card" style="padding:1rem;">
+    <h2>Profile</h2>
+    <form id="user-form" data-user-id="{{ user.id }}">
+      <div class="form-row">
+        <label for="first_name">First name</label>
+        <input id="first_name" name="first_name" type="text" value="{{ user.first_name or '' }}">
+      </div>
+
+      <div class="form-row">
+        <label for="last_name">Last name</label>
+        <input id="last_name" name="last_name" type="text" value="{{ user.last_name or '' }}">
+      </div>
+
+      <div class="form-row">
+        <label for="phone">Phone</label>
+        <input id="phone" name="phone" type="text" value="{{ user.phone or '' }}">
+      </div>
+
+      <div class="form-row">
+        <label for="notes">Notes (admin only)</label>
+        <textarea id="notes" name="notes" rows="4" placeholder="Internal notes…">{{ user.notes or '' }}</textarea>
+      </div>
+
+      <div class="form-row">
+        <label class="checkbox">
+          <input id="is_active" name="is_active" type="checkbox" {% if user.is_active %}checked{% endif %}>
+          <span>Active account</span>
+        </label>
+      </div>
+
+      <hr>
+
+      <!-- Email (dangerous) -->
+      <div class="form-row">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <label for="email">Email (dangerous)</label>
+          <label class="checkbox" title="Enable to edit email (dangerous)">
+            <input id="toggle-email-edit" type="checkbox">
+            <span>Enable edit</span>
+          </label>
+        </div>
+        <input id="email" name="email" type="email"
+               value="{{ user.email }}"
+               data-original-email="{{ user.email }}"
+               disabled>
+        <div id="email-warning" class="warn" style="display:none;margin-top:0.5rem;">
+          <strong>Heads up:</strong> Changing the email affects login and billing.  
+          <label class="checkbox" style="display:block;margin-top:0.5rem;">
+            <input id="confirm-email-change" type="checkbox">
+            <span>I understand the risk and want to proceed.</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="actions" style="margin-top:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <button id="save-btn" type="button" class="btn primary">Save changes</button>
+        <button id="start-chat-btn" type="button" class="btn" disabled title="Coming soon">Start chat</button>
+        <a href="/admin/dashboard" class="btn ghost">Cancel</a>
+      </div>
+    </form>
+  </section>
+
+  <!-- Right: Related objects & metadata -->
+  <section class="card" style="padding:1rem;">
+    <h2>Customer</h2>
+    <dl class="kv">
+      <dt>ID</dt><dd>{{ user.id }}</dd>
+      <dt>Stripe Customer</dt><dd>{{ user.stripe_customer_id or "—" }}</dd>
+      <dt>Full name</dt><dd>{{ user.full_name }}</dd>
+      <dt>Email</dt><dd>{{ user.email }}</dd>
+      <dt>Active</dt><dd>{{ "Yes" if user.is_active else "No" }}</dd>
+    </dl>
+
+    <h3 style="margin-top:1rem;">Subscriptions</h3>
+    {% if subs and subs|length %}
+      <ul class="list">
+        {% for s in subs %}
+          <li>
+            <a href="/admin/subscriptions/{{ s.id }}">Subscription #{{ s.id }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="muted">No subscriptions.</p>
+    {% endif %}
+
+    <h3 style="margin-top:1rem;">VPS Instances</h3>
+    {% if vps_list and vps_lis
