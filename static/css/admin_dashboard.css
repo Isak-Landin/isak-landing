@@ -208,32 +208,29 @@
 .hidden { display: none !important; }
 
 /* Tab Refresh Button */
-.tab-refresh {
+.refresh-btn {
   margin-left: auto;
-  background: none;
+  background: rgba(255,255,255,0.08);
   border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 0.35rem 0.5rem;
-  font-size: 1.1rem;
+  color: rgba(255,255,255,0.85);
+  font-size: 1rem;
   line-height: 1;
-  color: rgba(255,255,255,0.75);
-  transition: color 0.15s ease, transform 0.15s ease;
+  padding: 0.4rem 0.55rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
-.tab-refresh:hover {
-  color: #fff;
+.refresh-btn:hover {
+  background: rgba(255,255,255,0.15);
   transform: rotate(90deg);
 }
 
-.tab-refresh:disabled {
+.refresh-btn:active {
+  transform: rotate(180deg);
+}
+
+.refresh-btn:disabled {
   opacity: 0.4;
   cursor: default;
 }
-
-.refresh-icon {
-  display: inline-block;
-  transform-origin: center;
-}
-
-
