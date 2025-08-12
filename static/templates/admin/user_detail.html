@@ -2,163 +2,216 @@
 {% extends "layouts/admin_dashboard_base.html" %}
 {% block title %}Admin · User #{{ user.id }}{% endblock %}
 
-{% block extra_css %}{{ super() }}{% endblock %}
+{% block extra_css %}{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin/user_detail.css') }}">
+{% endblock %}
 
 {% block admin_dashboard_content %}
 
-  <!-- HERO (matches dashboard look) -->
-  <section class="radial-dark-section hero-condensed">
-    <div class="container">
-      <a href="/admin/dashboard" class="back-link">&larr; Back to Admin Dashboard</a>
-      <h1>User #{{ user.id }}</h1>
-      <div class="hero-marker"></div>
-      <p class="intro-lead">
-        Created: {{ user.created_at or "—" }} · Updated: {{ user.updated_at or "—" }} · Last login: {{ user.last_login_at or "—" }}
+  <!-- HERO -->
+  <header class="ud-hero">
+    <div class="ud-container">
+      <a href="{{ url_for('admin_dashboard.dashboard') if 'admin_dashboard.dashboard' in g.get('url_map', []) else '/admin/dashboard' }}"
+         class="ud-back">&larr; Back to Admin Dashboard</a>
+
+      <div class="ud-hero-top">
+        <h1 class="ud-title">User #{{ user.id }}</h1>
+        <span class="ud-status {{ 'is-active' if user.is_active else 'is-inactive' }}">
+          {{ "Active" if user.is_active else "Inactive" }}
+        </span>
+      </div>
+
+      <p class="ud-meta">
+        <span class="ud-meta-item"><strong>Created</strong> {{ user.created_at or "—" }}</span>
+        <span class="ud-meta-sep">·</span>
+        <span class="ud-meta-item"><strong>Updated</strong> {{ user.updated_at or "—" }}</span>
+        <span class="ud-meta-sep">·</span>
+        <span class="ud-meta-item"><strong>Last login</strong> {{ user.last_login_at or "—" }}</span>
       </p>
     </div>
-  </section>
+  </header>
 
-  <!-- MAIN (uses the same split-section/container rhythm) -->
-  <section class="split-section">
-    <div class="container">
+  <!-- MAIN -->
+  <main class="ud-main">
+    <div class="ud-container">
 
-      <div id="flash" class="flash" aria-live="polite"></div>
+      <div id="flash" class="ud-flash" aria-live="polite" role="status"></div>
 
-      <!-- Row 1: Customer snapshot + Profile editor -->
-      <div class="cards-row">
-        <!-- Customer snapshot -->
-        <div class="card">
-          <h2>Customer</h2>
-          <dl class="kv">
-            <dt>ID</dt><dd>{{ user.id }}</dd>
-            <dt>Stripe Customer</dt><dd>{{ user.stripe_customer_id or "—" }}</dd>
-            <dt>Full name</dt><dd>{{ user.full_name }}</dd>
-            <dt>Email</dt><dd>{{ user.email }}</dd>
-            <dt>Status</dt><dd>{{ "Active" if user.is_active else "Inactive" }}</dd>
-          </dl>
-        </div>
-
-        <!-- Profile editor (Label | Current | Edit) -->
-        <div class="card">
-          <h2>Profile</h2>
-
-          <form id="user-form" data-user-id="{{ user.id }}" class="ud-formgrid">
-            <!-- First name -->
-            <div class="ud-row3">
-              <label for="first_name">First name</label>
-              <div class="ud-current">{{ user.first_name or "—" }}</div>
-              <div class="ud-edit">
-                <input id="first_name" name="first_name" type="text" value="{{ user.first_name or '' }}">
+      <div class="ud-grid ud-grid--two">
+        <!-- SNAPSHOT -->
+        <section class="ud-card" aria-labelledby="snapshot-heading">
+          <header class="ud-card-head">
+            <h2 id="snapshot-heading" class="ud-card-title">Account snapshot</h2>
+          </header>
+          <div class="ud-card-body">
+            <dl class="ud-kv">
+              <div class="ud-kv-row">
+                <dt>ID</dt><dd>{{ user.id }}</dd>
               </div>
-            </div>
-
-            <!-- Last name -->
-            <div class="ud-row3">
-              <label for="last_name">Last name</label>
-              <div class="ud-current">{{ user.last_name or "—" }}</div>
-              <div class="ud-edit">
-                <input id="last_name" name="last_name" type="text" value="{{ user.last_name or '' }}">
+              <div class="ud-kv-row">
+                <dt>Stripe Customer</dt><dd>{{ user.stripe_customer_id or "—" }}</dd>
               </div>
-            </div>
-
-            <!-- Phone -->
-            <div class="ud-row3">
-              <label for="phone">Phone</label>
-              <div class="ud-current">{{ user.phone or "—" }}</div>
-              <div class="ud-edit">
-                <input id="phone" name="phone" type="text" value="{{ user.phone or '' }}">
+              <div class="ud-kv-row">
+                <dt>Full name</dt><dd>{{ user.full_name or (user.first_name ~ ' ' ~ user.last_name if user.first_name or user.last_name else '—') }}</dd>
               </div>
-            </div>
-
-            <!-- Notes -->
-            <div class="ud-row3">
-              <label for="notes">Notes (admin only)</label>
-              <div class="ud-current">{{ user.notes or "—" }}</div>
-              <div class="ud-edit">
-                <textarea id="notes" name="notes" rows="4" placeholder="Internal notes…">{{ user.notes or '' }}</textarea>
+              <div class="ud-kv-row">
+                <dt>Email</dt><dd>{{ user.email }}</dd>
               </div>
-            </div>
-
-            <!-- Status -->
-            <div class="ud-row3">
-              <label>Status</label>
-              <div class="ud-current">{{ "Active" if user.is_active else "Inactive" }}</div>
-              <div class="ud-edit">
-                <label class="checkbox">
-                  <input id="is_active" name="is_active" type="checkbox" {% if user.is_active %}checked{% endif %}>
-                  <span>Active account</span>
-                </label>
+              <div class="ud-kv-row">
+                <dt>Status</dt>
+                <dd>
+                  <span class="ud-badge {{ 'is-active' if user.is_active else 'is-inactive' }}">
+                    {{ "Active" if user.is_active else "Inactive" }}
+                  </span>
+                </dd>
               </div>
-            </div>
+              {% if user.phone %}
+              <div class="ud-kv-row">
+                <dt>Phone</dt><dd>{{ user.phone }}</dd>
+              </div>
+              {% endif %}
+            </dl>
+          </div>
+        </section>
 
-            <hr>
+        <!-- PROFILE EDITOR -->
+        <section class="ud-card" aria-labelledby="profile-heading">
+          <header class="ud-card-head">
+            <h2 id="profile-heading" class="ud-card-title">Profile</h2>
+          </header>
 
-            <!-- Email (dangerous) -->
-            <div class="ud-row3">
-              <label for="email">Email (dangerous)</label>
-              <div class="ud-current">{{ user.email }}</div>
-              <div class="ud-edit">
-                <label class="checkbox" title="Enable to edit email (dangerous)">
-                  <input id="toggle-email-edit" type="checkbox">
-                  <span>Enable edit</span>
-                </label>
+          <form id="user-form" data-user-id="{{ user.id }}" class="ud-form" novalidate>
+            <fieldset class="ud-fieldset">
+              <legend class="ud-legend">Basic info</legend>
 
-                <input id="email" name="email" type="email"
-                       value="{{ user.email }}"
-                       data-original-email="{{ user.email }}"
-                       disabled>
+              <div class="ud-field-row">
+                <label for="first_name" class="ud-label">First name</label>
+                <div class="ud-current" data-field="first_name">{{ user.first_name or "—" }}</div>
+                <div class="ud-input">
+                  <input id="first_name" name="first_name" type="text" value="{{ user.first_name or '' }}">
+                </div>
+              </div>
 
-                <div id="email-warning" class="ud-warn">
-                  <strong>Heads up:</strong> Changing the email affects login and billing.
-                  <label class="checkbox ud-warn-check">
-                    <input id="confirm-email-change" type="checkbox">
-                    <span>I understand the risk and want to proceed.</span>
+              <div class="ud-field-row">
+                <label for="last_name" class="ud-label">Last name</label>
+                <div class="ud-current" data-field="last_name">{{ user.last_name or "—" }}</div>
+                <div class="ud-input">
+                  <input id="last_name" name="last_name" type="text" value="{{ user.last_name or '' }}">
+                </div>
+              </div>
+
+              <div class="ud-field-row">
+                <label for="phone" class="ud-label">Phone</label>
+                <div class="ud-current" data-field="phone">{{ user.phone or "—" }}</div>
+                <div class="ud-input">
+                  <input id="phone" name="phone" type="text" value="{{ user.phone or '' }}">
+                </div>
+              </div>
+
+              <div class="ud-field-row ud-field-row--notes">
+                <label for="notes" class="ud-label">Notes (admin only)</label>
+                <div class="ud-current" data-field="notes">{{ user.notes or "—" }}</div>
+                <div class="ud-input">
+                  <textarea id="notes" name="notes" rows="5" placeholder="Internal notes…">{{ user.notes or '' }}</textarea>
+                </div>
+              </div>
+
+              <div class="ud-field-row">
+                <span class="ud-label">Status</span>
+                <div class="ud-current" data-field="is_active">{{ "Active" if user.is_active else "Inactive" }}</div>
+                <div class="ud-input">
+                  <label class="ud-check">
+                    <input id="is_active" name="is_active" type="checkbox" {% if user.is_active %}checked{% endif %}>
+                    <span>Active account</span>
                   </label>
                 </div>
               </div>
-            </div>
+            </fieldset>
 
-            <!-- Actions -->
+            <hr class="ud-divider">
+
+            <fieldset class="ud-fieldset">
+              <legend class="ud-legend">Sensitive</legend>
+
+              <div class="ud-field-row">
+                <label for="email" class="ud-label">Email (dangerous)</label>
+                <div class="ud-current" data-field="email">{{ user.email }}</div>
+                <div class="ud-input">
+                  <label class="ud-check" title="Enable to edit email (dangerous)">
+                    <input id="toggle-email-edit" type="checkbox">
+                    <span>Enable edit</span>
+                  </label>
+
+                  <input id="email"
+                         name="email"
+                         type="email"
+                         value="{{ user.email }}"
+                         data-original-email="{{ user.email }}"
+                         disabled>
+
+                  <div id="email-warning" class="ud-warn" role="alert" aria-live="polite">
+                    <strong>Heads up:</strong> Changing the email affects login and billing.
+                    <label class="ud-check ud-warn-check">
+                      <input id="confirm-email-change" type="checkbox">
+                      <span>I understand the risk and want to proceed.</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+
             <div class="ud-actions">
-              <button id="save-btn" type="button" class="btn primary">Save changes</button>
-              <button id="start-chat-btn" type="button" class="btn" disabled title="Coming soon">Start chat</button>
-              <a href="/admin/dashboard" class="btn ghost">Cancel</a>
+              <button id="save-btn" type="button" class="ud-btn ud-btn--primary">Save changes</button>
+              <button id="start-chat-btn" type="button" class="ud-btn" disabled title="Coming soon">Start chat</button>
+              <a href="/admin/dashboard" class="ud-btn ud-btn--ghost">Cancel</a>
             </div>
           </form>
-        </div>
+        </section>
       </div>
 
-      <!-- Row 2: Related entities below -->
-      <div class="cards-row">
-        <div class="card">
-          <h3>Subscriptions</h3>
-          {% if subs and subs|length %}
-            <ul class="list">
-              {% for s in subs %}
-                <li><a href="/admin/subscriptions/{{ s.id }}">Subscription #{{ s.id }}</a></li>
-              {% endfor %}
-            </ul>
-          {% else %}
-            <p class="muted">No subscriptions.</p>
-          {% endif %}
-        </div>
+      <!-- RELATED -->
+      <div class="ud-grid ud-grid--two">
+        <section class="ud-card" aria-labelledby="subs-heading">
+          <header class="ud-card-head">
+            <h3 id="subs-heading" class="ud-card-title">Subscriptions</h3>
+          </header>
+          <div class="ud-card-body">
+            {% if subs and subs|length %}
+              <ul class="ud-list">
+                {% for s in subs %}
+                  <li class="ud-list-item">
+                    <a class="ud-link" href="/admin/subscriptions/{{ s.id }}">Subscription #{{ s.id }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="ud-empty">No subscriptions.</p>
+            {% endif %}
+          </div>
+        </section>
 
-        <div class="card">
-          <h3>VPS Instances</h3>
-          {% if vps_list and vps_list|length %}
-            <ul class="list">
-              {% for v in vps_list %}
-                <li><a href="/admin/vps/{{ v.id }}">VPS #{{ v.id }}</a></li>
-              {% endfor %}
-            </ul>
-          {% else %}
-            <p class="muted">No VPS instances.</p>
-          {% endif %}
-        </div>
+        <section class="ud-card" aria-labelledby="vps-heading">
+          <header class="ud-card-head">
+            <h3 id="vps-heading" class="ud-card-title">VPS instances</h3>
+          </header>
+          <div class="ud-card-body">
+            {% if vps_list and vps_list|length %}
+              <ul class="ud-list">
+                {% for v in vps_list %}
+                  <li class="ud-list-item">
+                    <a class="ud-link" href="/admin/vps/{{ v.id }}">VPS #{{ v.id }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="ud-empty">No VPS instances.</p>
+            {% endif %}
+          </div>
+        </section>
       </div>
 
     </div>
-  </section>
+  </main>
 
 {% endblock %}
 
