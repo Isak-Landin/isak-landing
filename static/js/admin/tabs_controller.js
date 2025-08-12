@@ -2,13 +2,8 @@
 (function () {
   const ENDPOINT = '/admin/api/dashboard-data';
 
-  // Global render registry: other scripts will set these.
-  // They must be idempotent and accept the full data object.
-  window.AdminRender = window.AdminRender || {
-    users: null,          // function (data) { ... }
-    subs: null,           // function (data) { ... }
-    vps: null             // function (data) { ... }
-  };
+  // Render registry (renderers set these)
+  window.AdminRender = window.AdminRender || { users: null, subs: null, vps: null };
 
   let cache = null;
   let loading = false;
@@ -32,22 +27,30 @@
     subsTable ?.classList.toggle('hidden', name !== 'subs');
     vpsTable  ?.classList.toggle('hidden', name !== 'vps');
 
-    // Render from cache if we have it
-    if (cache) render(name, cache);
-    // If no cache yet, fetch once
-    else fetchOnce().then(data => render(name, data)).catch(showError);
+    if (cache) {
+      render(name, cache);
+    } else {
+      fetchOnce().then(data => render(name, data)).catch(showError);
+    }
   }
 
   async function fetchOnce(force = false) {
     if (cache && !force) return cache;
-    if (loading) return cache; // debounce; UI will render when cache fills
+    if (loading) return cache; // debounce
     loading = true;
+
+    // visual feedback
+    if (btnRefresh) {
+      btnRefresh.classList.add('is-loading');
+      btnRefresh.disabled = true;
+    }
+
     try {
       const res = await fetch(ENDPOINT, { credentials: 'same-origin' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       cache = await res.json();
 
-      // Update summary counts if present
+      // counts
       const u = document.getElementById('user-count');
       const s = document.getElementById('sub-count');
       const v = document.getElementById('vps-count');
@@ -58,49 +61,41 @@
       return cache;
     } finally {
       loading = false;
+      if (btnRefresh) {
+        btnRefresh.classList.remove('is-loading');
+        btnRefresh.disabled = false;
+      }
     }
   }
 
   function render(name, data) {
-    switch (name) {
-      case 'users':
-        if (typeof AdminRender.users === 'function') AdminRender.users(data);
-        break;
-      case 'subs':
-        if (typeof AdminRender.subs === 'function') AdminRender.subs(data);
-        break;
-      case 'vps':
-        if (typeof AdminRender.vps === 'function') AdminRender.vps(data);
-        break;
-    }
+    if (name === 'users' && typeof AdminRender.users === 'function') return AdminRender.users(data);
+    if (name === 'subs'  && typeof AdminRender.subs  === 'function') return AdminRender.subs(data);
+    if (name === 'vps'   && typeof AdminRender.vps   === 'function') return AdminRender.vps(data);
   }
 
   function showError(err) {
     console.error('Admin dashboard load failed:', err);
-    alert('Failed to load admin data.\n' + (err && err.message ? err.message : err));
+    alert('Failed to load admin data.\n' + (err?.message || err));
   }
 
-  // Wire tabs
+  // Tabs
   tabUsers?.addEventListener('click', () => activate('users'));
   tabSubs ?.addEventListener('click', () => activate('subs'));
   tabVps  ?.addEventListener('click', () => activate('vps'));
 
-  // Refresh button
+  // Refresh
   btnRefresh?.addEventListener('click', async () => {
-    btnRefresh.disabled = true;
     try {
       await fetchOnce(true);
-      // Re-render current visible tab
       if (tabUsers?.classList.contains('active')) render('users', cache);
       else if (tabSubs?.classList.contains('active')) render('subs', cache);
       else render('vps', cache);
     } catch (e) {
       showError(e);
-    } finally {
-      btnRefresh.disabled = false;
     }
   });
 
-  // Default tab
+  // Default
   activate('users');
 })();

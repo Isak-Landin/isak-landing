@@ -208,29 +208,61 @@
 .hidden { display: none !important; }
 
 /* Tab Refresh Button */
-.refresh-btn {
+.admin-tab-bar { display: flex; align-items: center; gap: .5rem; }
+
+.admin-tab-bar .admin-refresh {
   margin-left: auto;
-  background: rgba(255,255,255,0.08);
-  border: none;
-  color: rgba(255,255,255,0.85);
-  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .42rem .75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.03);
+  color: rgba(255,255,255,.85);
+  font-size: .9rem;
+  font-weight: 600;
+  letter-spacing: .02em;
   line-height: 1;
-  padding: 0.4rem 0.55rem;
-  border-radius: 50%;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition: background .18s ease, border-color .18s ease, box-shadow .18s ease, transform .08s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.refresh-btn:hover {
-  background: rgba(255,255,255,0.15);
-  transform: rotate(90deg);
+.admin-tab-bar .admin-refresh:hover {
+  background: rgba(255,255,255,.07);
+  border-color: rgba(255,255,255,.28);
+  box-shadow: 0 0 0 3px rgba(100,140,255,.12) inset;
 }
 
-.refresh-btn:active {
-  transform: rotate(180deg);
+.admin-tab-bar .admin-refresh:active {
+  transform: translateY(1px);
 }
 
-.refresh-btn:disabled {
-  opacity: 0.4;
+.admin-tab-bar .admin-refresh:disabled {
+  opacity: .55;
   cursor: default;
+}
+
+/* Icon */
+.admin-tab-bar .admin-refresh .icon {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  flex: 0 0 auto;
+}
+
+/* Spin only while loading */
+.admin-tab-bar .admin-refresh.is-loading .icon {
+  animation: admin-spin .8s linear infinite;
+}
+
+@keyframes admin-spin { to { transform: rotate(360deg); } }
+
+/* Optional: hide text on small screens, keep icon */
+@media (max-width: 560px) {
+  .admin-tab-bar .admin-refresh .label { display: none; }
+  .admin-tab-bar .admin-refresh { padding: .42rem .5rem; }
 }
