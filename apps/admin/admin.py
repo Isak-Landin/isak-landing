@@ -102,7 +102,7 @@ def get_admin_dashboard_data():
         .order_by(User.email.asc())
         .all()
     )
-    users = [{"email": email, "vps_count": int(cnt)} for (_id, email, cnt) in rows]
+    users = [{"id": _id, "email": email, "vps_count": int(cnt)} for (_id, email, cnt) in rows]
 
     # VPS list
     vps_rows = (
