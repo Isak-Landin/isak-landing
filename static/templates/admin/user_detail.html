@@ -1,7 +1,9 @@
 {% extends "layouts/admin_dashboard_base.html" %}
 {% block title %}Admin · User #{{ user.id }}{% endblock %}
 
-{% block extra_css %}{{ super() }}{% endblock %}
+{% block extra_css %}{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin/user_detail.css') }}">
+{% endblock %}
 
 
 {% block admin_dashboard_content %}
