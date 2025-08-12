@@ -199,6 +199,6 @@ def provision_vps_from_subscription():
     return jsonify({"ok": True, "vps_id": vps.id})
 
 
-from .routes import users as _admin_routes_users  # noqa: F401
+from .routes import users_detail as _admin_routes_users  # noqa: F401
 
 
