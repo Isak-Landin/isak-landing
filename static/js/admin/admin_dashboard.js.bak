@@ -1,8 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
   const tabUsers = document.getElementById('tab-users');
   const tabVps = document.getElementById('tab-vps');
+  const tabSubscriptions = document.getElementById('tab-subscriptions');
   const usersTable = document.getElementById('users-table');
   const vpsTable = document.getElementById('vps-table');
+  const subscriptionsTable = document.getElementById('subscriptions-table');
 
   let dataLoaded = false;
 
@@ -11,12 +13,18 @@ document.addEventListener('DOMContentLoaded', function () {
       tabUsers.classList.add('active');
       tabVps.classList.remove('active');
       usersTable.classList.remove('hidden');
+      subscriptionsTable.classList.add('hidden');
       vpsTable.classList.add('hidden');
-    } else {
+    } else if (target === 'vps') {
       tabVps.classList.add('active');
       tabUsers.classList.remove('active');
       vpsTable.classList.remove('hidden');
       usersTable.classList.add('hidden');
+      subscriptionsTable.classList.add('hidden');
+    } else {
+        tabSubscriptions.classList.add('active');
+        tabUsers.classList.remove('active');
+
     }
 
     if (!dataLoaded) {

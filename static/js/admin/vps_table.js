@@ -1,20 +1,11 @@
-// Fills the VPS table without touching users/subscriptions.
-// Safe to include alongside other admin scripts.
-
+// static/js/admin/vps_table.js
 (function () {
-  const ENDPOINT = '/admin/api/dashboard-data';
-
-  async function fetchDashboard() {
-    const res = await fetch(ENDPOINT, { credentials: 'same-origin' });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json();
-  }
-
   function fmt(x) { return (x === null || x === undefined) ? '' : String(x); }
 
-  function renderVps(list = []) {
+  function renderVps(data) {
     const tbody = document.getElementById('vps-body');
     if (!tbody) return;
+    const list = data.vps || [];
     tbody.innerHTML = '';
     list.forEach(v => {
       const tr = document.createElement('tr');
@@ -32,15 +23,6 @@
     if (count) count.textContent = list.length;
   }
 
-  // Auto-run on load, but do nothing if table isn't present
-  document.addEventListener('DOMContentLoaded', async () => {
-    const tbody = document.getElementById('vps-body');
-    if (!tbody) return;
-    try {
-      const data = await fetchDashboard();
-      renderVps(data.vps || []);
-    } catch (e) {
-      console.error('VPS load failed', e);
-    }
-  });
+  window.AdminRender = window.AdminRender || {};
+  window.AdminRender.vps = renderVps;
 })();

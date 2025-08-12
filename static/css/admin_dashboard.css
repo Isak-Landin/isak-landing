@@ -204,3 +204,16 @@
   border-radius: 4px;
   margin-left: 0.5rem;
 }
+
+.hidden { display: none !important; }
+.tab-refresh {
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 8px;
+  padding: .35rem .6rem;
+  color: #fff;
+  cursor: pointer;
+}
+.tab-refresh:hover { border-color:#fff; }
+
