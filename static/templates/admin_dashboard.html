@@ -31,7 +31,10 @@
         <div class="tab-pill" id="tab-subs">🧾 Subscriptions</div>
         <div class="tab-pill" id="tab-vps">🖥️ VPS</div>
 
-        <button id="admin-refresh" class="tab-refresh" title="Reload data">↻ Refresh</button>
+        <button id="admin-refresh" class="tab-refresh" title="Reload data">
+          <span class="refresh-icon">⟳</span>
+        </button>
+
       </div>
 
       <!-- Users Table -->
@@ -92,5 +95,9 @@
 
 {% endblock %}
 
-{% block extra_js %} {{ super() }}
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/admin/users_table.js') }}"></script>
+<script src="{{ url_for('static', filename='js/admin/subscriptions_table.js') }}"></script>
+<script src="{{ url_for('static', filename='js/admin/vps_table.js') }}"></script>
+<script src="{{ url_for('static', filename='js/admin/tabs_controller.js') }}"></script>
 {% endblock %}
