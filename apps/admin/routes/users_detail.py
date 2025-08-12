@@ -85,7 +85,7 @@ def admin_users_detail(user_id: int):
             vps_list = []
 
     return render_template(
-        "admin/users_detail.html",
+        "admin/user_detail.html",
         user=user,
         subs=subs,
         vps_list=vps_list,
