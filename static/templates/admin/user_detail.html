@@ -11,9 +11,7 @@
 <header class="ud-header">
   <h1>User #{{ user.id }}</h1>
   <p class="ud-meta">
-    Created: {{ user.created_at or "—" }}
-    · Updated: {{ user.updated_at or "—" }}
-    · Last login: {{ user.last_login_at or "—" }}
+    Created: {{ user.created_at or "—" }} · Updated: {{ user.updated_at or "—" }} · Last login: {{ user.last_login_at or "—" }}
   </p>
 </header>
 
@@ -21,7 +19,7 @@
 
 <div class="ud-grid">
   <!-- LEFT: Editable profile -->
-  <section class="ud-card">
+  <section class="card ud-card">
     <h2 class="ud-card-title">Profile</h2>
 
     <form id="user-form" data-user-id="{{ user.id }}" class="ud-form">
@@ -30,7 +28,6 @@
           <label for="first_name">First name</label>
           <input id="first_name" name="first_name" type="text" value="{{ user.first_name or '' }}">
         </div>
-
         <div class="ud-row">
           <label for="last_name">Last name</label>
           <input id="last_name" name="last_name" type="text" value="{{ user.last_name or '' }}">
@@ -87,7 +84,7 @@
   </section>
 
   <!-- RIGHT: Summary + related -->
-  <aside class="ud-card ud-aside">
+  <aside class="card ud-card ud-aside">
     <h2 class="ud-card-title">Customer</h2>
 
     <dl class="ud-kv">
