@@ -1,21 +1,22 @@
-{# static/templates/admin_dashboard.html #}
-{% extends "layouts/admin_dashboard_base.html" %}
-{% block title %}Admin Dashboard{% endblock %}
+{# templates/admin_dashboard.html #}
+{% extends "layouts/admin_dashboard_content_base.html" %}
 
-{% block extra_css %}{{ super() }}{% endblock %}
+{% block page_title %}Admin Dashboard{% endblock %}
 
-{% block admin_dashboard_content %}
-  <section class="radial-dark-section hero-condensed">
-    <div class="container">
-      <h1>Admin Overview</h1>
-      <div class="user-meta">
-        <span class="avatar-emoji">🛡️</span>
-        <span class="email">Logged in as Admin</span>
-      </div>
-      <div class="hero-marker"></div>
-      <p class="intro-lead">Manage users, subscriptions, and VPS instances.</p>
-    </div>
-  </section>
+{# HERO content #}
+{% block hero_back_href %}{{ url_for('admin_blueprint.dashboard') }}{% endblock %}
+{% block hero_back_label %}&larr; Admin Panel Home{% endblock %}
+{% block hero_title %}Admin Overview{% endblock %}
+{% block hero_actions %}{% endblock %}
+{% block hero_meta %}
+  <span class="avatar-emoji" aria-hidden="true">🛡️</span>
+  <span class="email">Logged in as Admin</span>
+  <span class="sep">·</span>
+  <span class="text-mute">Manage users, subscriptions, and VPS instances.</span>
+{% endblock %}
+
+{# MAIN content #}
+{% block content %}
 
   <div class="dashboard-summary">
     <div class="card">👥 <strong id="user-count">–</strong> Users</div>
@@ -23,83 +24,79 @@
     <div class="card">🖥️ <strong id="vps-count">–</strong> VPSes</div>
   </div>
 
-  <section class="split-section">
-    <div class="container">
-      <!-- Tabs -->
-      <div class="admin-tab-bar">
-        <div class="tab-pill active" id="tab-users">👥 Users</div>
-        <div class="tab-pill" id="tab-subs">🧾 Subscriptions</div>
-        <div class="tab-pill" id="tab-vps">🖥️ VPS</div>
+  <section class="admin-section">
+    <!-- Tabs -->
+    <div class="admin-tab-bar">
+      <div class="tab-pill active" id="tab-users">👥 Users</div>
+      <div class="tab-pill" id="tab-subs">🧾 Subscriptions</div>
+      <div class="tab-pill" id="tab-vps">🖥️ VPS</div>
 
-        <button id="admin-refresh" class="admin-refresh" type="button" aria-label="Refresh">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M21 12a9 9 0 1 0-3.32 6.94" />
-            <path d="M21 12v6h-6" />
-          </svg>
-          <span class="label">Refresh</span>
-        </button>
+      <button id="admin-refresh" class="admin-refresh" type="button" aria-label="Refresh">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M21 12a9 9 0 1 0-3.32 6.94" />
+          <path d="M21 12v6h-6" />
+        </svg>
+        <span class="label">Refresh</span>
+      </button>
+    </div>
 
-      </div>
+    <!-- Users Table -->
+    <div class="table-container" id="users-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>VPS Count</th>
+          </tr>
+        </thead>
+        <tbody id="users-body">
+          {# filled by JS #}
+        </tbody>
+      </table>
+    </div>
 
-      <!-- Users Table -->
-      <div class="table-container" id="users-table">
-        <table>
-          <thead>
-            <tr>
-              <th>Email</th>
-              <th>VPS Count</th>
-            </tr>
-          </thead>
-          <tbody id="users-body">
-            {# filled by JS #}
-          </tbody>
-        </table>
-      </div>
+    <!-- Subscriptions Table -->
+    <div class="table-container hidden" id="subs-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Owner</th>
+            <th>Plan</th>
+            <th>Interval</th>
+            <th>Status</th>
+            <th>Price</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="subs-body">
+          {# filled by JS #}
+        </tbody>
+      </table>
+    </div>
 
-      <!-- Subscriptions Table -->
-      <div class="table-container hidden" id="subs-table">
-        <table>
-          <thead>
-            <tr>
-              <th>Owner</th>
-              <th>Plan</th>
-              <th>Interval</th>
-              <th>Status</th>
-              <th>Price</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="subs-body">
-            {# filled by JS #}
-          </tbody>
-        </table>
-      </div>
-
-      <!-- VPS Table -->
-      <div class="table-container hidden" id="vps-table">
-        <table>
-          <thead>
-            <tr>
-              <th>Hostname</th>
-              <th>IP</th>
-              <th>OS</th>
-              <th>CPU</th>
-              <th>RAM</th>
-              <th>Owner</th>
-            </tr>
-          </thead>
-          <tbody id="vps-body">
-            {# filled by JS #}
-          </tbody>
-        </table>
-      </div>
+    <!-- VPS Table -->
+    <div class="table-container hidden" id="vps-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Hostname</th>
+            <th>IP</th>
+            <th>OS</th>
+            <th>CPU</th>
+            <th>RAM</th>
+            <th>Owner</th>
+          </tr>
+        </thead>
+        <tbody id="vps-body">
+          {# filled by JS #}
+        </tbody>
+      </table>
     </div>
   </section>
 
-
 {% endblock %}
 
-{% block extra_js %} {{ super() }}
+{% block extra_js %}{{ super() }}
 <script src="{{ url_for('static', filename='js/admin/users_table.js') }}"></script>
 <script src="{{ url_for('static', filename='js/admin/subscription_table.js') }}"></script>
 <script src="{{ url_for('static', filename='js/admin/vps_table.js') }}"></script>

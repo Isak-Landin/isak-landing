@@ -1,0 +1,55 @@
+{# templates/layouts/admin_dashboard_content_base.html #}
+{% extends "layouts/admin_dashboard_base.html" %}
+
+{% block title %}{% block page_title %}Admin{% endblock %}{% endblock %}
+
+{% block extra_css %}{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_content_base.css') }}">
+{% endblock %}
+
+{% block admin_dashboard_content %}
+
+  {# ---------- HERO (glow + bottom hairline divider) ---------- #}
+  <header class="ad-hero">
+    <div class="ad-container">
+      <a class="ad-back"
+         href="{% block hero_back_href %}{{ url_for('admin_blueprint.dashboard') }}{% endblock %}">
+        {% block hero_back_label %}&larr; Back to Admin Dashboard{% endblock %}
+      </a>
+
+      <div class="ad-hero-top">
+        <h1 class="ad-title">
+          {% block hero_title %}Page Title{% endblock %}
+        </h1>
+
+        {# Right-side actions (e.g., status pill, buttons) #}
+        <div class="ad-hero-actions">
+          {% block hero_actions %}{% endblock %}
+        </div>
+      </div>
+
+      {# Optional meta line under the title (timestamps, breadcrumbs, etc.) #}
+      <div class="ad-hero-meta">
+        {% block hero_meta %}{% endblock %}
+      </div>
+    </div>
+  </header>
+
+  {# ---------- MAIN CANVAS (deep background) ---------- #}
+  <main class="ad-main">
+    <div class="ad-container">
+
+      {# Shared flash/status area (JS can target #flash across pages) #}
+      <div id="flash" class="ad-flash" aria-live="polite" role="status"></div>
+
+      {# Each page provides its own layout/cards/forms/etc. here #}
+      {% block content %}{% endblock %}
+
+      {# Optional tail area if a page needs it #}
+      {% block content_after %}{% endblock %}
+    </div>
+  </main>
+
+{% endblock %}
+
+{% block extra_js %}{{ super() }}{% endblock %}
