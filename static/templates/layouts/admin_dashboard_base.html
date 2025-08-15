@@ -1,31 +1,55 @@
-{% extends "layouts/base.html" %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>{% block title %}Admin Dashboard{% endblock %}</title>
 
-{% block title %}Admin Dashboard{% endblock %}
+    {# DASHBOARD SHELL THEME (topbar + sidenav) #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_shell.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_components.css') }}">
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
-{% endblock %}
+    {# PAGE/CHILD-LEVEL STYLES (e.g., css/layouts/dashboard_content_base.css) #}
+    {% block extra_css %}{% endblock %}
+  </head>
 
-{% block content %}
-<div class="dashboard-layout">
-  <!-- Side Nav -->
-  <aside class="dashboard-sidenav">
-    <h2 class="nav-title">Admin Panel</h2>
-    <ul class="nav-links">
-      <li><a href="{{ url_for('admin_blueprint.dashboard') }}">👥 Users</a></li>
-      <li><a href="{{ url_for('admin_blueprint.dashboard') }}">🖥️ VPS Instances</a></li>
-      <li><a href="{{ url_for('chat_blueprint.admin_inbox') }}">💬 Chat Inbox</a></li>
-      <li><a href="{{ url_for('auth_blueprint.logout') }}">🔓 Log Out</a></li>
-    </ul>
-  </aside>
+  <body class="dash-body">
+    {# Top bar for admin (and later user) dashboards #}
+    <header class="dash-topbar" role="banner">
+      <div class="dash-container">
+        <div class="dash-topbar-left">
+          <a class="dash-brand" href="{{ url_for('admin_blueprint.dashboard') }}">
+            <span class="dash-logo" aria-hidden="true">🛡️</span>
+            <span class="dash-brand-text">Admin</span>
+          </a>
+        </div>
+        <div class="dash-topbar-right">
+          <span class="dash-env-pill">Dashboard</span>
+          <a class="dash-account" href="{{ url_for('auth_blueprint.logout') }}" title="Log out">Log out</a>
+        </div>
+      </div>
+    </header>
 
-  <!-- Main Content -->
-  <main class="dashboard-main">
-    {% block admin_dashboard_content %}{% endblock %}
-  </main>
-</div>
-{% endblock %}
+    <div class="dashboard-layout">
+      <!-- Side Nav -->
+      <aside class="dashboard-sidenav dash-sidenav" role="navigation" aria-label="Admin sidenav">
+        <h2 class="nav-title">Admin Panel</h2>
+        <ul class="nav-links">
+          <li><a href="{{ url_for('admin_blueprint.dashboard') }}">👥 Users</a></li>
+          <li><a href="{{ url_for('admin_blueprint.dashboard') }}">🖥️ VPS Instances</a></li>
+          <li><a href="{{ url_for('chat_blueprint.admin_inbox') }}">💬 Chat Inbox</a></li>
+          <li><a href="{{ url_for('auth_blueprint.logout') }}">🔓 Log Out</a></li>
+        </ul>
+      </aside>
 
-{% block extra_js %}
-{% endblock %}
+      <!-- Main Content -->
+      <main class="dashboard-main">
+        {% block admin_dashboard_content %}{% endblock %}
+      </main>
+    </div>
+
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

@@ -1,0 +1,65 @@
+/* =========================================================
+   Dashboard Shell — topbar + sidenav + layout grid
+   File: static/css/layouts/dashboard_shell.css
+   Uses site tokens if present ( --ad-* ), otherwise fallbacks.
+   ========================================================= */
+
+/* ---------- Theme & Layout Tokens (edit here to re-skin) ---------- */
+:root{
+  /* Dimensions */
+  --ds-topbar-h: 58px;
+  --ds-max-w: clamp(1120px, 92vw, 1440px);
+  --ds-sidenav-w: 260px;
+
+  /* Radii & shadows */
+  --ds-radius: var(--ad-radius, 14px);
+  --ds-radius-sm: var(--ad-radius-sm, 10px);
+  --ds-shadow: var(--ad-shadow, 0 6px 18px rgba(0,0,0,.25));
+  --ds-shadow-soft: var(--ad-shadow-soft, 0 3px 10px rgba(0,0,0,.20));
+
+  /* Spacing */
+  --ds-gap: 1rem;
+  --ds-pad-x: 16px;
+  --ds-sidenav-pad-x: 14px;
+  --ds-sidenav-pad-y: 16px;
+
+  /* Colors (inherit from content base if present) */
+  --ds-color-bg: var(--ad-bg, #0f1524);
+  --ds-color-panel-soft: var(--ad-panel-soft, #161b2a);
+  --ds-color-text: var(--ad-text, #e8ecf6);
+  --ds-color-text-dim: var(--ad-text-dim, #b9c2da);
+  --ds-color-text-mute: var(--ad-text-mute, #8c97b4);
+  --ds-color-line: var(--ad-line, rgba(255,255,255,.08));
+  --ds-color-line-strong: var(--ad-line-strong, rgba(255,255,255,.14));
+  --ds-color-accent: var(--ad-accent, #2f6cf6);
+
+  /* Focus ring */
+  --ds-focus: var(--ad-focus, 0 0 0 3px rgba(47,108,246,.35));
+
+  /* Topbar glow (tweak these to change the “lightning”) */
+  --ds-topbar-glow-a: rgba(47,108,246,.16);
+  --ds-topbar-glow-w: 700px;
+  --ds-topbar-glow-h: 160px;
+  --ds-topbar-glow-x: 8%;
+  --ds-topbar-glow-y: -40%;
+
+  /* Typography scales for shell bits */
+  --ds-brand-size: 1.02rem;
+  --ds-logo-size: 1.2rem;
+  --ds-pill-size: .82rem;
+
+  /* Interactive rounding */
+  --ds-focus-radius: 8px;
+}
+
+/* Shared container width (matches content base) */
+.dash-container{
+  max-width: var(--ds-max-w);
+  margin: 0 auto;
+  padding: 0 var(--ds-pad-x);
+}
+
+/* ---------- Topbar (sticky, dark, subtle glow) ---------- */
+.dash-topbar{
+  background:
+    radial-gra
