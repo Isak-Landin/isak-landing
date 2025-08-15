@@ -62,4 +62,141 @@
 /* ---------- Topbar (sticky, dark, subtle glow) ---------- */
 .dash-topbar{
   background:
-    radial-gra
+    radial-gradient(var(--ds-topbar-glow-w) var(--ds-topbar-glow-h)
+      at var(--ds-topbar-glow-x) var(--ds-topbar-glow-y),
+      var(--ds-topbar-glow-a), transparent 60%),
+    var(--ds-color-panel-soft);
+  border-bottom: 1px solid var(--ds-color-line);
+  color: var(--ds-color-text);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.dash-topbar .dash-container{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--ds-topbar-h);
+  gap: var(--ds-gap);
+}
+
+.dash-topbar-left{ display: flex; align-items: center; gap: .9rem; }
+.dash-brand{
+  display: inline-flex; align-items: center; gap: .55rem;
+  text-decoration: none;
+  color: var(--ds-color-text);
+  font-weight: 800; letter-spacing: .02em;
+}
+.dash-brand:hover{ text-decoration: underline; }
+.dash-logo{ font-size: var(--ds-logo-size); }
+.dash-brand-text{ font-size: var(--ds-brand-size); }
+
+.dash-topbar-right{ display: inline-flex; align-items: center; gap: .6rem; }
+.dash-env-pill{
+  display: inline-flex; align-items: center;
+  padding: .32rem .55rem; border-radius: 999px;
+  font-weight: 700; font-size: var(--ds-pill-size); line-height: 1;
+  border: 1px solid var(--ds-color-line-strong);
+  background: rgba(255,255,255,.05);
+  color: var(--ds-color-text);
+}
+.dash-account{
+  color: var(--ds-color-text-dim);
+  text-decoration: none; font-weight: 700;
+}
+.dash-account:hover{ color: var(--ds-color-text); text-decoration: underline; }
+
+/* Focus ring for topbar buttons/links */
+.dash-topbar :is(a,button):focus{
+  outline: none;
+  box-shadow: var(--ds-focus);
+  border-radius: var(--ds-focus-radius);
+}
+
+/* ---------- Layout grid (sidenav + main) ---------- */
+.dashboard-layout{
+  display: grid;
+  grid-template-columns: var(--ds-sidenav-w) minmax(0, 1fr);
+  min-height: calc(100vh - var(--ds-topbar-h));
+  background: var(--ds-color-bg); /* ensures body under content is dark */
+}
+
+/* ---------- Sidenav ---------- */
+.dash-sidenav{
+  background: var(--ds-color-panel-soft);
+  border-right: 1px solid var(--ds-color-line);
+  color: var(--ds-color-text);
+  padding: var(--ds-sidenav-pad-y) var(--ds-sidenav-pad-x);
+  position: sticky;
+  top: var(--ds-topbar-h);
+  align-self: start;
+  height: calc(100vh - var(--ds-topbar-h));
+  overflow-y: auto;
+  box-shadow: var(--ds-shadow-soft);
+}
+.dash-sidenav .nav-title{
+  margin: 4px 8px 10px;
+  font-size: .95rem;
+  font-weight: 800;
+  color: var(--ds-color-text-dim);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.dash-sidenav .nav-links{ list-style: none; margin: 0; padding: 0; }
+.dash-sidenav .nav-links li{ margin: 2px 0; }
+
+/* Shell-level link look (components can enhance further) */
+.dash-sidenav .nav-links a{
+  display: flex; align-items: center; gap: .55rem;
+  padding: .55rem .65rem;
+  border-radius: var(--ds-radius-sm);
+  color: var(--ds-color-text-dim);
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: background .18s ease, color .18s ease, border-color .18s ease;
+}
+.dash-sidenav .nav-links a:hover{
+  color: var(--ds-color-text);
+  background: rgba(255,255,255,.05);
+  border-color: var(--ds-color-line);
+}
+.dash-sidenav .nav-links a.is-active{
+  color: var(--ds-color-text);
+  background: rgba(255,255,255,.08);
+  border-color: var(--ds-color-line-strong);
+  font-weight: 800;
+}
+
+/* Focus ring for sidenav links */
+.dash-sidenav .nav-links a:focus{
+  outline: none;
+  box-shadow: var(--ds-focus);
+  border-radius: var(--ds-focus-radius);
+}
+
+/* ---------- Main column ---------- */
+.dashboard-main{
+  padding: 0;     /* content base handles spacing/hero */
+  min-width: 0;   /* prevent overflow from wide tables */
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1000px){
+  .dashboard-layout{ grid-template-columns: 1fr; }
+  .dash-sidenav{
+    position: relative;
+    top: 0;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--ds-color-line);
+  }
+}
+
+/* Optional: dark scrollbars (only in WebKit/Blink) */
+.dash-sidenav::-webkit-scrollbar{ width: 10px; }
+.dash-sidenav::-webkit-scrollbar-track{ background: rgba(255,255,255,.03); }
+.dash-sidenav::-webkit-scrollbar-thumb{
+  background: rgba(255,255,255,.15);
+  border-radius: 10px;
+  border: 2px solid rgba(255,255,255,.03);
+}
