@@ -3,7 +3,6 @@
 
 {% block page_title %}Admin Dashboard{% endblock %}
 
-{# HERO content #}
 {% block hero_back_href %}{{ url_for('admin_blueprint.dashboard') }}{% endblock %}
 {% block hero_back_label %}&larr; Admin Panel Home{% endblock %}
 {% block hero_title %}Admin Overview{% endblock %}
@@ -15,8 +14,7 @@
   <span class="text-mute">Manage users, subscriptions, and VPS instances.</span>
 {% endblock %}
 
-{# MAIN content #}
-{% block content %}
+{% block page_content %}
 
   <div class="dashboard-summary">
     <div class="card">👥 <strong id="user-count">–</strong> Users</div>
@@ -25,7 +23,6 @@
   </div>
 
   <section class="admin-section">
-    <!-- Tabs -->
     <div class="admin-tab-bar">
       <div class="tab-pill active" id="tab-users">👥 Users</div>
       <div class="tab-pill" id="tab-subs">🧾 Subscriptions</div>
@@ -40,56 +37,36 @@
       </button>
     </div>
 
-    <!-- Users Table -->
     <div class="table-container" id="users-table">
       <table>
         <thead>
-          <tr>
-            <th>Email</th>
-            <th>VPS Count</th>
-          </tr>
+          <tr><th>Email</th><th>VPS Count</th></tr>
         </thead>
-        <tbody id="users-body">
-          {# filled by JS #}
-        </tbody>
+        <tbody id="users-body">{# filled by JS #}</tbody>
       </table>
     </div>
 
-    <!-- Subscriptions Table -->
     <div class="table-container hidden" id="subs-table">
       <table>
         <thead>
           <tr>
-            <th>Owner</th>
-            <th>Plan</th>
-            <th>Interval</th>
-            <th>Status</th>
-            <th>Price</th>
-            <th>Action</th>
+            <th>Owner</th><th>Plan</th><th>Interval</th>
+            <th>Status</th><th>Price</th><th>Action</th>
           </tr>
         </thead>
-        <tbody id="subs-body">
-          {# filled by JS #}
-        </tbody>
+        <tbody id="subs-body">{# filled by JS #}</tbody>
       </table>
     </div>
 
-    <!-- VPS Table -->
     <div class="table-container hidden" id="vps-table">
       <table>
         <thead>
           <tr>
-            <th>Hostname</th>
-            <th>IP</th>
-            <th>OS</th>
-            <th>CPU</th>
-            <th>RAM</th>
-            <th>Owner</th>
+            <th>Hostname</th><th>IP</th><th>OS</th>
+            <th>CPU</th><th>RAM</th><th>Owner</th>
           </tr>
         </thead>
-        <tbody id="vps-body">
-          {# filled by JS #}
-        </tbody>
+        <tbody id="vps-body">{# filled by JS #}</tbody>
       </table>
     </div>
   </section>

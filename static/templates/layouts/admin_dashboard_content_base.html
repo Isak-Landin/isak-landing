@@ -1,7 +1,7 @@
 {# templates/layouts/admin_dashboard_content_base.html #}
 {% extends "layouts/admin_dashboard_base.html" %}
 
-{# NEW: explicitly render the parent frame (side nav + dashboard-main) #}
+{# Ensure the parent frame (side nav + dashboard-main) renders #}
 {% block content %}
   {{ super() }}
 {% endblock %}
@@ -9,11 +9,10 @@
 {% block title %}{% block page_title %}Admin{% endblock %}{% endblock %}
 
 {% block extra_css %}{{ super() }}
-{# make sure this path matches your file location #}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_content_base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin/content_base.css') }}">
 {% endblock %}
 
-{# This fills the placeholder inside the parent's frame #}
+{# Fill the parent's admin_dashboard_content slot with our hero + main #}
 {% block admin_dashboard_content %}
 
   <header class="ad-hero">
@@ -35,8 +34,10 @@
   <main class="ad-main">
     <div class="ad-container">
       <div id="flash" class="ad-flash" aria-live="polite" role="status"></div>
-      {% block content %}{% endblock %}
-      {% block content_after %}{% endblock %}
+
+      {# NOTE: renamed from "content" to avoid duplicate block names #}
+      {% block page_content %}{% endblock %}
+      {% block page_content_after %}{% endblock %}
     </div>
   </main>
 
