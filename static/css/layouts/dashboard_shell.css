@@ -200,3 +200,15 @@
   border-radius: 10px;
   border: 2px solid rgba(255,255,255,.03);
 }
+
+:root{
+  /* ... your existing --ds-* variables ... */
+}
+
+/* Make the whole page dark and remove default margins */
+.dash-body{
+  margin: 0;
+  background: var(--ds-color-bg, #0f1524);
+  color: var(--ds-color-text, #e8ecf6);
+  min-height: 100vh;
+}
