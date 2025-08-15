@@ -10,7 +10,7 @@
     {# DASHBOARD SHELL THEME (topbar + sidenav) #}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_shell.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_components.css') }}">
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/admin_footer.css') }}">
     {# PAGE/CHILD-LEVEL STYLES (e.g., css/layouts/dashboard_content_base.css) #}
     {% block extra_css %}{% endblock %}
   </head>
@@ -49,6 +49,23 @@
         {% block admin_dashboard_content %}{% endblock %}
       </main>
     </div>
+
+    {# NEW: compact admin footer #}
+    <footer class="dash-footer" role="contentinfo">
+      <div class="dash-container">
+        <nav class="dash-footer-links" aria-label="Admin quick links">
+          <a href="/admin/dashboard">Dashboard</a>
+          <a href="/admin/health">System status</a>
+          <a href="/admin/logs">Logs</a>
+          <a href="/admin/docs">Docs</a>
+        </nav>
+        <div class="dash-footer-meta">
+          <span class="text">Admin</span>
+          <span class="sep">·</span>
+          <span class="version">v{{ app_version or "—" }}</span>
+        </div>
+      </div>
+    </footer>
 
     {% block extra_js %}{% endblock %}
   </body>

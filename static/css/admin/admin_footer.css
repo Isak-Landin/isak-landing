@@ -1,0 +1,76 @@
+/* =========================================================
+   Admin Footer — compact quick links for dashboard pages
+   File: static/css/admin/admin_footer.css
+   Depends on --ds-* / --ad-* tokens; includes fallbacks.
+   ========================================================= */
+
+/* Fallback token aliases (safe if content-base isn't loaded) */
+:root{
+  --af-bg: var(--ds-color-panel-soft, var(--ad-panel-soft, #161b2a));
+  --af-text: var(--ds-color-text, var(--ad-text, #e8ecf6));
+  --af-text-dim: var(--ds-color-text-dim, var(--ad-text-dim, #b9c2da));
+  --af-text-mute: var(--ds-color-text-mute, var(--ad-text-mute, #8c97b4));
+  --af-line: var(--ds-color-line, var(--ad-line, rgba(255,255,255,.08)));
+  --af-line-strong: var(--ds-color-line-strong, var(--ad-line-strong, rgba(255,255,255,.14)));
+  --af-radius: var(--ds-radius, var(--ad-radius, 14px));
+  --af-pad-y: 10px;
+  --af-gap: .6rem;
+}
+
+/* Footer shell */
+.dash-footer{
+  background: var(--af-bg);
+  border-top: 1px solid var(--af-line);
+  color: var(--af-text);
+}
+.dash-footer .dash-container{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 44px;
+  padding: var(--af-pad-y) 16px;
+}
+
+/* Links group */
+.dash-footer-links{
+  display: flex;
+  align-items: center;
+  gap: var(--af-gap);
+  flex-wrap: wrap;
+}
+.dash-footer-links a{
+  color: var(--af-text-dim);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: .92rem;
+  padding: .25rem .45rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: background .18s ease, color .18s ease, border-color .18s ease;
+}
+.dash-footer-links a:hover{
+  color: var(--af-text);
+  background: rgba(255,255,255,.06);
+  border-color: var(--af-line);
+}
+
+/* Right-side meta */
+.dash-footer-meta{
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  color: var(--af-text-mute);
+  font-size: .9rem;
+  white-space: nowrap;
+}
+.dash-footer-meta .sep{ opacity: .6; margin: 0 .2rem; }
+
+/* Mobile stack */
+@media (max-width: 720px){
+  .dash-footer .dash-container{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .5rem;
+  }
+}
