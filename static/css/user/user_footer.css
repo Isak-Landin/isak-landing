@@ -6,7 +6,7 @@
 
 /* Aliases / fallbacks */
 :root{
-  --ds-footer-h: var(--ds-footer-h, 48px); /* height defined in shell */
+  --ds-footer-h: 48px; /* height defined in shell */
   --uf-bg: var(--ds-color-panel-soft, var(--ad-panel-soft, #161b2a));
   --uf-text: var(--ds-color-text, var(--ad-text, #e8ecf6));
   --uf-text-dim: var(--ds-color-text-dim, var(--ad-text-dim, #b9c2da));
