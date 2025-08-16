@@ -205,10 +205,6 @@
   border: 2px solid rgba(255,255,255,.03);
 }
 
-:root{
-  /* ... your existing --ds-* variables ... */
-}
-
 /* Make the whole page dark and remove default margins */
 .dash-body{
   margin: 0;
