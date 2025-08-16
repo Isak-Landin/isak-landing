@@ -19,18 +19,26 @@
 
 /* Footer shell */
 .dash-footer{
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 55; /* above content, below any modals you may add later */
   background: var(--af-bg);
   border-top: 1px solid var(--af-line);
   color: var(--af-text);
+  height: var(--ds-footer-h);
+  min-height: var(--ds-footer-h);
+  padding-bottom: env(safe-area-inset-bottom);
 }
+
 .dash-footer .dash-container{
+  min-height: var(--ds-footer-h);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  min-height: 44px;
-  padding: var(--af-pad-y) 16px;
+  padding: 0 16px; /* keep horizontal padding consistent */
 }
+
 
 /* Links group */
 .dash-footer-links{
