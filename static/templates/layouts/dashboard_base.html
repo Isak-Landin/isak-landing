@@ -1,31 +1,56 @@
-{% extends "layouts/base.html" %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>{% block title %}Your Dashboard{% endblock %}</title>
 
-{% block title %}Your Dashboard{% endblock %}
+    {# Shared dark shell + components (same as admin) #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_shell.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_components.css') }}">
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
-{% endblock %}
+    {# Page / child-level styles (e.g., dashboard_content_base.css adds glow) #}
+    {% block extra_css %}{% endblock %}
+  </head>
 
-{% block content %}
-<div class="dashboard-layout">
-  <!-- Side Nav -->
-  <aside class="dashboard-sidenav">
-    <h2 class="nav-title">Dashboard</h2>
-    <ul class="nav-links">
-      <li><a href="{{ url_for('users_blueprint.dashboard') }}">🖥️ My Servers</a></li>
-      <li><a href="{{ url_for('store_blueprint.store') }}">🛒 Store</a></li>
-      <li><a href="{{ url_for('store_blueprint.order_history') }}">📦 Purchases</a></li>
-      <li><a href="{{ url_for('chat_blueprint.chat_redirect') }}">💬 Chat</a></li>
-      <li><a href="{{ url_for('auth_blueprint.logout') }}">🔓 Log Out</a></li>
-    </ul>
-  </aside>
+  <body class="dash-body">
+    {# Top bar (user) #}
+    <header class="dash-topbar" role="banner">
+      <div class="dash-container">
+        <div class="dash-topbar-left">
+          <a class="dash-brand" href="{{ url_for('users_blueprint.dashboard') }}">
+            <span class="dash-logo" aria-hidden="true">👤</span>
+            <span class="dash-brand-text">Dashboard</span>
+          </a>
+        </div>
+        <div class="dash-topbar-right">
+          {# You can put small pills / env / notifications here later #}
+          <a class="dash-account" href="{{ url_for('auth_blueprint.logout') }}" title="Log out">Log out</a>
+        </div>
+      </div>
+    </header>
 
-  <!-- Main Content -->
-  <main class="dashboard-main">
-    {% block dashboard_content %}{% endblock %}
-  </main>
-</div>
-{% endblock %}
+    <div class="dashboard-layout">
+      <!-- Side Nav (user) -->
+      <aside class="dash-sidenav" role="navigation" aria-label="User sidenav">
+        <h2 class="nav-title">Dashboard</h2>
+        <ul class="nav-links">
+          <li><a href="{{ url_for('users_blueprint.dashboard') }}">🖥️ My Servers</a></li>
+          <li><a href="{{ url_for('store_blueprint.store') }}">🛒 Store</a></li>
+          <li><a href="{{ url_for('store_blueprint.order_history') }}">📦 Purchases</a></li>
+          <li><a href="{{ url_for('chat_blueprint.chat_redirect') }}">💬 Chat</a></li>
+          <li><a href="{{ url_for('auth_blueprint.logout') }}">🔓 Log Out</a></li>
+        </ul>
+      </aside>
 
-{% block extra_js %}{% endblock %}
+      <!-- Main Content -->
+      <main class="dashboard-main">
+        {% block user_dashboard_content %}{% endblock %}
+      </main>
+    </div>
+
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

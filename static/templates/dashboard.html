@@ -1,37 +1,32 @@
-{% extends "layouts/dashboard_base.html" %}
+{# templates/dashboard.html #}
+{% extends "layouts/dashboard_content_base.html" %}
 
-{% block title %}Your Dashboard{% endblock %}
+{% block page_title %}Your Dashboard{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{# HERO #}
+{% block hero_title %}Your products{% endblock %}
+{% block hero_actions %}{% endblock %}
+{% block hero_meta %}
+  <span class="user-meta">
+    <span class="avatar-emoji" aria-hidden="true">👤</span>
+    <span class="email">{{ user.email }}</span>
+  </span>
+  <span class="sep">·</span>
+  <span class="text-mute">Here are your active servers.</span>
 {% endblock %}
 
-{% block dashboard_content %}
-<section class="radial-dark-section hero-condensed">
-  <div class="container">
-    <h1>Your products</h1>
-    <div class="user-meta">
-      <span class="avatar-emoji">👤</span>
-      <span class="email">{{ user.email }}</span>
-    </div>
+{# BODY #}
+{% block page_content %}
 
-    <div class="hero-marker"></div>
-    <p class="intro-lead">Here are your active servers.</p>
+  <div class="dashboard-summary">
+    <div class="card">🖥️ <strong>{{ vps|length }}</strong> Servers</div>
+    <div class="card">⚙️ Active</div>
+    <div class="card">💬 Chat Enabled</div>
   </div>
-</section>
 
-<div class="dashboard-summary">
-  <div class="card">🖥️ <strong>{{ vps|length }}</strong> Servers</div>
-  <div class="card">⚙️ Active</div>
-  <div class="card">💬 Chat Enabled</div>
-</div>
-
-<section class="split-section">
-  <div class="container">
-    {% if vps %}
-      <ul class="split-list">
-        {% for server in vps %}
+  {% if vps %}
+    <ul class="split-list">
+      {% for server in vps %}
         <li>
           <span class="emoji">🖥️</span>
           <span class="text">
@@ -39,16 +34,17 @@
             OS: {{ server.os }} | CPU: {{ server.cpu_cores }} cores | RAM: {{ server.ram_mb }}MB
           </span>
         </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <div class="empty-state">
-        <div class="emoji">🛰️</div>
-        <p class="empty-text">You don’t have any servers yet.</p>
-        <!-- Go straight to the VPS plan list -->
-        <a href="{{ url_for('vps_blueprint.vps_list_page') }}" class="button primary">Launch your first VPS</a>
-      </div>
-    {% endif %}
-  </div>
-</section>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="empty-state">
+      <div class="emoji">🛰️</div>
+      <p class="empty-text">You don’t have any servers yet.</p>
+      <a href="{{ url_for('vps_blueprint.vps_list_page') }}" class="button primary">Launch your first VPS</a>
+    </div>
+  {% endif %}
+
 {% endblock %}
+
+{% block extra_css %}{{ super() }}{% endblock %}
+{% block extra_js %}{{ super() }}{% endblock %}
