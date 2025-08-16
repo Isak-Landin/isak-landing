@@ -39,14 +39,35 @@
       <aside class="dash-sidenav" role="navigation" aria-label="User sidenav">
         <h2 class="nav-title">Dashboard</h2>
         <ul class="nav-links">
-          <a href="{{ url_for('users_blueprint.dashboard') }}"
-             class="{% if request.endpoint == 'users_blueprint.dashboard' %}is-active{% endif %}">
-             🖥️ My Servers
-          </a>
-          <li><a href="{{ url_for('store_blueprint.store') }}">🛒 Store</a></li>
-          <li><a href="{{ url_for('store_blueprint.order_history') }}">📦 Purchases</a></li>
-          <li><a href="{{ url_for('chat_blueprint.chat_redirect') }}">💬 Chat</a></li>
-          <li><a href="{{ url_for('auth_blueprint.logout') }}">🔓 Log Out</a></li>
+          <li>
+            <a href="{{ url_for('users_blueprint.dashboard') }}"
+               class="{% if request.endpoint == 'users_blueprint.dashboard' %}is-active{% endif %}"
+            >
+               🖥️ My Servers
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('store_blueprint.store') }}"
+              class="{% if request.endpoint == 'users_blueprint.store' %}is-active{% endif %}"
+            >
+              🛒 Store</a></li>
+          <li>
+            <a href="{{ url_for('store_blueprint.order_history') }}"
+              class="{% if request.endpoint == 'users_blueprint.order_history' %}is-active{% endif %}"
+            >
+              📦 Purchases
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('chat_blueprint.chat_redirect') }}"
+              class="{% if request.endpoint == 'users_blueprint.chat_redirect' %}is-active{% endif %}"
+            >
+              💬 Chat
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('auth_blueprint.logout') }}">🔓 Log Out</a>
+          </li>
         </ul>
       </aside>
 
