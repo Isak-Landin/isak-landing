@@ -7,11 +7,14 @@
       content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>{% block title %}Your Dashboard{% endblock %}</title>
 
-    {# Shared dark shell + components (same as admin) #}
+    {# Shared dark shell + components (same files as admin) #}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_shell.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_components.css') }}">
 
-    {# Page / child-level styles (e.g., dashboard_content_base.css adds glow) #}
+    {# User-only compact footer styles #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user/user_footer.css') }}">
+
+    {# Page / child-level styles (dashboard_content_base.css will be added by the content base) #}
     {% block extra_css %}{% endblock %}
   </head>
 
@@ -26,7 +29,6 @@
           </a>
         </div>
         <div class="dash-topbar-right">
-          {# You can put small pills / env / notifications here later #}
           <a class="dash-account" href="{{ url_for('auth_blueprint.logout') }}" title="Log out">Log out</a>
         </div>
       </div>
@@ -37,7 +39,10 @@
       <aside class="dash-sidenav" role="navigation" aria-label="User sidenav">
         <h2 class="nav-title">Dashboard</h2>
         <ul class="nav-links">
-          <li><a href="{{ url_for('users_blueprint.dashboard') }}">🖥️ My Servers</a></li>
+          <a href="{{ url_for('users_blueprint.dashboard') }}"
+             class="{% if request.endpoint == 'users_blueprint.dashboard' %}is-active{% endif %}">
+             🖥️ My Servers
+          </a>
           <li><a href="{{ url_for('store_blueprint.store') }}">🛒 Store</a></li>
           <li><a href="{{ url_for('store_blueprint.order_history') }}">📦 Purchases</a></li>
           <li><a href="{{ url_for('chat_blueprint.chat_redirect') }}">💬 Chat</a></li>
@@ -47,9 +52,26 @@
 
       <!-- Main Content -->
       <main class="dashboard-main">
-        {% block user_dashboard_content %}{% endblock %}
+        {% block dashboard_content %}{% endblock %}
       </main>
     </div>
+
+    {# Compact user footer (fixed) #}
+    <footer class="dash-footer" role="contentinfo">
+      <div class="dash-container">
+        <nav class="dash-footer-links" aria-label="User quick links">
+          <a href="{{ url_for('users_blueprint.dashboard') }}">Home</a>
+          <a href="{{ url_for('store_blueprint.order_history') }}">Orders</a>
+          <a href="{{ url_for('chat_blueprint.chat_redirect') }}">Support</a>
+          <a href="{{ url_for('store_blueprint.store') }}">Store</a>
+        </nav>
+        <div class="dash-footer-meta">
+          <span class="text">User</span>
+          <span class="sep">·</span>
+          <span class="version">v{{ app_version or "—" }}</span>
+        </div>
+      </div>
+    </footer>
 
     {% block extra_js %}{% endblock %}
   </body>

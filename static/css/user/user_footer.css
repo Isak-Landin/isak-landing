@@ -1,0 +1,74 @@
+/* =========================================================
+   User Footer — compact quick links (fixed)
+   File: static/css/user/user_footer.css
+   Relies on shared --ds-* / --ad-* tokens; includes fallbacks.
+   ========================================================= */
+
+/* Aliases / fallbacks */
+:root{
+  --ds-footer-h: var(--ds-footer-h, 48px); /* height defined in shell */
+  --uf-bg: var(--ds-color-panel-soft, var(--ad-panel-soft, #161b2a));
+  --uf-text: var(--ds-color-text, var(--ad-text, #e8ecf6));
+  --uf-text-dim: var(--ds-color-text-dim, var(--ad-text-dim, #b9c2da));
+  --uf-text-mute: var(--ds-color-text-mute, var(--ad-text-mute, #8c97b4));
+  --uf-line: var(--ds-color-line, var(--ad-line, rgba(255,255,255,.08)));
+}
+
+/* Fixed footer */
+.dash-footer{
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 55;
+  background: var(--uf-bg);
+  border-top: 1px solid var(--uf-line);
+  color: var(--uf-text);
+  height: var(--ds-footer-h);
+  min-height: var(--ds-footer-h);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.dash-footer .dash-container{
+  min-height: var(--ds-footer-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 16px;
+}
+
+/* Links group */
+.dash-footer-links{
+  display: flex; align-items: center; gap: .6rem; flex-wrap: wrap;
+}
+.dash-footer-links a{
+  color: var(--uf-text-dim);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: .92rem;
+  padding: .25rem .45rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: background .18s, color .18s, border-color .18s;
+}
+.dash-footer-links a:hover{
+  color: var(--uf-text);
+  background: rgba(255,255,255,.06);
+  border-color: var(--uf-line);
+}
+
+/* Right-side meta */
+.dash-footer-meta{
+  display: flex; align-items: center; gap: .45rem;
+  color: var(--uf-text-mute);
+  font-size: .9rem; white-space: nowrap;
+}
+.dash-footer-meta .sep{ opacity: .6; margin: 0 .2rem; }
+
+/* Mobile stack */
+@media (max-width: 720px){
+  .dash-footer .dash-container{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .5rem;
+  }
+}
