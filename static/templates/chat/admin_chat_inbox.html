@@ -1,47 +1,50 @@
-{% extends "layouts/admin_dashboard_base.html" %}
+{# templates/admin/chat_inbox.html (or your current path) #}
+{% extends "layouts/admin_dashboard_content_base.html" %}
 
-{% block title %}Chat Inbox{% endblock %}
+{% block page_title %}Chat Inbox{% endblock %}
 
-{% block admin_dashboard_content %}
-<section class="radial-dark-section hero-condensed">
-  <div class="container">
-    <h1>Support Chats</h1>
-    <p class="intro-lead">Manage all active conversations with users.</p>
-  </div>
-</section>
-
-<section class="split-section">
-  <div class="container">
-    {% if chats and chats|length > 0 %}
-      <ul class="split-list">
-        {% for entry in chats %}
-          <li class="{% if entry.unread %}unread-chat{% endif %}">
-            <span class="emoji">💬</span>
-            <span class="text">
-              <strong>{{ entry.chat.user.email }}</strong><br>
-
-              {% if entry.last_message %}
-                {{ entry.last_message.message[:50] }}{% if entry.last_message.message|length > 50 %}...{% endif %}
-                <br>
-                <small>{{ entry.last_message.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>
-              {% else %}
-                <em>No messages yet</em>
-              {% endif %}
-
-              {% if entry.unread %}
-                <span class="badge">Unread</span>
-              {% endif %}
-            </span>
-            <a href="{{ url_for('chat_blueprint.admin_view_chat', chat_id=entry.chat.id) }}" class="button small">Open</a>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <div class="empty-state">
-        <div class="emoji">📭</div>
-        <p class="empty-text">No conversations to show.</p>
-      </div>
-    {% endif %}
-  </div>
-</section>
+{# HERO #}
+{% block hero_back_href %}{{ url_for('admin_blueprint.dashboard') }}{% endblock %}
+{% block hero_back_label %}&larr; Admin Panel Home{% endblock %}
+{% block hero_title %}Support Chats{% endblock %}
+{% block hero_actions %}{% endblock %}
+{% block hero_meta %}
+  <span class="text-mute">Manage all active conversations with users.</span>
 {% endblock %}
+
+{# MAIN CONTENT #}
+{% block page_content %}
+  {% if chats and chats|length > 0 %}
+    <ul class="split-list">
+      {% for entry in chats %}
+        <li class="{% if entry.unread %}unread-chat{% endif %}">
+          <span class="emoji">💬</span>
+          <span class="text">
+            <strong>{{ entry.chat.user.email }}</strong><br>
+
+            {% if entry.last_message %}
+              {{ entry.last_message.message[:50] }}{% if entry.last_message.message|length > 50 %}...{% endif %}<br>
+              <small>{{ entry.last_message.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+            {% else %}
+              <em>No messages yet</em>
+            {% endif %}
+
+            {% if entry.unread %}
+              <span class="badge">Unread</span>
+            {% endif %}
+          </span>
+
+          <a href="{{ url_for('chat_blueprint.admin_view_chat', chat_id=entry.chat.id) }}" class="button small">Open</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="empty-state">
+      <div class="emoji">📭</div>
+      <p class="empty-text">No conversations to show.</p>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block extra_css %}{{ super() }}{% endblock %}
+{% block extra_js %}{{ super() }}{% endblock %}
