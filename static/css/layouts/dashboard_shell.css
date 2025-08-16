@@ -50,6 +50,8 @@
 
   /* Interactive rounding */
   --ds-focus-radius: 8px;
+
+  --ds-footer-h: 48px; /* admin footer height */
 }
 
 /* Shared container width (matches content base) */
@@ -133,6 +135,8 @@
   height: calc(100vh - var(--ds-topbar-h));
   overflow-y: auto;
   box-shadow: var(--ds-shadow-soft);
+
+  height: calc(100vh - var(--ds-topbar-h) - var(--ds-footer-h));
 }
 .dash-sidenav .nav-title{
   margin: 4px 8px 10px;
@@ -211,4 +215,5 @@
   background: var(--ds-color-bg, #0f1524);
   color: var(--ds-color-text, #e8ecf6);
   min-height: 100vh;
+  padding-bottom: calc(var(--ds-footer-h) + env(safe-area-inset-bottom));
 }
