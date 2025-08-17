@@ -1,46 +1,42 @@
-{% extends "layouts/dashboard_base.html" %}
+{# templates/store.html #}
+{% extends "layouts/dashboard_content_base.html" %}
 
-{% block title %}Store{% endblock %}
+{% block page_title %}Store{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{# HERO #}
+{% block hero_title %}Browse the Store{% endblock %}
+{% block hero_actions %}{% endblock %}
+{% block hero_meta %}
+  <span class="text-mute">Select from available VPS templates, domains, or hosting plans.</span>
 {% endblock %}
 
-{% block dashboard_content %}
-<section class="radial-dark-section hero-condensed">
-  <div class="container">
-    <h1>Browse the Store</h1>
-    <p class="intro-lead">Select from available VPS templates, domains, or hosting plans.</p>
+{# BODY #}
+{% block page_content %}
+  <div class="cards-grid">
+    <!-- VPS entry point -->
+    <article class="card card-cta">
+      <h3>Get a VPS</h3>
+      <p>Fast NVMe storage, generous bandwidth, simple monthly pricing.</p>
+      <a class="button primary" href="{{ url_for('vps_blueprint.vps_list_page') }}">View VPS plans</a>
+    </article>
+
+    <!-- Placeholder for future products -->
+    <article class="card muted">
+      <h3>Domains</h3>
+      <p>Coming soon.</p>
+    </article>
+
+    <article class="card muted">
+      <h3>Web Hosting</h3>
+      <p>Coming soon.</p>
+    </article>
   </div>
-</section>
 
-<section class="split-section">
-  <div class="container">
-    <div class="cards-grid">
-      <!-- VPS entry point -->
-      <article class="card card-cta">
-        <h3>Get a VPS</h3>
-        <p>Fast NVMe storage, generous bandwidth, simple monthly pricing.</p>
-        <a class="button primary" href="{{ url_for('vps_blueprint.vps_list_page') }}">View VPS plans</a>
-      </article>
-
-      <!-- Placeholder for future products -->
-      <article class="card muted">
-        <h3>Domains</h3>
-        <p>Coming soon.</p>
-      </article>
-
-      <article class="card muted">
-        <h3>Web Hosting</h3>
-        <p>Coming soon.</p>
-      </article>
-    </div>
-
-    <div class="empty-state" style="margin-top:2rem;">
-      <div class="emoji">🛒</div>
-      <p class="empty-text">More products are on the way. Start with a VPS today.</p>
-    </div>
+  <div class="empty-state" style="margin-top:2rem;">
+    <div class="emoji">🛒</div>
+    <p class="empty-text">More products are on the way. Start with a VPS today.</p>
   </div>
-</section>
 {% endblock %}
+
+{% block extra_css %}{{ super() }}{% endblock %}
+{% block extra_js %}{{ super() }}{% endblock %}
