@@ -1,47 +1,45 @@
-{% extends "layouts/dashboard_base.html" %}
+{# templates/chat/user_chat_view.html (rewrite) #}
+{% extends "layouts/dashboard_content_base.html" %}
 
-{% block title %}Support Chat{% endblock %}
+{% block page_title %}Support Chat{% endblock %}
 
+{# Keep chat-specific CSS only #}
 {% block extra_css %}{{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/chat/chat.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/chat/chat-input.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/chat/chat-typing.css') }}">
 {% endblock %}
 
-
-{% block dashboard_content %}
-<section class="radial-dark-section hero-condensed">
-  <div class="container">
-    <h1>Support Chat</h1>
-    <p class="intro-lead">Your conversation with support.</p>
-  </div>
-</section>
-
-<section class="split-section">
-  <div class="container">
-
-    <div id="chat-messages" class="chat-history" data-chat-id="{{ chat.id }}">
-      {% for msg in messages %}
-        <div class="chat-message {{ 'me' if msg.is_mine else 'them' }}">
-          <div class="msg-header">
-            <span class="sender">{{ msg.sender_label }}</span>
-            <span class="timestamp">{{ msg.timestamp | dt_short }}</span>
-          </div>
-          <div class="msg-body">{{ msg.content }}</div>
-        </div>
-      {% endfor %}
-    </div>
-
-    <form id="chat-form" class="chat-form">
-      <input type="hidden" id="chat-id" value="{{ chat.id }}">
-      <textarea id="message-input" name="message" placeholder="Type your message..." required></textarea>
-      <button type="submit" class="button primary">Send</button>
-    </form>
-  </div>
-</section>
+{# HERO #}
+{% block hero_title %}Support Chat{% endblock %}
+{% block hero_actions %}{% endblock %}
+{% block hero_meta %}
+  <span class="text-mute">Your conversation with support.</span>
 {% endblock %}
 
-{% block extra_js %}
+{# MAIN CONTENT #}
+{% block page_content %}
+  <div id="chat-messages" class="chat-history" data-chat-id="{{ chat.id }}">
+    {% for msg in messages %}
+      <div class="chat-message {{ 'me' if msg.is_mine else 'them' }}">
+        <div class="msg-header">
+          <span class="sender">{{ msg.sender_label }}</span>
+          <span class="timestamp">{{ msg.timestamp | dt_short }}</span>
+        </div>
+        <div class="msg-body">{{ msg.content }}</div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <form id="chat-form" class="chat-form">
+    <input type="hidden" id="chat-id" value="{{ chat.id }}">
+    <textarea id="message-input" name="message" placeholder="Type your message..." required></textarea>
+    <button type="submit" class="button primary">Send</button>
+  </form>
+{% endblock %}
+
+{# Scripts unchanged #}
+{% block extra_js %}{{ super() }}
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script src="{{ url_for('static', filename='js/chat/chat-core.js') }}"></script>
 <script src="{{ url_for('static', filename='js/chat/chat-input.js') }}"></script>
