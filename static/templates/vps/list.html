@@ -11,13 +11,46 @@
   <div class="container">
     <h1 class="hero-title">Your Virtual Private Servers</h1>
     <p class="intro-lead hero-text">Manage your servers with ease.</p>
-    {% if current_user.is_authenticated %}
-      <a href="#" class="button primary">Launch a new VPS</a>
-    {% else %}
-      <a href="#" class="button primary">Log in to launch</a>
-    {% endif %}
+
+    <div class="hero-actions">
+      {% if current_user.is_authenticated %}
+        <a href="#" class="button primary">Launch a new VPS</a>
+      {% else %}
+        <a href="{{ url_for('auth_blueprint.login') }}?next={{ url_for('vps_blueprint.vps_list_page') }}"
+           class="button primary">Log in to launch</a>
+      {% endif %}
+    </div>
+
+    <div class="hero-microcopy">
+      Provisioned after payment. Upgrade or cancel anytime.
+    </div>
+
+    <!-- Trust signals -->
+    <div class="trust-strip" aria-label="Trust and assurances">
+      <span class="trust-pill"><span class="icon">🔒</span> Secure checkout</span>
+      <span class="trust-pill"><span class="icon">💳</span> Stripe payments</span>
+      <span class="trust-pill"><span class="icon">✅</span> No hidden fees</span>
+      <span class="trust-pill"><span class="icon">↩️</span> Cancel anytime</span>
+      {# Optional/conditional if accurate: <span class="trust-pill"><span class="icon">🇪🇺</span> Data in EU</span> #}
+    </div>
+
+    <div class="hero-divider" role="presentation"></div>
+
+    <!-- Payment methods / social proof (swap text for SVGs when ready) -->
+    <div class="brand-strip" aria-label="Supported payment methods">
+      <span class="brand-chip">Stripe</span>
+      <span class="brand-chip">Visa</span>
+      <span class="brand-chip">Mastercard</span>
+      <span class="brand-chip">SEPA</span>
+    </div>
+
+    <!-- Tiny policy links (hook up real routes) -->
+    <div class="policy-links">
+      <a href="/terms">Terms</a> • <a href="/privacy">Privacy</a> • <a href="/refunds">Refunds</a>
+    </div>
   </div>
 </section>
+
 
 <section class="radial-dark-section hero-condensed">
   <div class="container">
