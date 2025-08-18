@@ -2,7 +2,7 @@
 .plans-grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:1.25rem;
+  gap:2%rem;
 
   margin-left: 5%;
   margin-right: 5%;
