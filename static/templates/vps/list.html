@@ -6,6 +6,19 @@
 {% endblock %}
 
 {% block dashboard_content %}
+
+<section class="hero-section">
+  <div class="container">
+    <h1 class="hero-title">Your Virtual Private Servers</h1>
+    <p class="intro-lead hero-text">Manage your servers with ease.</p>
+    {% if current_user.is_authenticated %}
+      <a href="#" class="button primary">Launch a new VPS</a>
+    {% else %}
+      <a href="#" class="button primary">Log in to launch</a>
+    {% endif %}
+  </div>
+</section>
+
 <section class="radial-dark-section hero-condensed">
   <div class="container">
     <h1 class="hero-condensed-title">Choose your VPS</h1>
