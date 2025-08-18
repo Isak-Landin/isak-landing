@@ -7,9 +7,8 @@
   margin-left: 5%;
   margin-right: 5%;
 
-  background-color: #fff;
-
-  opacity: 0.01; /* almost invisible, just to add a hue of white to make it clear which part is which and to make the card visible */
+  background: #ffffff;
+    background: radial-gradient(circle,rgba(255, 255, 255, 1) 0%, rgba(197, 199, 198, 1) 50%, rgba(171, 171, 171, 1) 0.2%);
 }
 
 /* Card */
