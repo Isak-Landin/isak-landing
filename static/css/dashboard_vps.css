@@ -85,3 +85,129 @@
 .hero-condensed-text {
     text-align: center;
 }
+
+/* ---------- Hero (trust-first) ---------- */
+.hero-section {
+  position: relative;
+  overflow: hidden;
+  padding: 64px 0 56px;
+  isolation: isolate; /* ensures pseudo-element sits behind content */
+  background: radial-gradient(
+    circle at 30% 10%,
+    rgba(255, 255, 255, 0.02) 0%,
+    rgba(197, 199, 198, 0.02) 50%,
+    rgba(171, 171, 171, 0.02) 100%
+  );
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.hero-section::before {
+  /* subtle overlay that ONLY affects background */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(1000px 500px at 20% -10%, rgba(255,255,255,0.06), transparent 60%),
+    radial-gradient(800px 400px at 90% 10%, rgba(0,0,0,0.04), transparent 60%);
+  z-index: -1;
+}
+
+.hero-section .container {
+  display: grid;
+  gap: 20px;
+  text-align: center;
+  max-width: 980px;
+}
+
+.hero-title {
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.hero-text {
+  font-size: clamp(14px, 1.5vw, 18px);
+  color: rgba(0,0,0,0.7);
+  margin: 4px auto 8px;
+}
+
+/* Action row */
+.hero-actions {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- Trust strip ---------- */
+.trust-strip {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  margin: 10px auto 0;
+  width: 100%;
+  max-width: 880px;
+}
+
+.trust-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.04);
+  border: 1px solid rgba(0,0,0,0.06);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.trust-pill .icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* Security/brand row */
+.brand-strip {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  margin: 8px auto 0;
+  flex-wrap: wrap;
+}
+
+.brand-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.75);
+  border: 1px solid rgba(0,0,0,0.06);
+  font-size: 12px;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.6) inset;
+}
+
+/* Optional subtle divider */
+.hero-divider {
+  width: 100%;
+  max-width: 880px;
+  height: 1px;
+  margin: 6px auto 0;
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.08), transparent);
+  border-radius: 1px;
+}
+
+/* ---------- Responsiveness ---------- */
+@media (max-width: 760px) {
+  .trust-strip {
+    grid-auto-flow: row;
+    grid-template-columns: 1fr 1fr;
+  }
+  .brand-strip {
+    gap: 10px;
+  }
+}
