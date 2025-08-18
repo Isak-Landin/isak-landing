@@ -6,6 +6,10 @@
 
   margin-left: 5%;
   margin-right: 5%;
+
+  background-color: #fff;
+
+  opacity: 0.01; /* almost invisible, just to add a hue of white to make it clear which part is which and to make the card visible */
 }
 
 /* Card */
