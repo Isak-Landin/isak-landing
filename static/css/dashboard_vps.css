@@ -3,6 +3,9 @@
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
   gap:1.25rem;
+
+  margin-left: 5%;
+  margin-right: 5%;
 }
 
 /* Card */
@@ -70,3 +73,11 @@
 
 /* When the login link is the only child, keep spacing consistent */
 .plan-card > .plan-btn{margin-top:auto;}
+
+.hero-condensed-title {
+    text-align: center;
+}
+
+.hero-condensed-text {
+    text-align: center;
+}
