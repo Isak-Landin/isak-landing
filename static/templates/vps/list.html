@@ -10,7 +10,7 @@
 <section class="hero-section">
   <div class="container">
     <h1 class="hero-title">Your Virtual Private Servers</h1>
-    <p class="intro-lead hero-text">Manage your servers with ease.</p>
+    <p class="hero-text">Fast, secure, and always in your control.</p>
 
     <div class="hero-actions">
       {% if current_user.is_authenticated %}
@@ -21,35 +21,21 @@
       {% endif %}
     </div>
 
-    <div class="hero-microcopy">
-      Provisioned after payment. Upgrade or cancel anytime.
+    <div class="trust-strip">
+      <span class="trust-pill">🔒 Secure checkout</span>
+      <span class="trust-pill">✅ No hidden fees</span>
+      <span class="trust-pill">↩️ Cancel anytime</span>
     </div>
 
-    <!-- Trust signals -->
-    <div class="trust-strip" aria-label="Trust and assurances">
-      <span class="trust-pill"><span class="icon">🔒</span> Secure checkout</span>
-      <span class="trust-pill"><span class="icon">💳</span> Stripe payments</span>
-      <span class="trust-pill"><span class="icon">✅</span> No hidden fees</span>
-      <span class="trust-pill"><span class="icon">↩️</span> Cancel anytime</span>
-      {# Optional/conditional if accurate: <span class="trust-pill"><span class="icon">🇪🇺</span> Data in EU</span> #}
-    </div>
-
-    <div class="hero-divider" role="presentation"></div>
-
-    <!-- Payment methods / social proof (swap text for SVGs when ready) -->
-    <div class="brand-strip" aria-label="Supported payment methods">
-      <span class="brand-chip">Stripe</span>
-      <span class="brand-chip">Visa</span>
-      <span class="brand-chip">Mastercard</span>
-      <span class="brand-chip">SEPA</span>
-    </div>
-
-    <!-- Tiny policy links (hook up real routes) -->
-    <div class="policy-links">
-      <a href="/terms">Terms</a> • <a href="/privacy">Privacy</a> • <a href="/refunds">Refunds</a>
+    <div class="brand-strip">
+      <img src="{{ url_for('static', filename='img/payments/stripe.svg') }}" alt="Stripe">
+      <img src="{{ url_for('static', filename='img/payments/visa.svg') }}" alt="Visa">
+      <img src="{{ url_for('static', filename='img/payments/mastercard.svg') }}" alt="Mastercard">
+      <img src="{{ url_for('static', filename='img/payments/sepa.svg') }}" alt="SEPA">
     </div>
   </div>
 </section>
+
 
 
 <section class="radial-dark-section hero-condensed">
