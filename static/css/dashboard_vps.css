@@ -6,7 +6,8 @@
 
   margin-left: 5%;
   margin-right: 5%;
-    background: radial-gradient(circle,rgba(255, 255, 255, 0.05) 0%, rgba(197, 199, 198, 0.05) 50%, rgba(171, 171, 171, 0.05) 100%);
+    background: radial-gradient(circle,rgba(255, 255, 255, 0.05) 0%, rgba(148, 153, 151, 0.05) 50%, rgba(23, 22, 22, 0.05) 100%);
+    padding: 1%;
 }
 
 /* Card */
