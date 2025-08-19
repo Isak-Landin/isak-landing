@@ -1,90 +1,102 @@
-{% extends "layouts/dashboard_base.html" %}
+{% extends "layouts/dashboard_content_base.html" %}
 {% block title %}VPS Plans{% endblock %}
 
 {% block extra_css %}{{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_vps.css') }}">
 {% endblock %}
 
-{% block dashboard_content %}
+{# ---- Content-base hero slots ---- #}
+{% block page_title %}VPS Plans{% endblock %}
 
-<section class="hero-section">
-  <div class="container">
-    <h1 class="hero-title">Your Virtual Private Servers</h1>
-    <p class="hero-text">Fast, secure, and always in your control.</p>
+{% block hero_title %}Your Virtual Private Servers{% endblock %}
 
-    <div class="hero-actions">
-      {% if current_user.is_authenticated %}
-        <a href="#" class="button primary">Launch a new VPS</a>
-      {% else %}
-        <a href="{{ url_for('auth_blueprint.login') }}?next={{ url_for('vps_blueprint.vps_list_page') }}"
-           class="button primary">Log in to launch</a>
-      {% endif %}
-    </div>
+{% block hero_actions %}
+  {% if current_user.is_authenticated %}
+    <button type="button" class="button primary" id="launch-vps-btn" data-action="open-plan-picker">
+      Launch a new VPS
+    </button>
+  {% else %}
+    <a class="button primary"
+       href="{{ url_for('auth_blueprint.login') }}?next={{ url_for('vps_blueprint.vps_list_page') }}">
+      Log in to launch
+    </a>
+  {% endif %}
+{% endblock %}
 
-    <div class="trust-strip">
-      <span class="trust-pill">🔒 Secure checkout</span>
-      <span class="trust-pill">✅ No hidden fees</span>
-      <span class="trust-pill">↩️ Cancel anytime</span>
-    </div>
+{% block hero_meta %}
+  <div class="hero-text">Fast, secure, and always in your control.</div>
 
-    <div class="brand-strip">
-      <img src="{{ url_for('static', filename='img/payments/stripe.svg') }}" alt="Stripe">
-      <img src="{{ url_for('static', filename='img/payments/visa.svg') }}" alt="Visa">
-      <img src="{{ url_for('static', filename='img/payments/mastercard.svg') }}" alt="Mastercard">
-      <img src="{{ url_for('static', filename='img/payments/sepa.svg') }}" alt="SEPA">
-    </div>
+  <div class="trust-strip" aria-label="Trust and assurances">
+    <span class="trust-pill">🔒 Secure checkout</span>
+    <span class="trust-pill">✅ No hidden fees</span>
+    <span class="trust-pill">↩️ Cancel anytime</span>
   </div>
-</section>
 
-
-
-<section class="radial-dark-section hero-condensed">
-  <div class="container">
-    <h1 class="hero-condensed-title">Choose your VPS</h1>
-    <p class="intro-lead hero-condensed-text">Simple pricing. Scale later.</p>
+  <div class="brand-strip" aria-label="Supported payment methods">
+    <img src="{{ url_for('static', filename='img/payments/visa.png') }}" alt="Visa">
+    <img src="{{ url_for('static', filename='img/payments/mastercard.png') }}" alt="Mastercard">
   </div>
-</section>
+{% endblock %}
 
-<section class="split-section">
-  <div class="container">
-    <div class="plans-grid">
-      {% for p in plans %}
-      <article class="plan-card">
-        <header class="plan-head">
-          <h3 class="plan-title">{{ p.name }}</h3>
-          {# description removed on purpose #}
-        </header>
+{# ---- Main content ---- #}
+{% block page_content %}
 
-        <ul class="specs">
-          <li><strong>{{ p.vcpu }}</strong> vCPU</li>
-          <li><strong>{{ p.ram_gb }}</strong> GB RAM</li>
-          <li><strong>{{ p.ssd_gb }}</strong> GB NVMe</li>
-          <li><strong>{{ p.bandwidth_tb }}</strong> TB bandwidth</li>
-          <li><strong>OS</strong> of choice</li>
-        </ul>
-
-        {% if current_user.is_authenticated %}
-          <div class="plan-actions">
-            <button class="plan-btn plan-btn--ghost"
-                    data-plan="{{ p.plan_code }}" data-interval="month">
-              Get
-            </button>
-          </div>
-        {% else %}
-          <a class="plan-btn plan-btn--ghost"
-             href="{{ url_for('auth_blueprint.login') }}?next={{ url_for('vps_blueprint.vps_list_page') }}">
-            Log in to get
-          </a>
-        {% endif %}
-      </article>
-      {% endfor %}
+  <section class="radial-dark-section hero-condensed">
+    <div class="container">
+      <h1 class="hero-condensed-title">Choose your VPS</h1>
+      <p class="intro-lead hero-condensed-text">Simple pricing. Scale later.</p>
     </div>
-  </div>
-</section>
+  </section>
 
+  <section class="split-section">
+    <div class="container">
+      <div class="plans-grid">
+        {% for p in plans %}
+        <article class="plan-card">
+          <header class="plan-head">
+            <h3 class="plan-title">{{ p.name }}</h3>
+          </header>
+
+          <ul class="specs">
+            <li><strong>{{ p.vcpu }}</strong> vCPU</li>
+            <li><strong>{{ p.ram_gb }}</strong> GB RAM</li>
+            <li><strong>{{ p.ssd_gb }}</strong> GB NVMe</li>
+            <li><strong>{{ p.bandwidth_tb }}</strong> TB bandwidth</li>
+            <li><strong>OS</strong> of choice</li>
+          </ul>
+
+          {% if current_user.is_authenticated %}
+            <div class="plan-actions">
+              <button class="plan-btn plan-btn--ghost"
+                      data-plan="{{ p.plan_code }}" data-interval="month">
+                Get
+              </button>
+            </div>
+          {% else %}
+            <a class="plan-btn plan-btn--ghost"
+               href="{{ url_for('auth_blueprint.login') }}?next={{ url_for('vps_blueprint.vps_list_page') }}">
+              Log in to get
+            </a>
+          {% endif %}
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+{% endblock %}
+
+{% block extra_js %}{{ super() }}
 {% if current_user.is_authenticated %}
   <script>
-    // For now default interval = month. We can add a chooser later.
+    // Optional: hook the hero CTA to scroll to plans or open a chooser
+    document.getElementById('launch-vps-btn')?.addEventListener('click', () => {
+      // Example: scroll to plans
+      document.querySelector('.plans-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Or trigger your own modal/plan picker here.
+    });
+
+    // Default interval = month (as before)
     window.VPS_CHECKOUT_URL = "{{ url_for('vps_blueprint.vps_checkout') }}";
   </script>
   <script src="{{ url_for('static', filename='js/vps/list.js') }}"></script>
