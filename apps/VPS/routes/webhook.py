@@ -7,6 +7,122 @@ from datetime import datetime
 from extensions import db
 from apps.VPS.vps import vps_blueprint
 from apps.VPS.models import VpsSubscription, StripeEventLog, VPSPlan, VPS
+from apps.Users.models import User                # map customer -> user
+from apps.VPS.models import BillingRecord         # new model
+
+
+def _find_user_by_customer(customer_id: str):
+    if not customer_id:
+        return None
+    return User.query.filter_by(stripe_customer_id=customer_id).first()
+
+
+def _upsert_invoice_record(inv: dict, livemode: bool):
+    """Persist/refresh a BillingRecord from a Stripe invoice object."""
+    user = _find_user_by_customer(inv.get('customer'))
+    if not user:
+        return None
+
+    rec = BillingRecord.query.filter_by(stripe_id=inv['id']).first()
+    if not rec:
+        rec = BillingRecord(
+            user_id=user.id,
+            stripe_customer_id=inv['customer'],
+            type='invoice',
+            stripe_id=inv['id'],
+        )
+        db.session.add(rec)
+
+    from datetime import datetime as _dt
+    rec.invoice_id = inv.get('id')
+    rec.subscription_id = inv.get('subscription')
+    rec.payment_intent_id = inv.get('payment_intent')
+    rec.amount_cents = inv.get('amount_paid') or inv.get('amount_due') or inv.get('amount_remaining')
+    rec.currency = (inv.get('currency') or '').lower() or None
+    rec.status = inv.get('status')
+    rec.livemode = livemode
+    rec.hosted_invoice_url = inv.get('hosted_invoice_url')
+    rec.invoice_pdf = inv.get('invoice_pdf')
+
+    # description/period from first line if present
+    try:
+        line0 = (inv.get('lines') or {}).get('data', [])[0]
+        rec.description = line0.get('description') or inv.get('description')
+        period = line0.get('period') or {}
+        if period.get('start'): rec.period_start = _dt.utcfromtimestamp(period['start'])
+        if period.get('end'):   rec.period_end   = _dt.utcfromtimestamp(period['end'])
+    except Exception:
+        rec.description = inv.get('description')
+
+    # created_at from invoice if available (keeps order list stable)
+    try:
+        if inv.get('created'):
+            rec.created_at = _dt.utcfromtimestamp(inv['created'])
+    except Exception:
+        pass
+
+    rec.data = inv
+    db.session.commit()
+    return rec
+
+def _upsert_checkout_session(sess: dict, livemode: bool):
+    """Store checkout session for traceability (subs will be captured by invoice)."""
+    user = _find_user_by_customer(sess.get('customer'))
+    if not user:
+        return None
+
+    rec = BillingRecord.query.filter_by(stripe_id=sess['id']).first()
+    if not rec:
+        rec = BillingRecord(
+            user_id=user.id,
+            stripe_customer_id=sess.get('customer'),
+            type='checkout_session',
+            stripe_id=sess['id'],
+        )
+        db.session.add(rec)
+
+    rec.subscription_id = sess.get('subscription')
+    rec.payment_intent_id = sess.get('payment_intent')
+    rec.amount_cents = sess.get('amount_total')  # can be None for subscriptions
+    rec.currency = (sess.get('currency') or '').lower() or None
+    rec.status = sess.get('status')
+    rec.livemode = livemode
+    rec.description = 'Checkout session'
+    rec.data = sess
+    db.session.commit()
+    return rec
+
+def _upsert_subscription_record(sub: dict, livemode: bool):
+    """Keep a lightweight subscription record (informational in history)."""
+    user = _find_user_by_customer(sub.get('customer'))
+    if not user:
+        return None
+
+    rec = BillingRecord.query.filter_by(stripe_id=sub['id']).first()
+    if not rec:
+        rec = BillingRecord(
+            user_id=user.id,
+            stripe_customer_id=sub.get('customer'),
+            type='subscription',
+            stripe_id=sub['id'],
+        )
+        db.session.add(rec)
+
+    rec.subscription_id = sub.get('id')
+    rec.status = sub.get('status')
+    rec.livemode = livemode
+    # best-effort amount/currency from first item (invoice shows actual charges)
+    try:
+        price = sub['items']['data'][0]['price']
+        rec.amount_cents = price.get('unit_amount')
+        rec.currency = price.get('currency')
+        rec.description = price.get('nickname') or price.get('id')
+    except Exception:
+        pass
+    rec.data = sub
+    db.session.commit()
+    return rec
+
 
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")  # set this in your env
@@ -93,6 +209,7 @@ def _upsert_subscription_from_stripe(stripe_sub):
     db.session.commit()
     return row
 
+
 @vps_blueprint.route("/webhook", methods=["POST"])
 def vps_webhook():
     # 1) Read raw body and header
@@ -113,45 +230,60 @@ def vps_webhook():
             event = json.loads(payload.decode("utf-8"))
             valid_sig = False
     except Exception as e:
-        # signature invalid or bad payload
         return jsonify({"ok": False, "error": f"Webhook verification failed: {e}"}), 400
 
     # 3) Idempotent log
     row, is_new = _log_event(event, valid_sig)
-    if not is_new and row.processed:
+    if not is_new and getattr(row, "processed", False):
         return jsonify({"ok": True, "idempotent": True}), 200
 
-    # 4) Handle selected event types
+    # 4) Handle selected event types (now also persisting billing records)
     etype = event["type"]
+    livemode = bool(event.get("livemode"))
+
     try:
         if etype == "checkout.session.completed":
-            # Retrieve the subscription to populate DB
             session = event["data"]["object"]
+            # Store session for traceability
+            _upsert_checkout_session(session, livemode)
+
+            # Retrieve the subscription to populate DB (both VPS model + history record)
             sub_id = session.get("subscription")
             if sub_id:
                 sub = stripe.Subscription.retrieve(sub_id, expand=["items.data.price.product"])
-                _upsert_subscription_from_stripe(sub)
+                _upsert_subscription_from_stripe(sub)        # existing: update VpsSubscription
+                _upsert_subscription_record(sub, livemode)   # new: lightweight history row
 
-        elif etype in ("customer.subscription.created",
-                       "customer.subscription.updated",
-                       "customer.subscription.deleted"):
-            sub = event["data"]["object"]
-            # If event payload is not fully expanded, retrieve to normalize
-            if isinstance(sub, dict) and "items" in sub and "data" in sub["items"] and sub["items"]["data"]:
-                norm = sub
+        elif etype in (
+            "customer.subscription.created",
+            "customer.subscription.updated",
+            "customer.subscription.deleted",
+        ):
+            sub_obj = event["data"]["object"]
+            # Normalize/expand subscription if needed
+            if not (isinstance(sub_obj, dict) and sub_obj.get("items", {}).get("data")):
+                sub = stripe.Subscription.retrieve(sub_obj["id"], expand=["items.data.price.product"])
             else:
-                norm = stripe.Subscription.retrieve(sub["id"], expand=["items.data.price.product"])
-            _upsert_subscription_from_stripe(norm)
+                sub = sub_obj
 
-        elif etype in ("invoice.paid", "invoice.payment_succeeded"):
-            # Optional: could mark subscription ACTIVE if relevant
-            pass
+            _upsert_subscription_from_stripe(sub)            # existing model upsert
+            _upsert_subscription_record(sub, livemode)       # history row
+
+        elif etype in (
+            "invoice.finalized",
+            "invoice.payment_succeeded",
+            "invoice.paid",
+            "invoice.voided",
+            "invoice.marked_uncollectible",
+        ):
+            inv = event["data"]["object"]
+            _upsert_invoice_record(inv, livemode)
 
         elif etype in ("invoice.payment_failed", "customer.subscription.paused"):
-            # Optional: could flag as past_due or suspended
+            # Optional: flag subscription state or notify user
             pass
 
-        # Mark processed
+        # 5) Mark processed in the event log
         row.processed = True
         row.processed_at = datetime.utcnow()
         db.session.commit()
@@ -161,4 +293,5 @@ def vps_webhook():
         db.session.rollback()
         return jsonify({"ok": False, "error": str(e)}), 500
 
-    return jsonify({"ok": True})
+    return jsonify({"ok": True}), 200
+

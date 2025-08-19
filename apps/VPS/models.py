@@ -2,7 +2,50 @@
 
 from extensions import db
 from datetime import datetime
+from sqlalchemy.dialects.postgresql import JSONB  # if not on Postgres, use db.JSON instead
 
+
+class BillingRecord(db.Model):
+    __tablename__ = 'billing_records'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
+    stripe_customer_id = db.Column(db.String(120), nullable=False, index=True)
+
+    # What this row represents
+    type = db.Column(db.String(40), nullable=False)           # 'invoice' | 'checkout_session' | 'subscription'
+    stripe_id = db.Column(db.String(120), unique=True, nullable=False)  # invoice.id / cs.id / sub.id
+
+    # Optional foreign keys for convenience
+    invoice_id = db.Column(db.String(120), index=True)
+    subscription_id = db.Column(db.String(120), index=True)
+    payment_intent_id = db.Column(db.String(120), index=True)
+
+    # Money snapshot (minor units)
+    amount_cents = db.Column(db.Integer)
+    currency = db.Column(db.String(10))
+
+    # Period (for invoices)
+    period_start = db.Column(db.DateTime)
+    period_end   = db.Column(db.DateTime)
+
+    # Status / mode
+    status   = db.Column(db.String(32))
+    livemode = db.Column(db.Boolean, default=False, index=True)
+
+    # Helpful links/labels
+    description = db.Column(db.String(255))
+    hosted_invoice_url = db.Column(db.String(512))
+    invoice_pdf = db.Column(db.String(512))
+
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    # Raw snapshot
+    data = db.Column(JSONB)  # or db.JSON if not using Postgres
+
+    user = db.relationship('User', backref=db.backref('billing_records', lazy=True))
 
 class VPS(db.Model):
     __tablename__ = 'vps'

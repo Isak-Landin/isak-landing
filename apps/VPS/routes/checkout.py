@@ -1,3 +1,5 @@
+# VPS/routes/checkout.py
+
 from flask import request, jsonify, url_for
 import stripe
 import os
