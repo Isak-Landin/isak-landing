@@ -5,6 +5,12 @@ from extensions import socketio, db
 from apps.chat.models import SupportChat, SupportMessage
 from apps.admin.models import AdminUser
 
+# If your models define an enum for sender role, import it:
+try:
+    from apps.chat.models import SenderRole
+except Exception:
+    SenderRole = None  # fallback if not available
+
 
 @socketio.on('join_chat')
 def handle_join_chat(data):
@@ -27,10 +33,10 @@ def handle_join_chat(data):
         emit('error', {'error': 'Not authorized for this chat'}, to=request.sid)
         return {"ok": False, "error": "not_authorized"}
 
-    join_room(f"chat_{chat_id}")
+    room = f"chat_{chat_id}"
+    join_room(room)
     emit('info', {'message': f'Joined chat {chat_id}'}, to=request.sid)
     return {"ok": True}
-
 
 
 @socketio.on('send_message')
@@ -39,14 +45,17 @@ def handle_send_message(data):
     print(f"Raw data: {data}")
 
     chat_id = data.get('chat_id')
-    message = data.get('message')
-    sender = data.get('sender')  # 'user' or 'admin'
-    print(f"chat_id={chat_id}, message={message}, sender={sender}")
+    text = (data.get('message') or '').strip()
 
-    # Validate basic fields
-    if not all([chat_id, message, sender]):
-        print("[send_message] Missing required fields")
-        emit('error', {'error': 'Missing chat_id, message, or sender'}, to=request.sid)
+    # Derive sender from server-side state; ignore client 'sender'
+    is_admin = isinstance(current_user, AdminUser) or getattr(current_user, 'is_admin', False)
+    sender_str = 'admin' if is_admin else 'user'
+    print(f"chat_id={chat_id}, message={text!r}, derived_sender={sender_str}")
+
+    # Validate
+    if not chat_id or not text:
+        print("[send_message] Missing chat_id or empty message")
+        emit('error', {'error': 'Missing chat_id or empty message'}, to=request.sid)
         return {"ok": False, "error": "missing_fields"}
 
     chat = SupportChat.query.get(chat_id)
@@ -60,34 +69,30 @@ def handle_send_message(data):
         emit('error', {'error': 'Not authenticated'}, to=request.sid)
         return {"ok": False, "error": "not_authenticated"}
 
-    is_admin = isinstance(current_user, AdminUser) or getattr(current_user, 'is_admin', False)
-    print(f"is_admin={is_admin}, current_user_id={current_user.id}")
+    # Authorization
+    if not is_admin and chat.user_id != current_user.id:
+        print("[send_message] User not authorized for this chat")
+        emit('error', {'error': 'Not authorized for this chat'}, to=request.sid)
+        return {"ok": False, "error": "not_authorized"}
 
-    if sender == 'user':
-        if chat.user_id != current_user.id:
-            print("[send_message] User not authorized for this chat")
-            emit('error', {'error': 'User not authorized for this chat'}, to=request.sid)
-            return {"ok": False, "error": "not_authorized_user"}
-    elif sender == 'admin':
-        if not is_admin:
-            print("[send_message] Admin not authorized")
-            emit('error', {'error': 'Admin not authorized'}, to=request.sid)
-            return {"ok": False, "error": "not_authorized_admin"}
-    else:
-        print("[send_message] Invalid sender value")
-        emit('error', {'error': 'Invalid sender'}, to=request.sid)
-        return {"ok": False, "error": "invalid_sender"}
-
-    # --- Save to DB with sender_email ---
+    # Ensure sender is in the room (in case client forgot to join)
+    room_name = f"chat_{chat_id}"
     try:
-        from apps.chat.models import SenderRole
-        sender_role = SenderRole.admin if sender == 'admin' else SenderRole.user
+        join_room(room_name)
+    except Exception:
+        pass
+
+    # Persist
+    try:
+        role_value = None
+        if SenderRole:
+            role_value = SenderRole.admin if is_admin else SenderRole.user
 
         msg = SupportMessage(
             chat_id=chat_id,
-            sender=sender_role,
-            sender_email=current_user.email,
-            message=message,
+            sender=role_value if role_value is not None else sender_str,  # supports enum or string
+            sender_email=getattr(current_user, 'email', None),
+            message=text,
             is_read=False
         )
         db.session.add(msg)
@@ -98,41 +103,31 @@ def handle_send_message(data):
         emit('error', {'error': 'Database error'}, to=request.sid)
         return {"ok": False, "error": "db_error"}
 
-    # --- Build payload with sender_label for live UI ---
-    sender_label = f"{current_user.email} (admin)" if sender == 'admin' else current_user.email
+    # Payload (use ISO 8601 for consistency)
+    try:
+        ts = msg.timestamp.isoformat()
+    except Exception:
+        ts = getattr(msg, 'timestamp', None)
+        ts = ts.strftime('%Y-%m-%dT%H:%M:%S') if ts else None
+
+    sender_label = f"{getattr(current_user, 'email', '')} (admin)" if is_admin else getattr(current_user, 'email', '')
 
     payload = {
-        'chat_id': chat_id,
-        'message': message,
-        'sender': sender,
-        'sender_label': sender_label,
-        'timestamp': msg.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
         'id': msg.id,
+        'chat_id': chat_id,
+        'message': text,
+        'sender': sender_str,          # 'admin' | 'user'
+        'sender_label': sender_label,  # useful for admin inbox UI
+        'timestamp': ts,
     }
 
-    # Broadcast to others in the room and echo to sender
-    room_name = f"chat_{chat_id}"
-    print(f"[send_message] Emitting to room {room_name} (others only)")
-    emit('receive_message', payload, room=room_name, include_self=False)
-
-    print(f"[send_message] Echoing message back to sender SID={request.sid}")
-    emit('receive_message', payload, to=request.sid)
+    # Emit ONCE to the whole room and include the sender
+    # (removes the previous double-emit that caused duplicates)
+    print(f"[send_message] Emitting to room {room_name} include_self=True")
+    emit('receive_message', payload, room=room_name, include_self=True)
 
     print("--- [send_message] Done ---\n")
-
-    # IMPORTANT: Return an ACK so the client resolves its promise/callback
     return {"ok": True, "id": msg.id, "timestamp": payload["timestamp"]}
-
-
-
-@socketio.on('connect')
-def _on_connect():
-    print(f"[socket] connect sid={request.sid}")
-
-
-@socketio.on('disconnect')
-def _on_disconnect():
-    print(f"[socket] disconnect sid={request.sid}")
 
 
 @socketio.on('typing')
@@ -143,8 +138,17 @@ def handle_typing(data):
     if not chat_id or not current_user.is_authenticated:
         return {"ok": False}
 
-    # Don’t send typing notifications to the typist; only to the other party
     room_name = f"chat_{chat_id}"
+    # Notify only the other party
     emit('typing', {'chat_id': chat_id, 'isTyping': is_typing}, room=room_name, include_self=False)
     return {"ok": True}
 
+
+@socketio.on('connect')
+def _on_connect():
+    print(f"[socket] connect sid={request.sid}")
+
+
+@socketio.on('disconnect')
+def _on_disconnect():
+    print(f"[socket] disconnect sid={request.sid}")

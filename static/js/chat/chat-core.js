@@ -6,14 +6,15 @@
       showWhenNotAtBottom = true,
       autoscrollOwnMessages = true,
       labels = { latest: 'Go to latest', new: 'New messages' },
-      bottomThresholdPx = 2,          // tighter threshold to avoid false “bottom”
-      scrollCooldownMs = 300          // ignore autoscroll briefly after user scrolls
+      bottomThresholdPx = 2,
+      scrollCooldownMs = 300
     } = {}
   ) {
     if (!chatEl) return null;
+    if (chatEl.__indicatorBound) return chatEl.__indicatorAPI; // prevent double init
     if (getComputedStyle(chatEl).position === 'static') chatEl.style.position = 'relative';
 
-    // --- Sticky overlay anchor at bottom of the scrollport ---
+    // --- Sticky overlay ---
     let overlay = chatEl.querySelector('.chat-overlay');
     if (!overlay) {
       overlay = document.createElement('div');
@@ -21,19 +22,21 @@
       chatEl.appendChild(overlay);
     }
 
-    // --- The chip lives inside the overlay (bottom-center, never “rides” content) ---
-    const indicator = document.createElement('button');
-    indicator.type = 'button';
-    indicator.className = 'new-messages-indicator';
-    indicator.setAttribute('aria-label', 'Jump to latest messages');
-    indicator.innerHTML = `<span class="text"></span> <span class="count"></span> ↓`;
-    overlay.appendChild(indicator);
-
+    // --- Single indicator button ---
+    let indicator = overlay.querySelector('.new-messages-indicator');
+    if (!indicator) {
+      indicator = document.createElement('button');
+      indicator.type = 'button';
+      indicator.className = 'new-messages-indicator';
+      indicator.setAttribute('aria-label', 'Jump to latest messages');
+      indicator.innerHTML = `<span class="text"></span> <span class="count"></span> ↓`;
+      overlay.appendChild(indicator);
+    }
     const textSpan = indicator.querySelector('.text');
     const countSpan = indicator.querySelector('.count');
 
     let unseen = 0;
-    let userScrolling = false;        // true right after user scrolls
+    let userScrolling = false;
     let userScrollTimer = null;
 
     const atBottom = () =>
@@ -44,7 +47,6 @@
     const hideIndicator = () => indicator.classList.remove('show');
 
     const updateIndicator = () => {
-      // If no scrollable area, hide
       if (chatEl.scrollHeight <= chatEl.clientHeight) { hideIndicator(); return; }
       if (atBottom()) { hideIndicator(); return; }
       if (unseen > 0) setNewMode();
@@ -56,12 +58,10 @@
       chatEl.scrollTo({ top: chatEl.scrollHeight, behavior: smooth ? 'smooth' : 'auto' });
     };
 
-    // Mark that the user is actively scrolling; pause any auto snapping
     const handleUserScroll = () => {
       userScrolling = true;
       if (userScrollTimer) clearTimeout(userScrollTimer);
       userScrollTimer = setTimeout(() => { userScrolling = false; }, scrollCooldownMs);
-
       if (atBottom()) unseen = 0;
       updateIndicator();
     };
@@ -73,9 +73,9 @@
       updateIndicator();
     });
 
-    // Call this when a new message node is appended
+    // Called when a new message node is appended
     const onNewMessage = (isMine = false, opts = { smooth: true }) => {
-      const wasAtBottom = atBottom();        // capture BEFORE any layout changes
+      const wasAtBottom = atBottom();
       if ((isMine && autoscrollOwnMessages) || (wasAtBottom && !userScrolling)) {
         unseen = 0;
         scrollToBottom(opts.smooth);
@@ -85,7 +85,6 @@
       updateIndicator();
     };
 
-    // Observe only direct children; avoid subtree churn during scroll
     let observer = null;
     if (autoObserve) {
       observer = new MutationObserver((mutations) => {
@@ -109,17 +108,19 @@
     scrollToBottom(false);
     updateIndicator();
 
-    return {
-      onNewMessage, scrollToBottom,
-      disconnect: () => observer?.disconnect()
-    };
+    const api = { onNewMessage, scrollToBottom, disconnect: () => observer?.disconnect() };
+    chatEl.__indicatorBound = true;
+    chatEl.__indicatorAPI = api;
+    return api;
   }
 
-  window.ChatShared = { initNewMessageIndicator };
+  // Create namespace once
+  window.ChatShared = window.ChatShared || {};
+  window.ChatShared.initNewMessageIndicator = window.ChatShared.initNewMessageIndicator || initNewMessageIndicator;
 
   document.addEventListener('DOMContentLoaded', () => {
     const el = document.getElementById('chat-messages');
-    if (el) {
+    if (el && !el.__indicatorBound) {
       window.__chatIndicator = initNewMessageIndicator(el, {
         autoObserve: true,
         showWhenNotAtBottom: true,
