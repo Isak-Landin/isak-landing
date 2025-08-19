@@ -87,8 +87,8 @@
   --max-h: 285px;
   --ratio-h: calc(100vw / 6);          /* height = width / 6 */
 
-  /* set your image path relative to /static/css/ */
-  --hero-bg-url: url("../images/banners/vps-hero-1.png");
+  /* set your image path relative to /static/images/ */
+  --hero-bg-url: url("../images/list_bg_image.png");
 
   position: relative;
   overflow: hidden;                     /* hide extra height */
