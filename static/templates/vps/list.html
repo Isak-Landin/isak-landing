@@ -7,21 +7,10 @@
 
 {# ---- Content-base hero slots ---- #}
 {% block page_title %}VPS Plans{% endblock %}
-
 {% block hero_title %}Your Virtual Private Servers{% endblock %}
 
-{% block hero_actions %}
-  {% if current_user.is_authenticated %}
-    <button type="button" class="button primary" id="launch-vps-btn" data-action="open-plan-picker">
-      Launch a new VPS
-    </button>
-  {% else %}
-    <a class="button primary"
-       href="{{ url_for('auth_blueprint.login') }}?next={{ url_for('vps_blueprint.vps_list_page') }}">
-      Log in to launch
-    </a>
-  {% endif %}
-{% endblock %}
+{# Remove the button entirely #}
+{% block hero_actions %}{% endblock %}
 
 {% block hero_meta %}
   <div class="hero-text">Fast, secure, and always in your control.</div>
@@ -89,14 +78,7 @@
 {% block extra_js %}{{ super() }}
 {% if current_user.is_authenticated %}
   <script>
-    // Optional: hook the hero CTA to scroll to plans or open a chooser
-    document.getElementById('launch-vps-btn')?.addEventListener('click', () => {
-      // Example: scroll to plans
-      document.querySelector('.plans-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      // Or trigger your own modal/plan picker here.
-    });
-
-    // Default interval = month (as before)
+    // Default interval = month
     window.VPS_CHECKOUT_URL = "{{ url_for('vps_blueprint.vps_checkout') }}";
   </script>
   <script src="{{ url_for('static', filename='js/vps/list.js') }}"></script>
