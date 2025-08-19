@@ -103,7 +103,7 @@
     const sender = form.id === 'admin-chat-form' ? 'admin' : 'user';
 
     // Toggle this to true AFTER we add ack support on the server
-    const USE_ACK = false;
+    const USE_ACK = true;
 
     init(form, {
       onSubmit: async (text) => {
