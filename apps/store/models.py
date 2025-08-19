@@ -1,3 +1,5 @@
+# store/models.py
+
 from extensions import db
 
 
