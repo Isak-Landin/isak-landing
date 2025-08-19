@@ -1,3 +1,5 @@
+# VPS/routes/success.py
+
 from flask import request, render_template
 from apps.VPS.vps import vps_blueprint
 
