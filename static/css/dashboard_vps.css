@@ -79,27 +79,81 @@
 .hero-condensed-title { text-align: center; }
 .hero-condensed-text  { text-align: center; }
 
-/* ---------- Content-base hero overrides (applies to dashboard_content_base.html) ---------- */
+/* ---------- Content-base hero (dashboard_content_base.html) ---------- */
+/* Responsive 6:1 banner, overflow hidden, CSS-only background image */
 .ad-hero{
-  text-align:center;
-  padding:64px 0 48px;
-  background: radial-gradient(circle at 30% 10%,
-    rgba(255, 255, 255, 0.02) 0%,
-    rgba(197, 199, 198, 0.02) 50%,
-    rgba(171, 171, 171, 0.02) 100%);
-  border-bottom:1px solid rgba(0,0,0,0.06);
+  /* target sizes: 990x172 → 1650x285 */
+  --min-h: 172px;
+  --max-h: 285px;
+  --ratio-h: calc(100vw / 6);          /* height = width / 6 */
+
+  /* set your image path relative to /static/css/ */
+  --hero-bg-url: url("../images/banners/vps-hero-1.png");
+
+  position: relative;
+  overflow: hidden;                     /* hide extra height */
+  height: clamp(var(--min-h), var(--ratio-h), var(--max-h));
+  padding: 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+
+  text-align: center;
 }
+
+/* Full-bleed background image */
+.ad-hero::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    var(--hero-bg-url) center / cover no-repeat,
+    radial-gradient(circle at 30% 10%,
+      rgba(255, 255, 255, 0.02) 0%,
+      rgba(197, 199, 198, 0.02) 50%,
+      rgba(171, 171, 171, 0.02) 100%); /* subtle fallback texture */
+  z-index: 0;
+}
+
+/* Very subtle animated glow to make the header feel alive */
+.ad-hero::after{
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(40% 60% at 20% 0%, rgba(255,255,255,0.05), transparent 60%),
+    radial-gradient(35% 55% at 85% 30%, rgba(0,90,255,0.05), transparent 60%),
+    radial-gradient(30% 60% at 50% 100%, rgba(0,0,0,0.18), transparent 70%);
+  mix-blend-mode: screen;
+  opacity: .28;
+  z-index: 0;
+}
+@media (prefers-reduced-motion: no-preference){
+  .ad-hero::after{
+    animation: heroDrift 36s ease-in-out infinite alternate;
+  }
+}
+@keyframes heroDrift{
+  0%   { transform: translate3d(-1.5%, -1%, 0) scale(1.02); }
+  100% { transform: translate3d(1%, 1.5%, 0)  scale(1.05); }
+}
+
+/* Center the hero content over the image */
 .ad-hero .ad-container{
-  max-width:960px;
-  margin:0 auto;
+  position: relative;
+  z-index: 1;                          /* above ::before/::after */
+  max-width: 960px;
+  margin: 0 auto;
+  height: 100%;
+  display: grid;
+  place-content: center;
+  gap: 10px;
 }
 
 /* Title is fine; boost only the sub-text contrast */
 .ad-hero .hero-text{
-  color:rgba(255,255,255,0.92);
-  text-shadow:0 1px 2px rgba(0,0,0,0.35);
-  font-size:clamp(15px,1.4vw,18px);
-  margin-top:6px;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  font-size: clamp(15px, 1.4vw, 18px);
+  margin-top: 6px;
 }
 
 /* Remove the hero button/CTA block entirely */
@@ -171,5 +225,5 @@
 }
 
 .ad-title {
-    margin: 0 auto;
+  margin: 0 auto;
 }
