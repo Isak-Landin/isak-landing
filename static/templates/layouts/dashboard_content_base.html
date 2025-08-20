@@ -9,10 +9,11 @@
 
 {% block dashboard_content %}
 
-  <header class="ad-hero">
+  <header class="ad-hero {% block hero_classes %}{% endblock %}">
     <div class="ad-container">
       <a class="ad-back"
          href="{% block hero_back_href %}{{ url_for('users_blueprint.dashboard') }}{% endblock %}">
+        {% block hero_back_label %}&larr; Back{% endblock %}
       </a>
 
       <div class="ad-hero-top">

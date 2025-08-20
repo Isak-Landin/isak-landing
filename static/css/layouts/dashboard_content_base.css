@@ -1,6 +1,6 @@
 /* =========================================================
-   Admin Content Base — shared skin (hero glow + deep body)
-   File: static/css/admin/dashboard_content_base.css
+   Admin Content Base — shared skin (hero banner + deep body)
+   File: static/css/layouts/dashboard_content_base.css
    Scope: only .ad-* classes used by admin_dashboard_content_base.html
    ========================================================= */
 
@@ -34,68 +34,114 @@
   --ad-shadow-soft:0 3px 10px rgba(0,0,0,.20);
 }
 
-/* ---------- Shared container (matches detail page width) */
+/* ---------- Shared container */
 .ad-container{
   max-width:clamp(1120px,92vw,1440px);
   margin:0 auto;
   padding:0 16px;
 }
 
-/* ---------- HERO (ambient glow + hairline divider) */
-.ad-hero{
-  background:
-    radial-gradient(1200px 320px at 10% -20%, rgba(47,108,246,.18), transparent 60%),
-    radial-gradient(900px 260px at 90% -10%, rgba(122,162,255,.18), transparent 60%),
-    var(--ad-panel-soft);
-  border-bottom:1px solid var(--ad-line);
-  color:var(--ad-text);
-  padding:26px 0 18px;
-}
-.ad-back{
-  display:inline-block;
-  color:var(--ad-text-dim);
-  text-decoration:none;
-  opacity:.9;
-  margin-bottom:6px;
-}
-.ad-back:hover{ text-decoration:underline; }
+/* =========================================================
+   HERO — full-bleed, responsive banner (6:1), image via CSS var
+   ========================================================= */
 
+/* 6:1 responsive banner; hides overflow height on narrower viewports */
+.ad-hero{
+  /* target sizes: ~990x165 .. 1650x275 */
+  --min-h: 168px;                    /* floor height */
+  --max-h: 300px;                    /* ceiling height */
+  --ratio-h: calc(100vw / 6);        /* 6:1 aspect → height = width/6 */
+
+  position: relative;
+  overflow: hidden;
+  height: clamp(var(--min-h), var(--ratio-h), var(--max-h));
+  padding: 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  text-align: center;
+}
+
+/* Layered background: page-specific image + a soft texture fallback */
+.ad-hero::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    var(--hero-bg-url, radial-gradient(circle at 30% 10%,
+      rgba(255,255,255,0.02) 0%,
+      rgba(197,199,198,0.02) 50%,
+      rgba(171,171,171,0.02) 100%))
+    center / cover no-repeat;
+  z-index: 0;
+}
+
+/* A very subtle drifting glow so it feels alive */
+.ad-hero::after{
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(40% 60% at 20% 0%, rgba(255,255,255,0.05), transparent 60%),
+    radial-gradient(35% 55% at 85% 30%, rgba(0,90,255,0.05), transparent 60%),
+    radial-gradient(30% 60% at 50% 100%, rgba(0,0,0,0.18), transparent 70%);
+  mix-blend-mode: screen;
+  opacity: .28;
+  z-index: 0;
+}
+@media (prefers-reduced-motion: no-preference){
+  .ad-hero::after{ animation: heroDrift 36s ease-in-out infinite alternate; }
+}
+@keyframes heroDrift{
+  0%   { transform: translate3d(-1.5%, -1%, 0) scale(1.02); }
+  100% { transform: translate3d(1%, 1.5%, 0)  scale(1.05); }
+}
+
+/* Place the actual hero content above the background layers */
+.ad-hero .ad-container{
+  position: relative;
+  z-index: 1;
+  max-width: 960px;              /* tighter for hero content */
+  margin: 0 auto;
+  height: 100%;
+  display: grid;
+  place-content: center;
+  gap: 10px;
+}
+
+/* Back link looks better with visible label */
+.ad-back{
+  position: absolute;
+  left: 16px; top: 12px;
+  font-size: 14px;
+  color: var(--ad-text-dim);
+  text-decoration: none;
+  opacity: .85;
+}
+.ad-back:hover{ opacity: 1; text-decoration: underline; }
+
+/* Title + meta legibility on dark images */
+.ad-title{
+  margin:0;
+  font-size:clamp(1.35rem,2.2vw,1.7rem);
+  font-weight:800;
+  letter-spacing:.2px;
+  color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,0.35);
+}
+.ad-hero .hero-text{
+  color: rgba(255,255,255,0.92);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+  font-size: clamp(15px,1.4vw,18px);
+  margin-top: 6px;
+}
+
+/* Layout bits (keep, but actions hidden by default for cleaner hero) */
 .ad-hero-top{
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:.75rem;
 }
-.ad-title{
-  margin:0;
-  font-size:clamp(1.35rem,2.2vw,1.7rem);
-  font-weight:800;
-  letter-spacing:.2px;
-  color:var(--ad-text);
-}
-.ad-hero-actions{
-  display:flex;
-  align-items:center;
-  gap:.5rem;
-}
-
-/* Optional status pill you can render in hero_actions */
-.ad-pill{
-  display:inline-flex;
-  align-items:center;
-  gap:.45rem;
-  padding:.35rem .6rem;
-  border-radius:999px;
-  font-weight:700;
-  font-size:.85rem;
-  line-height:1;
-  border:1px solid var(--ad-line-strong);
-  background:rgba(255,255,255,.05);
-  color:var(--ad-text);
-}
-.ad-pill.is-ok{ border-color:rgba(40,192,138,.45); background:rgba(40,192,138,.14); }
-.ad-pill.is-warn{ border-color:rgba(255,179,72,.45); background:rgba(255,179,72,.16); }
-.ad-pill.is-err{ border-color:rgba(226,90,105,.45); background:rgba(226,90,105,.16); }
+.ad-hero .ad-hero-actions{ display: none; }
 
 .ad-hero-meta{
   margin:8px 0 0 0;
@@ -105,7 +151,22 @@
 .ad-hero-meta .sep{ opacity:.6; margin:0 .45rem; }
 .ad-hero-meta strong{ color:var(--ad-text-dim); }
 
-/* ---------- MAIN (deep canvas under the hero) */
+/* Pills/brands (if a page uses them in hero_meta) */
+.trust-strip{ display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:10px; }
+.trust-pill{ display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:999px; background:rgba(0,0,0,0.05); font-size:13px; }
+.brand-strip{ display:flex; justify-content:center; align-items:center; gap:18px; margin-top:16px; }
+.brand-strip img{ height:28px; object-fit:contain; display:block; }
+
+/* ---------- Page-specific background hooks (CSS owns the image) ---------- */
+.ad-hero.bg-vps{
+  --hero-bg-url: url("../images/list_bg_image.png");
+}
+/* Example for another page: */
+/* .ad-hero.bg-billing{ --hero-bg-url: url("../images/billing_bg.png"); } */
+
+/* =========================================================
+   MAIN — deep canvas under the hero
+   ========================================================= */
 .ad-main{
   background:var(--ad-bg);
   padding:20px 0 40px;
@@ -127,7 +188,7 @@
 .ad-flash.error{ border-color:rgba(226,90,105,.45); background:rgba(226,90,105,.16); }
 .ad-flash.warn{ border-color:rgba(255,179,72,.45); background:rgba(255,179,72,.16); }
 
-/* ---------- Utilities (kept minimal) */
+/* ---------- Utilities */
 .text-dim{ color:var(--ad-text-dim); }
 .text-mute{ color:var(--ad-text-mute); }
 .ad-divider{
