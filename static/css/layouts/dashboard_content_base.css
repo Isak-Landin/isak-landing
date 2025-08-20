@@ -159,7 +159,7 @@
 
 /* ---------- Page-specific background hooks (CSS owns the image) ---------- */
 .ad-hero.bg-vps{
-  --hero-bg-url: url("../images/list_bg_image.png");
+  --hero-bg-url: url("../../images/list_bg_image.png");
 }
 /* Example for another page: */
 /* .ad-hero.bg-billing{ --hero-bg-url: url("../images/billing_bg.png"); } */
