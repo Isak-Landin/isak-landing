@@ -1,4 +1,4 @@
-# apps/admin/routes/subscriptions.py
+# apps/admin/routes/billing_subscriptions.py
 from flask import request, render_template, abort
 from flask_login import login_required, current_user
 from sqlalchemy import or_
@@ -7,33 +7,17 @@ from extensions import db
 from apps.admin.admin import admin_blueprint
 from apps.VPS.models import BillingRecord
 from apps.Users.models import User
-
-# Optional: if you have an admin-only decorator, use it; otherwise do a simple check
-try:
-    from decorators import admin_required
-except Exception:
-    def admin_required(fn):
-        from functools import wraps
-        @wraps(fn)
-        def _wrap(*args, **kwargs):
-            if not getattr(current_user, "is_authenticated", False) or not getattr(current_user, "is_admin", False):
-                abort(403)
-            return fn(*args, **kwargs)
-        return _wrap
+from decorators import admin_required, admin_2fa_required
 
 
-@admin_blueprint.route("/subscriptions", methods=["GET"])
+@admin_blueprint.route("/billing/subscriptions", methods=["GET"])
 @login_required
 @admin_required
-def admin_subscriptions():
+@admin_2fa_required
+def admin_billing_subscriptions():
     """
-    List all subscriptions across all users.
-    Backed by BillingRecord(type='subscription') written by Stripe webhooks.
-    Filters:
-      - q: free-text across user email, subscription_id, stripe_id, description
-      - mode: all|live|test
-      - status: Stripe sub status (active, trialing, canceled, incomplete, etc.)
-      - page / per: pagination
+    Billing view: ALL subscriptions across users (from BillingRecord).
+    Filters: q, mode=all|live|test, status, page/per
     """
     q_text = (request.args.get("q") or "").strip()
     mode = (request.args.get("mode") or "all").lower()
@@ -54,7 +38,7 @@ def admin_subscriptions():
         q = q.filter(BillingRecord.livemode.is_(False))
 
     if status:
-        q = q.filter((BillingRecord.status or "").op("ILIKE")(status + "%"))  # prefix match
+        q = q.filter(BillingRecord.status.ilike(status + "%"))
 
     if q_text:
         like = f"%{q_text}%"
@@ -70,8 +54,8 @@ def admin_subscriptions():
     items = q.paginate(page=page, per_page=per, error_out=False)
 
     return render_template(
-        "admin/subscriptions.html",
-        items=items,  # Pagination object (.items, .pages, etc.)
+        "admin/billing_subscriptions.html",
+        items=items,
         mode=mode,
         q=q_text,
         status=status,

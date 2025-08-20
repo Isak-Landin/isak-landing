@@ -27,6 +27,8 @@
       <div class="tab-pill active" id="tab-users">👥 Users</div>
       <div class="tab-pill" id="tab-subs">🧾 Subscriptions</div>
       <div class="tab-pill" id="tab-vps">🖥️ VPS</div>
+      {# NEW: billing subs tab #}
+      <div class="tab-pill" id="tab-billsubs">💳 Billing (Subs)</div>
 
       <button id="admin-refresh" class="admin-refresh" type="button" aria-label="Refresh">
         <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -69,6 +71,24 @@
         <tbody id="vps-body">{# filled by JS #}</tbody>
       </table>
     </div>
+
+    {# NEW: billing subscriptions table #}
+    <div class="table-container hidden" id="billing-subs-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Created</th>
+            <th>User</th>
+            <th>Subscription</th>
+            <th>Description</th>
+            <th style="text-align:right;">Amount</th>
+            <th>Status</th>
+            <th>Mode</th>
+          </tr>
+        </thead>
+        <tbody id="billing-subs-body">{# filled by JS #}</tbody>
+      </table>
+    </div>
   </section>
 
 {% endblock %}
@@ -77,5 +97,10 @@
 <script src="{{ url_for('static', filename='js/admin/users_table.js') }}"></script>
 <script src="{{ url_for('static', filename='js/admin/subscription_table.js') }}"></script>
 <script src="{{ url_for('static', filename='js/admin/vps_table.js') }}"></script>
+
+{# NEW: renderer for the Billing (Subs) tab #}
+<script src="{{ url_for('static', filename='js/admin/billing_subs_table.js') }}"></script>
+
+{# tabs controller last #}
 <script src="{{ url_for('static', filename='js/admin/tabs_controller.js') }}"></script>
 {% endblock %}

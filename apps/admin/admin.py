@@ -15,6 +15,9 @@ from decorators import admin_2fa_required, admin_required
 from sqlalchemy import func
 from apps.VPS.models import VPS, VpsSubscription, VPSPlan
 
+# --- NEW: Billing subscriptions API ---
+from apps.VPS.models import BillingRecord
+
 admin_blueprint = Blueprint("admin_blueprint", __name__, url_prefix="/admin")
 
 
@@ -199,6 +202,84 @@ def provision_vps_from_subscription():
     return jsonify({"ok": True, "vps_id": vps.id})
 
 
+@admin_blueprint.get("/api/billing/subscriptions")
+@login_required
+@admin_required
+def get_admin_billing_subscriptions():
+    """
+    JSON for the Billing (Subs) tab.
+    Query params: q, mode=all|live|test, status, page, per
+    """
+    from sqlalchemy import or_
+
+    q_text = (request.args.get("q") or "").strip()
+    mode = (request.args.get("mode") or "all").lower()
+    status = (request.args.get("status") or "").strip().lower()
+    page = max(int(request.args.get("page", 1)), 1)
+    per = min(max(int(request.args.get("per", 50)), 1), 200)
+
+    q = (
+        db.session.query(BillingRecord, User)
+        .join(User, BillingRecord.user_id == User.id)
+        .filter(BillingRecord.type == "subscription")
+        .order_by(BillingRecord.created_at.desc())
+    )
+
+    if mode == "live":
+        q = q.filter(BillingRecord.livemode.is_(True))
+    elif mode == "test":
+        q = q.filter(BillingRecord.livemode.is_(False))
+
+    if status:
+        q = q.filter(BillingRecord.status.ilike(status + "%"))
+
+    if q_text:
+        like = f"%{q_text}%"
+        q = q.filter(
+            or_(
+                User.email.ilike(like),
+                BillingRecord.subscription_id.ilike(like),
+                BillingRecord.stripe_id.ilike(like),
+                BillingRecord.description.ilike(like),
+            )
+        )
+
+    # simple pagination (server-side)
+    total = q.count()
+    items = q.limit(per).offset((page - 1) * per).all()
+
+    def _money(amount_cents, currency):
+        if amount_cents is None or not currency:
+            return None, None
+        return amount_cents, f"{amount_cents/100:.2f} {currency.upper()}"
+
+    data = []
+    for rec, user in items:
+        cents, amount_str = _money(rec.amount_cents, rec.currency)
+        data.append({
+            "created_at": rec.created_at.isoformat() if rec.created_at else None,
+            "user_email": user.email,
+            "user_id": user.id,
+            "subscription_id": rec.subscription_id or rec.stripe_id,
+            "description": rec.description,
+            "amount_cents": cents,
+            "amount": amount_str,               # convenience for UI
+            "currency": (rec.currency or "").upper() if rec.currency else None,
+            "status": rec.status,
+            "livemode": bool(rec.livemode),
+        })
+
+    return jsonify({
+        "items": data,
+        "page": page,
+        "per": per,
+        "total": total,
+        "pages": (total + per - 1) // per
+    })
+
+
 from .routes import users_detail as _admin_routes_users  # noqa: F401
+
+import apps.admin.routes
 
 
