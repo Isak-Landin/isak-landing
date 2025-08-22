@@ -10,11 +10,6 @@
 
   {# Full-bleed hero with per-page background via hero_classes #}
   <header class="ad-hero {% block hero_classes %}bg-default{% endblock %}">
-    <div class="ad-container">
-      <a class="ad-back"
-         href="{% block hero_back_href %}{{ url_for('users_blueprint.dashboard') }}{% endblock %}">
-        {% block hero_back_label %}&larr; Back to Dashboard{% endblock %}
-      </a>
 
       <div class="ad-hero-top">
         <h1 class="ad-title">{% block hero_title %}Page Title{% endblock %}</h1>
