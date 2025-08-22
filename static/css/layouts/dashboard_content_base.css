@@ -1,7 +1,7 @@
 /* =========================================================
-   Admin Content Base — shared skin (hero banner + deep body)
+   User Content Base — shared skin (hero banner + deep body)
    File: static/css/layouts/dashboard_content_base.css
-   Scope: only .ad-* classes used by admin_dashboard_content_base.html
+   Scope: .ad-* classes used by dashboard_content_base.html
    ========================================================= */
 
 /* ---------- Theme tokens */
@@ -19,12 +19,6 @@
   --ad-line:rgba(255,255,255,.08);
   --ad-line-strong:rgba(255,255,255,.14);
   --ad-accent:#2f6cf6;
-  --ad-accent-2:#7aa2ff;
-
-  /* Status colors (for optional hero badges) */
-  --ad-ok:#28c08a;
-  --ad-warn:#ffb348;
-  --ad-err:#e25a69;
 
   /* Shape & depth */
   --ad-radius:14px;
@@ -43,38 +37,39 @@
 
 /* =========================================================
    HERO — full-bleed, responsive banner (6:1), image via CSS var
+   Replicates the “list.html” look by default
    ========================================================= */
 
 /* 6:1 responsive banner; hides overflow height on narrower viewports */
 .ad-hero{
-  /* target sizes: ~990x165 .. 1650x275 */
-  --min-h: 168px;                    /* floor height */
-  --max-h: 300px;                    /* ceiling height */
-  --ratio-h: calc(100vw / 6);        /* 6:1 aspect → height = width/6 */
+  /* target sizes: ~990x165 .. 1650x285 */
+  --min-h: 172px;                  /* floor height (matches list hero) */
+  --max-h: 285px;                  /* ceiling height */
+  --ratio-h: calc(100vw / 6);      /* 6:1 aspect → height = width/6 */
 
   position: relative;
-  overflow: hidden;
+  overflow: hidden;                /* hide extra height */
   height: clamp(var(--min-h), var(--ratio-h), var(--max-h));
   padding: 0;
   border-bottom: 1px solid rgba(0,0,0,0.06);
   text-align: center;
 }
 
-/* Layered background: page-specific image + a soft texture fallback */
+/* Layered background: page-specific image + soft texture fallback */
 .ad-hero::before{
   content: "";
   position: absolute;
   inset: 0;
   background:
     var(--hero-bg-url, radial-gradient(circle at 30% 10%,
-      rgba(255,255,255,0.02) 0%,
-      rgba(197,199,198,0.02) 50%,
-      rgba(171,171,171,0.02) 100%))
+      rgba(255, 255, 255, 0.02) 0%,
+      rgba(197, 199, 198, 0.02) 50%,
+      rgba(171, 171, 171, 0.02) 100%))
     center / cover no-repeat;
   z-index: 0;
 }
 
-/* A very subtle drifting glow so it feels alive */
+/* Very subtle animated glow to make the header feel “alive” */
 .ad-hero::after{
   content: "";
   position: absolute;
@@ -95,11 +90,11 @@
   100% { transform: translate3d(1%, 1.5%, 0)  scale(1.05); }
 }
 
-/* Place the actual hero content above the background layers */
+/* Place the hero content above the bg layers; center it */
 .ad-hero .ad-container{
   position: relative;
-  z-index: 1;
-  max-width: 960px;              /* tighter for hero content */
+  z-index: 1;                      /* above ::before/::after */
+  max-width: 960px;
   margin: 0 auto;
   height: 100%;
   display: grid;
@@ -107,7 +102,7 @@
   gap: 10px;
 }
 
-/* Back link looks better with visible label */
+/* Back link */
 .ad-back{
   position: absolute;
   left: 16px; top: 12px;
@@ -118,7 +113,7 @@
 }
 .ad-back:hover{ opacity: 1; text-decoration: underline; }
 
-/* Title + meta legibility on dark images */
+/* Title + meta legibility on dark images (like list.html) */
 .ad-title{
   margin:0;
   font-size:clamp(1.35rem,2.2vw,1.7rem);
@@ -128,20 +123,14 @@
   text-shadow:0 1px 2px rgba(0,0,0,0.35);
 }
 .ad-hero .hero-text{
-  color: rgba(255,255,255,0.92);
+  color: rgba(255, 255, 255, 0.92);
   text-shadow: 0 1px 2px rgba(0,0,0,0.35);
-  font-size: clamp(15px,1.4vw,18px);
+  font-size: clamp(15px, 1.4vw, 18px);
   margin-top: 6px;
 }
 
-/* Layout bits (keep, but actions hidden by default for cleaner hero) */
-.ad-hero-top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:.75rem;
-}
-.ad-hero .ad-hero-actions{ display: none; }
+/* Keep actions hidden by default for a cleaner hero; pages can override */
+.ad-hero .ad-hero-actions{ display:none; }
 
 .ad-hero-meta{
   margin:8px 0 0 0;
@@ -151,24 +140,51 @@
 .ad-hero-meta .sep{ opacity:.6; margin:0 .45rem; }
 .ad-hero-meta strong{ color:var(--ad-text-dim); }
 
-/* Pills/brands (if a page uses them in hero_meta) */
-.trust-strip{ display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:10px; }
-.trust-pill{ display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:999px; background:rgba(0,0,0,0.05); font-size:13px; }
-.brand-strip{ display:flex; justify-content:center; align-items:center; gap:18px; margin-top:16px; }
-.brand-strip img{ height:28px; object-fit:contain; display:block; }
-
-/* ---------- Page-specific background hooks (CSS owns the image) ---------- */
-/* Default for ALL pages (unless overridden by hero_classes) */
-.ad-hero.bg-default{
-  --hero-bg-url: url("/static/images/list_bg_image.png"); /* or banner.jpg if you prefer */
+/* Trust strip + brand strip (same look as list.html) */
+.trust-strip{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  justify-content:center;
+  margin-top:10px;
+}
+.trust-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 12px;
+  border-radius:999px;
+  background:rgba(0,0,0,0.05);
+  font-size:13px;
+}
+.brand-strip{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:18px;
+  margin-top:16px;
+}
+.brand-strip img{
+  height:28px;
+  object-fit:contain;
+  display:block;
 }
 
-/* VPS list page */
+/* ---------- Background hooks (CSS owns the image) ---------- */
+/* DEFAULT for ALL user pages — matches list.html vibe */
+.ad-hero.bg-default{
+  --hero-bg-url: url("/static/images/list_bg_image.png");
+}
+
+/* VPS page can still explicitly choose this (same art today, but overrideable) */
 .ad-hero.bg-vps{
   --hero-bg-url: url("/static/images/list_bg_image.png");
 }
-/* Example for another page: */
-/* .ad-hero.bg-billing{ --hero-bg-url: url("../images/billing_bg.png"); } */
+
+/* Add more when needed:
+   .ad-hero.bg-orders   { --hero-bg-url: url("/static/images/orders_bg.png"); }
+   .ad-hero.bg-support  { --hero-bg-url: url("/static/images/support_bg.png"); }
+*/
 
 /* =========================================================
    MAIN — deep canvas under the hero
@@ -203,7 +219,7 @@
   background:linear-gradient(90deg, transparent, var(--ad-line), transparent);
 }
 
-/* Focus ring only within hero/main so it doesn’t leak site-wide */
+/* Focus rings inside this layout only */
 .ad-hero :is(a,button,input,textarea,select):focus,
 .ad-main :is(a,button,input,textarea,select):focus{
   outline:none;
