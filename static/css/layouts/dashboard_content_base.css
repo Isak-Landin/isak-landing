@@ -157,7 +157,13 @@
 .brand-strip{ display:flex; justify-content:center; align-items:center; gap:18px; margin-top:16px; }
 .brand-strip img{ height:28px; object-fit:contain; display:block; }
 
-/* Page-specific background hook */
+/* ---------- Page-specific background hooks (CSS owns the image) ---------- */
+/* Default for ALL pages (unless overridden by hero_classes) */
+.ad-hero.bg-default{
+  --hero-bg-url: url("/static/images/list_bg_image.png"); /* or banner.jpg if you prefer */
+}
+
+/* VPS list page */
 .ad-hero.bg-vps{
   --hero-bg-url: url("/static/images/list_bg_image.png");
 }

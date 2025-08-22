@@ -15,7 +15,7 @@
 {# Fill the parent's admin_dashboard_content slot with our hero + main #}
 {% block admin_dashboard_content %}
 
-  <header class="ad-hero">
+  <header class="ad-hero {% block hero_classes %}bg-default{% endblock %}">
     <div class="ad-container">
       <a class="ad-back"
          href="{% block hero_back_href %}{{ url_for('admin_blueprint.dashboard') }}{% endblock %}">
