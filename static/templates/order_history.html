@@ -2,12 +2,17 @@
 {% extends "layouts/dashboard_content_base.html" %}
 {% block page_title %}Order History{% endblock %}
 
+{# HERO #}
 {% block hero_title %}Order History{% endblock %}
-{% block hero_actions %}{% endblock %}
+{% block hero_text %}Review invoices, charges, and subscription status.{% endblock %}
 {% block hero_meta %}
-  <span class="text-mute">All invoices & subscriptions. Test-mode is labeled.</span>
+  <span class="trust-pill">🧾 All invoices & subscriptions</span>
+  <span class="trust-pill">🧪 Mode: {{ 'Live' if mode=='live' else 'Test' if mode=='test' else 'All' }}</span>
+  <span class="trust-pill">📊 {{ records|length if records else 0 }} records</span>
 {% endblock %}
+{% block hero_actions %}{% endblock %}
 
+{# BODY #}
 {% block page_content %}
 
   <div class="orders-filter" style="margin-bottom:12px;">
