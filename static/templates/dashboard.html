@@ -3,16 +3,18 @@
 
 {% block page_title %}Your Dashboard{% endblock %}
 
-{# HERO (uses default bg from dashboard_content_base.css) #}
+{# HERO (uses default bg from dashboard_hero.css via .bg-default) #}
 {% block hero_title %}Your products{% endblock %}
 {% block hero_actions %}{% endblock %}
 {% block hero_meta %}
-  <span class="user-meta">
-    <span class="avatar-emoji" aria-hidden="true">👤</span>
-    <span class="email">{{ user.email }}</span>
-  </span>
-  <span class="sep">·</span>
-  <span class="text-mute">Here are your active servers.</span>
+  <div class="hero-text">
+    <span class="user-meta">
+      <span class="avatar-emoji" aria-hidden="true">👤</span>
+      <span class="email">{{ user.email }}</span>
+    </span>
+    <span class="sep">·</span>
+    <span class="text-mute">Here are your active servers.</span>
+  </div>
 {% endblock %}
 
 {# BODY #}
