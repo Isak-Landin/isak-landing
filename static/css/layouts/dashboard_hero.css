@@ -20,13 +20,17 @@
   content:"";
   position:absolute; inset:0;
   background:
-    var(--hero-bg-url, radial-gradient(circle at 30% 10%,
+    radial-gradient(circle at 30% 10%,
       rgba(255,255,255,.02) 0%,
       rgba(197,199,198,.02) 50%,
-      rgba(171,171,171,.02) 100%))
-    center/cover no-repeat;
+      rgba(171,171,171,.02) 100%),
+    var(--hero-bg-url, linear-gradient(180deg,#0e1320,#0b0f19));
+  background-position:center;
+  background-size:cover, cover;
+  background-repeat:no-repeat;
   z-index:0;
 }
+
 
 /* subtle animated glow to feel alive */
 .ad-hero::after{
