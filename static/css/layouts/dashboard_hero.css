@@ -1,0 +1,130 @@
+/* =========================================================
+   Dashboard Hero — matches VPS list hero look & feel
+   - No back arrow (hidden)
+   - Brand strip optional (hidden when empty)
+   - Default background = /static/images/list_bg_image.png
+   ========================================================= */
+
+/* 6:1 responsive banner; hides overflow height on narrower viewports */
+.ad-hero{
+  /* target sizes: 990x172 → 1650x285 */
+  --min-h: 172px;
+  --max-h: 285px;
+  --ratio-h: calc(100vw / 6);       /* height = width / 6 */
+
+  /* default hero image; pages can override with .bg-... if needed */
+  --hero-bg-url: url("/static/images/list_bg_image.png");
+
+  position: relative;
+  overflow: hidden;                  /* hide extra height */
+  height: clamp(var(--min-h), var(--ratio-h), var(--max-h));
+  padding: 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  text-align: center;
+}
+
+/* Full-bleed background image + subtle texture */
+.ad-hero::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    var(--hero-bg-url) center / cover no-repeat,
+    radial-gradient(circle at 30% 10%,
+      rgba(255, 255, 255, 0.02) 0%,
+      rgba(197, 199, 198, 0.02) 50%,
+      rgba(171, 171, 171, 0.02) 100%);
+  z-index: 0;
+}
+
+/* Very subtle animated glow to make the header feel “alive” */
+.ad-hero::after{
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(40% 60% at 20% 0%, rgba(255,255,255,0.05), transparent 60%),
+    radial-gradient(35% 55% at 85% 30%, rgba(0,90,255,0.05), transparent 60%),
+    radial-gradient(30% 60% at 50% 100%, rgba(0,0,0,0.18), transparent 70%);
+  mix-blend-mode: screen;
+  opacity: .28;
+  z-index: 0;
+}
+@media (prefers-reduced-motion: no-preference){
+  .ad-hero::after{ animation: heroDrift 36s ease-in-out infinite alternate; }
+}
+@keyframes heroDrift{
+  0%   { transform: translate3d(-1.5%, -1%, 0) scale(1.02); }
+  100% { transform: translate3d(1%, 1.5%, 0)  scale(1.05); }
+}
+
+/* Center the hero content over the image */
+.ad-hero .ad-container{
+  position: relative;
+  z-index: 1;                        /* above ::before/::after */
+  max-width: 960px;
+  margin: 0 auto;
+  height: 100%;
+  display: grid;
+  place-content: center;
+  gap: 10px;
+}
+
+/* Hide the back arrow entirely (you have side nav) */
+.ad-hero .ad-back{ display: none !important; }
+
+/* Title + hero text contrast (matches list.html vibe) */
+.ad-title{
+  margin:0;
+  font-size:clamp(1.35rem,2.2vw,1.7rem);
+  font-weight:800;
+  letter-spacing:.2px;
+  color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,0.35);
+}
+.ad-hero .hero-text{
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  font-size: clamp(15px, 1.4vw, 18px);
+  margin-top: 6px;
+}
+
+/* Keep actions hidden by default; pages can override if needed */
+.ad-hero .ad-hero-actions{ display:none; }
+
+/* Trust strip (exact look from list) */
+.trust-strip{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  justify-content:center;
+  margin-top:10px;
+}
+.trust-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 12px;
+  border-radius:999px;
+  background:rgba(0,0,0,0.05);
+  font-size:13px;
+}
+
+/* Brand strip (optional). Hidden if empty or not provided. */
+.brand-strip{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:18px;
+  margin-top:16px;
+}
+.brand-strip:empty{ display:none; }
+.brand-strip img{
+  height:28px;
+  object-fit:contain;
+  display:block;
+}
+
+/* Page-specific background hooks (optional)
+   e.g. .ad-hero.bg-vps { --hero-bg-url: url("/static/images/list_bg_image.png"); }
+*/

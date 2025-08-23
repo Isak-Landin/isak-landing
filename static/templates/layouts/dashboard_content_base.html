@@ -4,22 +4,25 @@
 
 {% block extra_css %}{{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_content_base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_hero.css') }}">
 {% endblock %}
 
 {% block dashboard_content %}
 
-  {# Full-bleed hero with per-page background via hero_classes #}
-  <header class="ad-hero {% block hero_classes %}bg-default{% endblock %}">
+  {# Full-bleed hero (identical structure to list.html header block).
+     Note: using <div>, NOT <header>, to avoid semantic/styling differences. #}
+  <div class="ad-hero {% block hero_classes %}bg-default{% endblock %}">
     <div class="ad-container">
-
       <div class="ad-hero-top">
         <h1 class="ad-title">{% block hero_title %}Page Title{% endblock %}</h1>
         <div class="ad-hero-actions">{% block hero_actions %}{% endblock %}</div>
       </div>
 
-      <div class="ad-hero-meta">{% block hero_meta %}{% endblock %}</div>
+      <div class="ad-hero-meta">
+        {% block hero_meta %}{% endblock %}
+      </div>
     </div>
-  </header>
+  </div>
 
   <main class="ad-main">
     <div class="ad-container">
