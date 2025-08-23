@@ -1,21 +1,19 @@
-{# templates/dashboard.html #}
 {% extends "layouts/dashboard_content_base.html" %}
 
 {% block page_title %}Your Dashboard{% endblock %}
 
-{# HERO (uses default bg from dashboard_hero.css via .bg-default) #}
 {% block hero_title %}Your products{% endblock %}
 {% block hero_actions %}{% endblock %}
 {% block hero_meta %}
-  <div class="hero-text">
-    <span class="user-meta">
-      <span class="avatar-emoji" aria-hidden="true">👤</span>
-      <span class="email">{{ user.email }}</span>
-    </span>
-    <span class="sep">·</span>
-    <span class="text-mute">Here are your active servers.</span>
+  <div class="hero-text">Fast, secure, and always in your control.</div>
+
+  <div class="trust-strip">
+    <span class="trust-pill user-pill">👤 {{ user.email }}</span>
+    <span class="trust-pill">💬 Support chat ready</span>
+    <span class="trust-pill">🖥️ {{ vps|length }} active server{{ '' if vps|length==1 else 's' }}</span>
   </div>
 {% endblock %}
+
 
 {# BODY #}
 {% block page_content %}
