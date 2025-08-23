@@ -1,4 +1,4 @@
-{# templates/chat/user_chat_view.html (rewrite) #}
+{# templates/chat/user_chat_view.html #}
 {% extends "layouts/dashboard_content_base.html" %}
 
 {% block page_title %}Support Chat{% endblock %}
@@ -12,10 +12,13 @@
 
 {# HERO #}
 {% block hero_title %}Support Chat{% endblock %}
-{% block hero_actions %}{% endblock %}
+{% block hero_text %}Your conversation with our support team.{% endblock %}
 {% block hero_meta %}
-  <span class="text-mute">Your conversation with support.</span>
+  <span class="trust-pill">💬 Active conversation</span>
+  <span class="trust-pill">🛡️ Secure</span>
+  <span class="trust-pill">⌛ Real-time updates</span>
 {% endblock %}
+{% block hero_actions %}{% endblock %}
 
 {# MAIN CONTENT #}
 {% block page_content %}
