@@ -9,8 +9,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/public_nav.css') }}">
   {% block extra_css %}{% endblock %}
 </head>
-- <body>
-+ <body class="public-site">
+<body class="public-site">
   {% include "components/menu_public.html" %}
 
   <section class="ad-hero bg-default">
@@ -26,10 +25,9 @@
     </div>
   </section>
 
-- <main class="container" style="padding:28px 16px 60px;">
-+ <main class="container public-main">
+<main class="container public-main">
     {% block page_content %}{% endblock %}
-  </main>
+</main>
 
   <footer class="site-footer" style="padding:24px 16px; border-top:1px solid rgba(255,255,255,.06); opacity:.9;">
     <div class="container" style="display:flex; gap:12px; flex-wrap:wrap;">
