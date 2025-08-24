@@ -4,6 +4,9 @@
 
 {# HERO stays as you already have it #}
 {% block hero_title %}Order History{% endblock %}
+{% block extra_css %}{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user/orders.css') }}">
+{% endblock %}
 {% block hero_text %}Review invoices, charges, and subscription status.{% endblock %}
 {% block hero_meta %}
   <span class="trust-pill">🧾 All invoices & subscriptions</span>
