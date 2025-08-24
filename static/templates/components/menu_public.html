@@ -6,13 +6,20 @@
     <button class="nav-toggle" aria-label="Toggle menu" data-js="nav-toggle">☰</button>
 
     <ul class="nav-links" data-js="nav-links">
-      <li><a class="{{ 'active' if request.path.startswith('/vps') else '' }}"
-             href="{{ url_for('vps_blueprint.vps_list_page') }}">VPS</a></li>
-      <li><a class="{{ 'active' if request.path.startswith('/store') else '' }}"
-             href="{{ url_for('store_blueprint.store') }}">Store</a></li>
-      <li><a class="{{ 'active' if request.path.startswith('/support') else '' }}"
-             href="{{ url_for('support_blueprint.support') if 'support_blueprint.support' in current_app.view_functions else url_for('store_blueprint.store') }}">Support</a></li>
+      <li>
+        <a class="{{ 'active' if request.path.startswith('/vps') else '' }}"
+           href="{{ url_for('vps_blueprint.vps_list_page') }}">VPS</a>
+      </li>
+      <li>
+        <a class="{{ 'active' if request.path.startswith('/store') else '' }}"
+           href="{{ url_for('store_blueprint.store') }}">Store</a>
+      </li>
+      <li>
+        <a class="{{ 'active' if request.path.startswith('/support') else '' }}"
+           href="{{ url_for('support_blueprint.support') }}">Support</a>
+      </li>
     </ul>
+
 
     <div class="nav-actions">
       <a class="btn ghost" href="{{ url_for('auth_blueprint.login') }}">Log in</a>
