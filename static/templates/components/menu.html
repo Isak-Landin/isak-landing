@@ -3,11 +3,11 @@
     <ul class="links">
         <li><a href="{{ url_for('home_blueprint.index') }}">Home</a></li>
         <li><a href="#">Websites</a></li>
-        <li><a href="{{ url_for('about_blueprint.about') }}">About</a></li>
-        <li><a href="{{ url_for('contact_blueprint.contact') }}">Contact</a></li>
-        <li><a href="{{ url_for('support_blueprint.support') }}">Support</a></li>
-        <li><a href="{{ url_for('hosting_blueprint.hosting') }}">Hosting</a></li>
-        <li><a href="{{ url_for('server_blueprint.server') }}">Server Setup</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Support</a></li>
+        <li><a href="#">Hosting</a></li>
+        <li><a href="#">Server Setup</a></li>
 
         {% if current_user.is_authenticated %}
           <li><a href="{{ url_for('users_blueprint.dashboard') }}">Dashboard</a></li>
