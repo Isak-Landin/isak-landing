@@ -2,7 +2,7 @@
 {% extends "layouts/dashboard_content_base.html" %}
 {% block page_title %}Order History{% endblock %}
 
-{# HERO #}
+{# HERO stays as you already have it #}
 {% block hero_title %}Order History{% endblock %}
 {% block hero_text %}Review invoices, charges, and subscription status.{% endblock %}
 {% block hero_meta %}
@@ -12,53 +12,54 @@
 {% endblock %}
 {% block hero_actions %}{% endblock %}
 
-{# BODY #}
 {% block page_content %}
 
-  <div class="orders-filter" style="margin-bottom:12px;">
-    <a href="{{ url_for('vps_blueprint.orders_page', mode='all') }}"  class="{{ 'active' if mode=='all'  else '' }}">All</a> ·
-    <a href="{{ url_for('vps_blueprint.orders_page', mode='live') }}" class="{{ 'active' if mode=='live' else '' }}">Live</a> ·
+  <div class="orders-filter">
+    <a href="{{ url_for('vps_blueprint.orders_page', mode='all') }}"  class="{{ 'active' if mode=='all'  else '' }}">All</a>
+    <a href="{{ url_for('vps_blueprint.orders_page', mode='live') }}" class="{{ 'active' if mode=='live' else '' }}">Live</a>
     <a href="{{ url_for('vps_blueprint.orders_page', mode='test') }}" class="{{ 'active' if mode=='test' else '' }}">Test</a>
   </div>
 
   {% if records and records|length %}
-    <table class="orders-table" style="width:100%; border-collapse:collapse;">
-      <thead>
-        <tr>
-          <th style="text-align:left; padding:8px;">Date</th>
-          <th style="text-align:left; padding:8px;">Type</th>
-          <th style="text-align:left; padding:8px;">Description</th>
-          <th style="text-align:right; padding:8px;">Amount</th>
-          <th style="text-align:left; padding:8px;">Status</th>
-          <th style="text-align:left; padding:8px;">Mode</th>
-          <th style="text-align:left; padding:8px;">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for r in records %}
-          <tr style="border-top:1px solid rgba(255,255,255,.08);">
-            <td style="padding:8px;">{{ (r.created_at or r.period_end or r.period_start).strftime('%Y-%m-%d %H:%M') if (r.created_at or r.period_end or r.period_start) else '-' }}</td>
-            <td style="padding:8px;">{{ r.type|replace('_',' ')|title }}</td>
-            <td style="padding:8px;">{{ r.description or '-' }}</td>
-            <td style="padding:8px; text-align:right;">
-              {% if r.amount_cents is not none and r.currency %}
-                {{ '%.2f'|format(r.amount_cents / 100.0) }} {{ r.currency.upper() }}
-              {% else %}-{% endif %}
-            </td>
-            <td style="padding:8px;">{{ r.status or '-' }}</td>
-            <td style="padding:8px;">
-              <span class="mode-pill {{ 'live' if r.livemode else 'test' }}" style="padding:2px 8px; border-radius:999px; font-size:12px; background:rgba(0,0,0,.15);">
-                {{ 'Live' if r.livemode else 'Test' }}
-              </span>
-            </td>
-            <td style="padding:8px;">
-              {% if r.hosted_invoice_url %}<a href="{{ r.hosted_invoice_url }}" target="_blank" rel="noopener">Invoice</a>{% endif %}
-              {% if r.invoice_pdf %}{% if r.hosted_invoice_url %} · {% endif %}<a href="{{ r.invoice_pdf }}" target="_blank" rel="noopener">PDF</a>{% endif %}
-            </td>
+    <div class="table-wrap">
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Mode</th>
+            <th>Actions</th>
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {% for r in records %}
+            <tr>
+              <td>{{ (r.created_at or r.period_end or r.period_start).strftime('%Y-%m-%d %H:%M') if (r.created_at or r.period_end or r.period_start) else '-' }}</td>
+              <td>{{ r.type|replace('_',' ')|title }}</td>
+              <td>{{ r.description or '-' }}</td>
+              <td class="amount">
+                {% if r.amount_cents is not none and r.currency %}
+                  {{ '%.2f'|format(r.amount_cents / 100.0) }} {{ r.currency.upper() }}
+                {% else %}-{% endif %}
+              </td>
+              <td>{{ r.status or '-' }}</td>
+              <td>
+                <span class="mode-pill {{ 'live' if r.livemode else 'test' }}">
+                  {{ 'Live' if r.livemode else 'Test' }}
+                </span>
+              </td>
+              <td class="orders-actions">
+                {% if r.hosted_invoice_url %}<a href="{{ r.hosted_invoice_url }}" target="_blank" rel="noopener">Invoice</a>{% endif %}
+                {% if r.invoice_pdf %}{% if r.hosted_invoice_url %}<a href="{{ r.invoice_pdf }}" target="_blank" rel="noopener">PDF</a>{% else %}<a href="{{ r.invoice_pdf }}" target="_blank" rel="noopener">PDF</a>{% endif %}{% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   {% else %}
     <div class="empty-state">
       <div class="emoji">📦</div>
@@ -67,4 +68,8 @@
     </div>
   {% endif %}
 
+{% endblock %}
+
+{% block extra_css %}{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/orders.css') }}">
 {% endblock %}

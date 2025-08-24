@@ -1,0 +1,89 @@
+/* ---- Orders (content area) ---- */
+
+/* Filter tabs */
+.orders-filter{
+  display:flex; align-items:center; gap:10px;
+  margin:12px 0 16px;
+}
+.orders-filter a{
+  padding:6px 10px; border-radius:999px;
+  font-size:14px; text-decoration:none;
+  background:rgba(0,0,0,.15); color:#e7eaf3;
+  border:1px solid transparent;
+}
+.orders-filter a.active{
+  background:rgba(116,164,255,.18);
+  border-color:rgba(116,164,255,.35);
+  color:#fff;
+}
+.orders-filter a:hover{
+  border-color:rgba(255,255,255,.25);
+}
+
+/* Scroll wrapper to avoid cramped mobile stacks */
+.table-wrap{
+  width:100%;
+  overflow-x:auto;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:12px;
+  background:rgba(255,255,255,.02);
+}
+
+/* Table */
+.orders-table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:720px;
+}
+.orders-table thead th{
+  position:sticky; top:0; z-index:1;
+  background:rgba(10,12,18,.85);
+  backdrop-filter:blur(6px);
+  text-align:left; font-weight:700;
+  padding:12px; font-size:13px; letter-spacing:.02em;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.orders-table tbody td{
+  padding:10px 12px;
+  border-top:1px solid rgba(255,255,255,.06);
+  font-size:14px; color:#d7d8df;
+}
+.orders-table tbody tr:hover{
+  background:rgba(255,255,255,.03);
+}
+.orders-table td.amount{
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+}
+
+/* Mode pill */
+.mode-pill{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:2px 10px; border-radius:999px;
+  font-size:12px; line-height:20px;
+  border:1px solid rgba(255,255,255,.12);
+}
+.mode-pill.live{
+  background:rgba(12,168,75,.18);
+  border-color:rgba(12,168,75,.35);
+  color:#c8f7d2;
+}
+.mode-pill.test{
+  background:rgba(220,169,24,.18);
+  border-color:rgba(220,169,24,.35);
+  color:#ffe9b8;
+}
+
+/* Actions */
+.orders-actions a{
+  text-decoration:none; font-weight:600;
+}
+.orders-actions a + a::before{
+  content:" · "; color:rgba(255,255,255,.45);
+  font-weight:400; margin:0 6px;
+}
+
+@media (max-width: 720px){
+  .orders-table{ min-width:560px; }
+  .orders-filter{ flex-wrap:wrap; gap:8px; }
+}
