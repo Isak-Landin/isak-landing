@@ -3,7 +3,7 @@
 {% block page_title %}Fast VPS Hosting — Isaklandin{% endblock %}
 
 {# HERO (shared look via dashboard_hero.css) #}
-{% block hero_title %}Blazing‑fast VPS Hosting{% endblock %}
+{% block hero_title %}Blazing-fast VPS Hosting{% endblock %}
 {% block hero_text %}Simple pricing, NVMe performance, and human support — domains coming soon.{% endblock %}
 {% block hero_meta %}
   <span class="trust-pill">⚡ NVMe storage</span>
@@ -22,11 +22,11 @@
       <article class="tile">
         <div class="tile-icon">🚀</div>
         <h3>Real performance</h3>
-        <p>NVMe SSDs, generous bandwidth, and a stack tuned for real‑world workloads.</p>
+        <p>NVMe SSDs, generous bandwidth, and a stack tuned for real-world workloads.</p>
       </article>
       <article class="tile">
         <div class="tile-icon">🛡️</div>
-        <h3>Production‑ready</h3>
+        <h3>Production-ready</h3>
         <p>KVM virtualization on Linux. Straightforward networking and sane defaults.</p>
       </article>
       <article class="tile">
@@ -37,7 +37,7 @@
     </div>
   </section>
 
-  <!-- Plan teaser (lightweight preview, sends to VPS list) -->
+  <!-- Plan teaser -->
   <section class="section">
     <header class="section-head">
       <h2>Choose a plan</h2>
@@ -92,7 +92,7 @@
       <p>Domain registration and DNS deeply integrated with your VPS dashboard.</p>
       <div class="cta-row">
         <a class="button" href="{{ url_for('store_blueprint.store') }}">Visit Store</a>
-        <a class="button subtle" href="{{ url_for('users_blueprint.register') }}">Create account</a>
+        <a class="button subtle" href="{{ url_for('auth_blueprint.register') }}">Create account</a>
       </div>
     </div>
   </section>
@@ -103,7 +103,7 @@
     <p>Spin up your server in minutes. Cancel anytime.</p>
     <div class="cta-row">
       <a class="button primary" href="{{ url_for('vps_blueprint.vps_list_page') }}">View VPS plans</a>
-      <a class="button" href="{{ url_for('users_blueprint.login') }}">Log in</a>
+      <a class="button" href="{{ url_for('auth_blueprint.login') }}">Log in</a>
     </div>
   </section>
 
