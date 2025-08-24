@@ -4,7 +4,7 @@ from extensions import db, socketio
 from apps.admin.models import AdminUser
 
 # Import blueprints from different apps
-# from apps.home.home import blueprint as home_bp
+from apps.home.home import home_blueprint
 # from apps.websites.websites import blueprint as websites_bp
 # from apps.about.about import blueprint as about_bp
 # from apps.contact.contact import blueprint as contact_bp
@@ -58,6 +58,8 @@ def create_app():
 
     import apps.chat.socket_events
 
+    # Register blueprints
+    _app.register_blueprint(home_blueprint)
     _app.register_blueprint(auth_blueprint)
     _app.register_blueprint(users_bp)
     _app.register_blueprint(store_blueprint)
