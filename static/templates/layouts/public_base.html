@@ -4,48 +4,48 @@
   <meta charset="utf-8">
   <title>{% block page_title %}Isak Landing{% endblock %}</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  {# Core styles, then hero #}
+  {# Core styles, then hero, then public nav and page styles #}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_hero.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/public_nav.css') }}">
   {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-<header class="site-top">
-  <nav class="container" style="display:flex; align-items:center; gap:16px; padding:14px 0;">
-    <a href="/" class="brand">Isaklandin</a>
-    <span style="margin-left:auto"></span>
-    <a href="{{ url_for('vps_blueprint.vps_list_page') }}">VPS</a>
-    <a href="{{ url_for('store_blueprint.store') }}">Store</a>
-    <a href="{{ url_for('auth_blueprint.login') }}">Login</a>
-    <a href="{{ url_for('auth_blueprint.register') }}" class="button primary">Create account</a>
-  </nav>
-</header>
+  {# New menu component #}
+  {% include "components/menu_public.html" %}
 
-<section class="ad-hero bg-default">
-  <div class="ad-container">
-    <h1 class="ad-title">{% block hero_title %}{% endblock %}</h1>
-    <p class="hero-text">{% block hero_text %}{% endblock %}</p>
-    <div class="trust-strip">
-      {% block hero_meta %}{% endblock %}
+  {# Universal hero (same as dashboard hero) #}
+  <section class="ad-hero bg-default">
+    <div class="ad-container">
+      <h1 class="ad-title">{% block hero_title %}{% endblock %}</h1>
+      <p class="hero-text">{% block hero_text %}{% endblock %}</p>
+      <div class="trust-strip">
+        {% block hero_meta %}{% endblock %}
+      </div>
+      <div class="ad-hero-actions">
+        {% block hero_actions %}{% endblock %}
+      </div>
     </div>
-    <div class="ad-hero-actions">
-      {% block hero_actions %}{% endblock %}
+  </section>
+
+  <main class="container" style="padding:28px 16px 60px;">
+    {% block page_content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer" style="padding:24px 16px; border-top:1px solid rgba(255,255,255,.06); opacity:.9;">
+    <div class="container" style="display:flex; gap:12px; flex-wrap:wrap;">
+      <span>© {{  caller() if false else '' }} Isaklandin</span>
+      <span style="opacity:.6;">VPS • Domains (soon)</span>
     </div>
-  </div>
-</section>
+  </footer>
 
-<main class="container" style="padding:28px 16px 60px;">
-  {% block page_content %}{% endblock %}
-</main>
-
-<footer class="site-footer" style="padding:24px 16px; border-top:1px solid rgba(255,255,255,.06); opacity:.9;">
-  <div class="container" style="display:flex; gap:12px; flex-wrap:wrap;">
-    <span>© {{  now().year if false else '' }} Isaklandin</span>
-    <span style="opacity:.6;">VPS • Domains (soon)</span>
-  </div>
-</footer>
-
-{% block extra_js %}{% endblock %}
+  <script>
+    // Tiny mobile toggle (no external JS)
+    const t = document.querySelector('[data-js="nav-toggle"]');
+    const l = document.querySelector('[data-js="nav-links"]');
+    if (t && l) t.addEventListener('click', () => l.classList.toggle('open'));
+  </script>
+  {% block extra_js %}{% endblock %}
 </body>
 </html>
