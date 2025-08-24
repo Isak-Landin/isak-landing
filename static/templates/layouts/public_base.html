@@ -4,18 +4,15 @@
   <meta charset="utf-8">
   <title>{% block page_title %}Isak Landing{% endblock %}</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  {# Core styles, then hero, then public nav and page styles #}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_hero.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/public_nav.css') }}">
   {% block extra_css %}{% endblock %}
 </head>
-<body>
-
-  {# New menu component #}
+- <body>
++ <body class="public-site">
   {% include "components/menu_public.html" %}
 
-  {# Universal hero (same as dashboard hero) #}
   <section class="ad-hero bg-default">
     <div class="ad-container">
       <h1 class="ad-title">{% block hero_title %}{% endblock %}</h1>
@@ -29,7 +26,8 @@
     </div>
   </section>
 
-  <main class="container" style="padding:28px 16px 60px;">
+- <main class="container" style="padding:28px 16px 60px;">
++ <main class="container public-main">
     {% block page_content %}{% endblock %}
   </main>
 
@@ -41,7 +39,6 @@
   </footer>
 
   <script>
-    // Tiny mobile toggle (no external JS)
     const t = document.querySelector('[data-js="nav-toggle"]');
     const l = document.querySelector('[data-js="nav-links"]');
     if (t && l) t.addEventListener('click', () => l.classList.toggle('open'));
