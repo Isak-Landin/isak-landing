@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{% block page_title %}Isak Landing{% endblock %}</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  {# Core styles, then hero #}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_hero.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<header class="site-top">
+  <nav class="container" style="display:flex; align-items:center; gap:16px; padding:14px 0;">
+    <a href="/" class="brand">Isaklandin</a>
+    <span style="margin-left:auto"></span>
+    <a href="{{ url_for('vps_blueprint.vps_list_page') }}">VPS</a>
+    <a href="{{ url_for('store_blueprint.store') }}">Store</a>
+    <a href="{{ url_for('users_blueprint.login') }}">Login</a>
+    <a href="{{ url_for('users_blueprint.register') }}" class="button primary">Create account</a>
+  </nav>
+</header>
+
+<section class="ad-hero bg-default">
+  <div class="ad-container">
+    <h1 class="ad-title">{% block hero_title %}{% endblock %}</h1>
+    <p class="hero-text">{% block hero_text %}{% endblock %}</p>
+    <div class="trust-strip">
+      {% block hero_meta %}{% endblock %}
+    </div>
+    <div class="ad-hero-actions">
+      {% block hero_actions %}{% endblock %}
+    </div>
+  </div>
+</section>
+
+<main class="container" style="padding:28px 16px 60px;">
+  {% block page_content %}{% endblock %}
+</main>
+
+<footer class="site-footer" style="padding:24px 16px; border-top:1px solid rgba(255,255,255,.06); opacity:.9;">
+  <div class="container" style="display:flex; gap:12px; flex-wrap:wrap;">
+    <span>© {{  now().year if false else '' }} Isaklandin</span>
+    <span style="opacity:.6;">VPS • Domains (soon)</span>
+  </div>
+</footer>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

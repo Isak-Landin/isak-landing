@@ -1,0 +1,49 @@
+{% extends "layouts/public_base.html" %}
+
+{% block page_title %}VPS Hosting by Isaklandin{% endblock %}
+
+{% block hero_title %}Blazing‑fast VPS Hosting{% endblock %}
+{% block hero_text %}Simple pricing, NVMe performance, real support. Domains are coming soon.{% endblock %}
+{% block hero_meta %}
+  <span class="trust-pill">⚡ NVMe storage</span>
+  <span class="trust-pill">🔒 Secure checkout</span>
+  <span class="trust-pill">💬 Human support</span>
+{% endblock %}
+{% block hero_actions %}
+  <a class="button primary" href="{{ url_for('vps_blueprint.vps_list_page') }}">View VPS plans</a>
+{% endblock %}
+
+{% block page_content %}
+
+<section class="split" style="display:grid; gap:24px; grid-template-columns:1.1fr 0.9fr; align-items:center;">
+  <div>
+    <h2>Why our VPS?</h2>
+    <ul style="margin:12px 0 0 18px; line-height:1.8;">
+      <li>NVMe SSDs and generous bandwidth</li>
+      <li>Clear monthly pricing, no surprise fees</li>
+      <li>Cancel anytime — you’re in control</li>
+      <li>Support chat built into your dashboard</li>
+    </ul>
+    <div style="margin-top:16px;">
+      <a class="button primary" href="{{ url_for('vps_blueprint.vps_list_page') }}">Choose a plan</a>
+      <a class="button" href="{{ url_for('store_blueprint.store') }}" style="margin-left:8px;">Store</a>
+    </div>
+  </div>
+  <div>
+    <img src="/static/images/performance_section.png" alt="VPS performance" style="width:100%; border-radius:12px; border:1px solid rgba(255,255,255,.08);">
+  </div>
+</section>
+
+<section style="margin-top:46px;">
+  <h2>Domains (coming soon)</h2>
+  <p style="opacity:.9; max-width:58ch;">
+    We’re adding domain registration and DNS management that integrate
+    directly with your VPS dashboard. Reserve your spot and we’ll let you know when it launches.
+  </p>
+  <div style="margin-top:12px;">
+    <a class="button" href="{{ url_for('store_blueprint.store') }}">See what’s available</a>
+    <a class="button" href="{{ url_for('users_blueprint.register') }}" style="margin-left:8px;">Create account</a>
+  </div>
+</section>
+
+{% endblock %}
