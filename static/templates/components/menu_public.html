@@ -1,29 +1,42 @@
-{# Public top navigation (no dependency on old base.html) #}
-<nav class="public-nav">
+{# Public top navigation (no legacy deps) #}
+<nav class="public-nav" role="navigation" aria-label="Main">
   <div class="container nav-row">
     <a class="brand" href="/">Isaklandin</a>
 
-    <button class="nav-toggle" aria-label="Toggle menu" data-js="nav-toggle">☰</button>
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" data-js="nav-toggle">☰</button>
 
     <ul class="nav-links" data-js="nav-links">
       <li>
-        <a class="{{ 'active' if request.path.startswith('/vps') else '' }}"
-           href="{{ url_for('vps_blueprint.vps_list_page') }}">VPS</a>
+        <a href="{{ url_for('vps_blueprint.vps_list_page') }}"
+           class="{{ 'active' if request.path.startswith('/vps') else '' }}"
+           aria-current="{{ 'page' if request.path.startswith('/vps') else 'false' }}">
+          VPS
+        </a>
       </li>
       <li>
-        <a class="{{ 'active' if request.path.startswith('/store') else '' }}"
-           href="{{ url_for('store_blueprint.store') }}">Store</a>
+        <a href="{{ url_for('store_blueprint.store') }}"
+           class="{{ 'active' if request.path.startswith('/store') else '' }}"
+           aria-current="{{ 'page' if request.path.startswith('/store') else 'false' }}">
+          Store
+        </a>
       </li>
       <li>
-        <a class="{{ 'active' if request.path.startswith('/support') else '' }}"
-           href="#">Support</a>
+        <a href="#"
+           class="{{ 'active' if request.path.startswith('/support') else '' }}"
+           aria-current="{{ 'page' if request.path.startswith('/support') else 'false' }}">
+          Support
+        </a>
       </li>
     </ul>
 
-
     <div class="nav-actions">
-      <a class="btn ghost" href="{{ url_for('auth_blueprint.login') }}">Log in</a>
-      <a class="btn primary" href="{{ url_for('auth_blueprint.register') }}">Create account</a>
+      {% if current_user.is_authenticated %}
+        <a class="btn ghost" href="{{ url_for('users_blueprint.dashboard') }}">Dashboard</a>
+        <a class="btn" href="{{ url_for('auth_blueprint.logout') }}">Log out</a>
+      {% else %}
+        <a class="btn ghost" href="{{ url_for('auth_blueprint.login') }}">Log in</a>
+        <a class="btn primary" href="{{ url_for('auth_blueprint.register') }}">Create account</a>
+      {% endif %}
     </div>
   </div>
 </nav>
