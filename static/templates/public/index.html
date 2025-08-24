@@ -1,13 +1,14 @@
 {% extends "layouts/public_base.html" %}
 
-{% block page_title %}VPS Hosting by Isaklandin{% endblock %}
+{% block page_title %}Fast VPS Hosting — Isaklandin{% endblock %}
 
+{# HERO (shared look via dashboard_hero.css) #}
 {% block hero_title %}Blazing‑fast VPS Hosting{% endblock %}
-{% block hero_text %}Simple pricing, NVMe performance, real support. Domains are coming soon.{% endblock %}
+{% block hero_text %}Simple pricing, NVMe performance, and human support — domains coming soon.{% endblock %}
 {% block hero_meta %}
   <span class="trust-pill">⚡ NVMe storage</span>
+  <span class="trust-pill">🧠 KVM on Linux</span>
   <span class="trust-pill">🔒 Secure checkout</span>
-  <span class="trust-pill">💬 Human support</span>
 {% endblock %}
 {% block hero_actions %}
   <a class="button primary" href="{{ url_for('vps_blueprint.vps_list_page') }}">View VPS plans</a>
@@ -15,35 +16,100 @@
 
 {% block page_content %}
 
-<section class="split" style="display:grid; gap:24px; grid-template-columns:1.1fr 0.9fr; align-items:center;">
-  <div>
-    <h2>Why our VPS?</h2>
-    <ul style="margin:12px 0 0 18px; line-height:1.8;">
-      <li>NVMe SSDs and generous bandwidth</li>
-      <li>Clear monthly pricing, no surprise fees</li>
-      <li>Cancel anytime — you’re in control</li>
-      <li>Support chat built into your dashboard</li>
-    </ul>
-    <div style="margin-top:16px;">
-      <a class="button primary" href="{{ url_for('vps_blueprint.vps_list_page') }}">Choose a plan</a>
-      <a class="button" href="{{ url_for('store_blueprint.store') }}" style="margin-left:8px;">Store</a>
+  <!-- Feature highlights -->
+  <section class="section">
+    <div class="grid-3">
+      <article class="tile">
+        <div class="tile-icon">🚀</div>
+        <h3>Real performance</h3>
+        <p>NVMe SSDs, generous bandwidth, and a stack tuned for real‑world workloads.</p>
+      </article>
+      <article class="tile">
+        <div class="tile-icon">🛡️</div>
+        <h3>Production‑ready</h3>
+        <p>KVM virtualization on Linux. Straightforward networking and sane defaults.</p>
+      </article>
+      <article class="tile">
+        <div class="tile-icon">💬</div>
+        <h3>Human support</h3>
+        <p>Integrated support chat in your dashboard. No ticket maze.</p>
+      </article>
     </div>
-  </div>
-  <div>
-    <img src="/static/images/performance_section.png" alt="VPS performance" style="width:100%; border-radius:12px; border:1px solid rgba(255,255,255,.08);">
-  </div>
-</section>
+  </section>
 
-<section style="margin-top:46px;">
-  <h2>Domains (coming soon)</h2>
-  <p style="opacity:.9; max-width:58ch;">
-    We’re adding domain registration and DNS management that integrate
-    directly with your VPS dashboard. Reserve your spot and we’ll let you know when it launches.
-  </p>
-  <div style="margin-top:12px;">
-    <a class="button" href="{{ url_for('store_blueprint.store') }}">See what’s available</a>
-    <a class="button" href="{{ url_for('auth_blueprint.register') }}" style="margin-left:8px;">Create account</a>
-  </div>
-</section>
+  <!-- Plan teaser (lightweight preview, sends to VPS list) -->
+  <section class="section">
+    <header class="section-head">
+      <h2>Choose a plan</h2>
+      <a class="link-more" href="{{ url_for('vps_blueprint.vps_list_page') }}">See all plans →</a>
+    </header>
+    <div class="plan-grid">
+      <article class="plan-card">
+        <h3 class="plan-title">Starter</h3>
+        <ul class="specs">
+          <li><strong>1 vCPU</strong> · 1 GB RAM</li>
+          <li><strong>20 GB</strong> NVMe</li>
+          <li><strong>1 TB</strong> transfer</li>
+        </ul>
+        <div class="price-row">
+          <div class="price">€5<span>/mo</span></div>
+          <a class="plan-btn" href="{{ url_for('vps_blueprint.vps_list_page') }}">Get started</a>
+        </div>
+      </article>
 
+      <article class="plan-card">
+        <h3 class="plan-title">Pro</h3>
+        <ul class="specs">
+          <li><strong>2 vCPU</strong> · 4 GB RAM</li>
+          <li><strong>60 GB</strong> NVMe</li>
+          <li><strong>3 TB</strong> transfer</li>
+        </ul>
+        <div class="price-row">
+          <div class="price">€15<span>/mo</span></div>
+          <a class="plan-btn" href="{{ url_for('vps_blueprint.vps_list_page') }}">Choose Pro</a>
+        </div>
+      </article>
+
+      <article class="plan-card">
+        <h3 class="plan-title">Performance</h3>
+        <ul class="specs">
+          <li><strong>4 vCPU</strong> · 8 GB RAM</li>
+          <li><strong>160 GB</strong> NVMe</li>
+          <li><strong>5 TB</strong> transfer</li>
+        </ul>
+        <div class="price-row">
+          <div class="price">€35<span>/mo</span></div>
+          <a class="plan-btn" href="{{ url_for('vps_blueprint.vps_list_page') }}">Go Performance</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Domains coming soon -->
+  <section class="section callout">
+    <div class="callout-body">
+      <h2>Domains — coming soon</h2>
+      <p>Domain registration and DNS deeply integrated with your VPS dashboard.</p>
+      <div class="cta-row">
+        <a class="button" href="{{ url_for('store_blueprint.store') }}">Visit Store</a>
+        <a class="button subtle" href="{{ url_for('users_blueprint.register') }}">Create account</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer CTA -->
+  <section class="section final-cta">
+    <h2>Ready when you are</h2>
+    <p>Spin up your server in minutes. Cancel anytime.</p>
+    <div class="cta-row">
+      <a class="button primary" href="{{ url_for('vps_blueprint.vps_list_page') }}">View VPS plans</a>
+      <a class="button" href="{{ url_for('users_blueprint.login') }}">Log in</a>
+    </div>
+  </section>
+
+{% endblock %}
+
+{% block extra_css %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/public.css') }}">
 {% endblock %}
