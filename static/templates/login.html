@@ -1,37 +1,58 @@
-{% extends "layouts/base.html" %}
+{% extends "layouts/public_base.html" %}
 
-{% block title %}Login | Isak Landin{% endblock %}
+{% block page_title %}Log in — HostNodex{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% block hero_title %}Welcome back{% endblock %}
+{% block hero_text %}Access your dashboard, manage VPS, and get support.{% endblock %}
+{% block hero_meta %}
+  <span class="trust-pill">🔒 Secure login</span>
+  <span class="trust-pill">💬 Support chat in‑app</span>
 {% endblock %}
+{% block hero_actions %}{% endblock %}
 
-{% block content %}
+{% block page_content %}
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-head">
+        <h2>Log in</h2>
+        <p>Use your account email and password.</p>
+      </div>
 
+      <form method="POST" id="login-form" class="auth-form">
+        {% if csrf_token %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endif %}
+        <div class="form-row">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="you@example.com" required autofocus>
+        </div>
 
-<section class="radial-dark-section hero-condensed">
-  <div class="login-wrapper">
-    <div class="login-card">
-      <h2>Login</h2>
-      <div class="hero-marker"></div>
+        <div class="form-row">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" placeholder="••••••••" required>
+        </div>
 
-      <form method="POST" id="login-form">
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Password" required>
+        <div id="login-error" class="auth-error" style="display:none;"></div>
 
-        <div id="login-error" class="form-error" style="display: none;"></div>
+        <div class="auth-actions">
+          <button type="submit" class="button primary">Log in</button>
+          <a class="button" href="{{ url_for('auth_blueprint.register') }}">Create account</a>
+        </div>
 
-        <button type="submit">Log In</button>
+        <div class="auth-meta">
+          <span>New here? <a href="{{ url_for('auth_blueprint.register') }}">Create an account</a></span>
+          <a href="{{ url_for('vps_blueprint.vps_list_page') }}">Browse VPS plans</a>
+        </div>
       </form>
-
-      <p class="login-footer">
-        No account? <a href="{{ url_for('auth_blueprint.register') }}">Register here</a>
-      </p>
     </div>
   </div>
-</section>
+{% endblock %}
 
-<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+{% block extra_css %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/public.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
 
+{% block extra_js %}
+  {{ super() }}
+  <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 {% endblock %}

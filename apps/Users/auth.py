@@ -61,6 +61,7 @@ def login():
 
 @auth_blueprint.route('/logout')
 def logout():
+    logout_user()
     session.clear()
     return redirect(url_for('auth_blueprint.login'))  # or admin login depending on who is logging out
 

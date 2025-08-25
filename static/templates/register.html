@@ -1,55 +1,82 @@
-{% extends "layouts/base.html" %}
+{% extends "layouts/public_base.html" %}
 
-{% block title %}Register | Isak Landin{% endblock %}
+{% block page_title %}Create account — HostNodex{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/subpages.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+{% block hero_title %}Create your account{% endblock %}
+{% block hero_text %}Spin up VPS in minutes. Cancel anytime.{% endblock %}
+{% block hero_meta %}
+  <span class="trust-pill">⚡ Start fast</span>
+  <span class="trust-pill">✅ No hidden fees</span>
 {% endblock %}
+{% block hero_actions %}{% endblock %}
 
-{% block content %}
+{% block page_content %}
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-head">
+        <h2>Create account</h2>
+        <p>It only takes a minute.</p>
+      </div>
 
+      <form method="POST" id="register-form" class="auth-form">
+        {% if csrf_token %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endif %}
 
-<section class="radial-dark-section hero-condensed">
-  <div class="register-wrapper">
-    <div class="register-card">
-      <h2>Create Account</h2>
-      <div class="hero-marker"></div>
+        <div class="form-row">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="you@example.com" required autofocus>
+        </div>
 
-      <form method="POST" id="register-form">
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" id="password" placeholder="Password" required>
-        <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required>
+        <div class="form-row">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" placeholder="Create a password" required>
+        </div>
 
-        <div id="register-error" class="form-error" style="display: none;"></div>
+        <div class="form-row">
+          <label for="confirm_password">Confirm password</label>
+          <input id="confirm_password" name="confirm_password" type="password" placeholder="Repeat your password" required>
+        </div>
 
-        <button type="submit">Register</button>
+        {# Two error containers to satisfy both your old inline check and any AJAX/server errors #}
+        <div id="password-error" class="auth-error" style="display:none;"></div>
+        <div id="register-error" class="auth-error" style="display:none;"></div>
+
+        <div class="auth-actions">
+          <button type="submit" class="button primary">Create account</button>
+          <a class="button" href="{{ url_for('auth_blueprint.login') }}">I already have an account</a>
+        </div>
+
+        <div class="auth-meta">
+          <span>By continuing you agree to our terms.</span>
+          <a href="{{ url_for('vps_blueprint.vps_list_page') }}">Browse VPS plans</a>
+        </div>
       </form>
-
-
-      <p class="register-footer">
-        Already have an account? <a href="{{ url_for('auth_blueprint.login') }}">Log in here</a>
-      </p>
     </div>
   </div>
-</section>
+{% endblock %}
 
-<script>
-  const form = document.getElementById('register-form');
-  const pw = document.getElementById('password');
-  const confirm = document.getElementById('confirm_password');
-  const errorMsg = document.getElementById('password-error');
+{% block extra_css %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/public.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
 
-  form.addEventListener('submit', function (e) {
-    if (pw.value !== confirm.value) {
-      e.preventDefault();
-      errorMsg.style.display = 'block';
-    } else {
-      errorMsg.style.display = 'none';
-    }
-  });
-</script>
+{% block extra_js %}
+  {{ super() }}
+  <script>
+    const form = document.getElementById('register-form');
+    const pw = document.getElementById('password');
+    const confirmPw = document.getElementById('confirm_password');
+    const pwError = document.getElementById('password-error');
 
-<script src="{{ url_for('static', filename='js/register.js') }}"></script>
-
+    form.addEventListener('submit', function (e) {
+      if (pw.value !== confirmPw.value) {
+        e.preventDefault();
+        pwError.textContent = "Passwords don’t match.";
+        pwError.style.display = 'block';
+      } else {
+        pwError.style.display = 'none';
+      }
+    });
+  </script>
+  <script src="{{ url_for('static', filename='js/register.js') }}"></script>
 {% endblock %}

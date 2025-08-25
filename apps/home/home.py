@@ -2,9 +2,11 @@ from flask import Blueprint, render_template, redirect, url_for
 
 home_blueprint = Blueprint("home_blueprint", __name__, template_folder="../../static/templates")
 
+
 @home_blueprint.route("/")
 def index():
     return render_template("public/index.html")
+
 
 # Optional: legacy URL redirects → '/'
 @home_blueprint.route("/about")
