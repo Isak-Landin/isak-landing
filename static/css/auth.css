@@ -210,8 +210,8 @@ input:focus{
   }
 }
 
-/* Extra belt-and-suspenders on the card */
-.auth-card{
-  position: relative;
-  overflow: hidden;              /* clip any rendering bleed */
-}
+/* DEBUG — remove after confirming */
+.auth-card{ outline: 2px solid #ff5b5b; }
+#register-form{ outline: 2px solid #ffd166; }
+#register-form input{ outline: 2px solid #06d6a0; }
+
