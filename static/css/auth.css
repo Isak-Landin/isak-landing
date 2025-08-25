@@ -101,6 +101,86 @@ input:focus{
   font-size: 14px;
 }
 
+:root{
+  --cta-gradient: linear-gradient(90deg, #5b8cff, #3ac7ff);
+}
+
+/* Visual rhythm */
+.auth-card{ padding: 24px; }
+.auth-head h2{ margin-bottom: 4px; }
+.auth-head p{ line-height: 1.6; }
+
+/* Labels less shouty */
+label{
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  opacity: .85;
+}
+
+/* Inputs keep full width but soften edges & glow on focus */
+input[type="email"],
+input[type="text"],
+input[type="password"]{
+  border-radius: 12px;
+}
+
+/* Actions: primary dominates, secondary is lighter */
+.auth-actions{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+@media (max-width: 560px){
+  .auth-actions{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Force button look inside auth card (override any global button defaults) */
+.auth-card .button{
+  background: transparent !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: .65rem 1rem;
+  font-weight: 800;
+}
+
+/* Primary: gradient pill, full width */
+.auth-primary{
+  width: 100%;
+  border: none !important;
+  background: var(--cta-gradient) !important;
+  color: #fff !important;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.08) inset, 0 0 14px rgba(60,140,255,.35);
+}
+.auth-primary:hover{
+  box-shadow: 0 0 0 1px rgba(255,255,255,.16) inset, 0 0 22px rgba(60,140,255,.55);
+  transform: translateY(-1px);
+}
+
+/* Secondary: ghost, auto width */
+.auth-secondary{
+  border-color: rgba(255,255,255,.28);
+  color: var(--ink);
+  background: rgba(255,255,255,.04) !important;
+}
+.auth-secondary:hover{
+  border-color: #fff;
+  color: #fff;
+  background: rgba(255,255,255,.08) !important;
+  transform: translateY(-1px);
+}
+
+/* Footer links row spacing */
+.auth-meta{
+  margin-top: 14px;
+}
+
+
 /* Compact on small screens */
 @media (max-width: 540px){
   .auth-card{ padding: 18px; }

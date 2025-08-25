@@ -33,9 +33,10 @@
         <div id="login-error" class="auth-error" style="display:none;"></div>
 
         <div class="auth-actions">
-          <button type="submit" class="button primary">Log in</button>
-          <a class="button" href="{{ url_for('auth_blueprint.register') }}">Create account</a>
+          <button type="submit" class="button primary auth-primary">Log in</button>
+          <a class="button ghost auth-secondary" href="{{ url_for('auth_blueprint.register') }}">Create account</a>
         </div>
+
 
         <div class="auth-meta">
           <span>New here? <a href="{{ url_for('auth_blueprint.register') }}">Create an account</a></span>
