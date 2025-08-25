@@ -67,10 +67,10 @@ input:focus{
   background:rgba(255,255,255,.06);
 }
 
-/* Actions: primary dominates, secondary is lighter */
+/* Actions: primary dominates, secondary adapts */
 .auth-actions{
   display:grid;
-  grid-template-columns:1fr auto;
+  grid-template-columns:minmax(0,1fr) auto; /* safer than 1fr auto */
   align-items:center;
   gap:12px;
   margin-top:8px;
@@ -125,7 +125,9 @@ input:focus{
   border-color:rgba(255,255,255,.28);
   background:rgba(255,255,255,.04);
   color:var(--ink);
-  white-space:nowrap;
+  white-space:normal;        /* allow wrapping */
+  overflow-wrap:anywhere;
+  text-align:center;
 }
 .auth-secondary:hover{
   background:rgba(255,255,255,.08);
