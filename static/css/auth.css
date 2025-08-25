@@ -215,3 +215,41 @@ input:focus{
 #register-form{ outline: 2px solid #ffd166; }
 #register-form input{ outline: 2px solid #06d6a0; }
 
+
+/* ===== Register hard clamp ===== */
+#register-form{
+  width:100% !important;
+  max-width:420px !important;
+  margin-inline:auto !important;
+  display:block !important;     /* override any grid/flex forced by globals */
+  contain: layout paint size;   /* isolates sizing from outside flows */
+}
+
+/* Children cannot exceed the form width */
+#register-form *, #register-form *::before, #register-form *::after{
+  box-sizing:border-box !important;
+  max-width:100% !important;
+}
+
+/* Kill rogue min-widths/inline layouts */
+#register-form input,
+#register-form select,
+#register-form textarea,
+#register-form button,
+#register-form .button,
+#register-form a.button{
+  display:block !important;
+  width:100% !important;
+  min-width:0 !important;
+}
+
+/* Keep the action row layout the same */
+#register-form .auth-actions{
+  display:grid !important;
+  grid-template-columns: 1fr auto !important;
+  gap:12px !important;
+}
+@media (max-width:560px){
+  #register-form .auth-actions{ grid-template-columns:1fr !important; }
+}
+
