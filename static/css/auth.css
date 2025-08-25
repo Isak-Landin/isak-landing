@@ -22,7 +22,7 @@
   box-shadow:0 12px 28px rgba(0,0,0,.35);
   padding:24px;
   position:relative;
-  overflow:hidden; /* clip any accidental bleed */
+  overflow:hidden;
 }
 /* Ensure all descendants size sanely inside the card */
 .auth-card *, .auth-card *::before, .auth-card *::after{
@@ -83,7 +83,7 @@ input:focus{
 .auth-card button,
 .auth-card .button,
 .auth-card a.button{
-  all:unset;                      /* wipe UA/global resets */
+  all:unset;
   display:inline-flex;
   align-items:center;
   justify-content:center;
@@ -98,7 +98,7 @@ input:focus{
   letter-spacing:.02em;
   line-height:1;
   text-decoration:none;
-  width:auto;                     /* default; primary will be full width */
+  width:auto; /* default; primary will be full width */
 }
 .auth-card button:hover,
 .auth-card .button:hover,
@@ -155,101 +155,3 @@ input:focus{
 @media (max-width:540px){
   .auth-card{ padding:18px; }
 }
-
-
-/* =========================
-   Hard overrides (by ID)
-   ========================= */
-
-/* Constrain the forms themselves */
-#login-form,
-#register-form{
-  display: grid;                 /* keep your grid */
-  gap: 14px;
-  width: 100% !important;
-  max-width: 420px !important;   /* same as login look */
-  margin-inline: auto !important;
-  justify-items: stretch;
-}
-
-/* Nothing inside can outgrow the form */
-#login-form *, #login-form *::before, #login-form *::after,
-#register-form *, #register-form *::before, #register-form *::after{
-  box-sizing: border-box !important;
-  max-width: 100% !important;
-}
-
-/* Inputs/buttons: clamp width and kill rogue min-widths */
-#login-form input,
-#login-form select,
-#login-form textarea,
-#login-form button,
-#login-form .button,
-#login-form a.button,
-#register-form input,
-#register-form select,
-#register-form textarea,
-#register-form button,
-#register-form .button,
-#register-form a.button{
-  width: 100% !important;
-  min-width: 0 !important;       /* defeats fixed/min widths from globals */
-}
-
-/* Keep the “primary wide + secondary compact” layout */
-#login-form .auth-actions,
-#register-form .auth-actions{
-  display: grid !important;
-  grid-template-columns: 1fr auto !important;
-  gap: 12px !important;
-}
-@media (max-width: 560px){
-  #login-form .auth-actions,
-  #register-form .auth-actions{
-    grid-template-columns: 1fr !important;
-  }
-}
-
-/* DEBUG — remove after confirming */
-.auth-card{ outline: 2px solid #ff5b5b; }
-#register-form{ outline: 2px solid #ffd166; }
-#register-form input{ outline: 2px solid #06d6a0; }
-
-
-/* ===== Register hard clamp ===== */
-#register-form{
-  width:100% !important;
-  max-width:420px !important;
-  margin-inline:auto !important;
-  display:block !important;     /* override any grid/flex forced by globals */
-  contain: layout paint size;   /* isolates sizing from outside flows */
-}
-
-/* Children cannot exceed the form width */
-#register-form *, #register-form *::before, #register-form *::after{
-  box-sizing:border-box !important;
-  max-width:100% !important;
-}
-
-/* Kill rogue min-widths/inline layouts */
-#register-form input,
-#register-form select,
-#register-form textarea,
-#register-form button,
-#register-form .button,
-#register-form a.button{
-  display:block !important;
-  width:100% !important;
-  min-width:0 !important;
-}
-
-/* Keep the action row layout the same */
-#register-form .auth-actions{
-  display:grid !important;
-  grid-template-columns: 1fr auto !important;
-  gap:12px !important;
-}
-@media (max-width:560px){
-  #register-form .auth-actions{ grid-template-columns:1fr !important; }
-}
-
