@@ -153,6 +153,29 @@ input:focus{
   font-size:14px;
 }
 
+/* Make the secondary column cooperative instead of max-content wide */
+.auth-actions{
+  display:grid;
+  grid-template-columns: minmax(0, 1fr) fit-content(50%); /* was: 1fr auto */
+  align-items:center;
+  gap:12px;
+  margin-top:8px;
+}
+
+/* Let the secondary label wrap and actually shrink */
+.auth-actions > * { min-width: 0; }           /* grid items are allowed to shrink */
+.auth-secondary{
+  white-space: normal;                        /* allow wrapping */
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+/* Stack on smaller screens (keeps things ultra-safe) */
+@media (max-width: 560px){
+  .auth-actions{ grid-template-columns: 1fr; }
+}
+
+
 /* Small screens */
 @media (max-width:540px){
   .auth-card{ padding:18px; }
