@@ -1,7 +1,10 @@
 from flask import Flask, session, request, g
+from flask_login import login_required
 from dotenv import load_dotenv
 from extensions import db, socketio
+from decorators import admin_required, admin_2fa_required
 from apps.admin.models import AdminUser
+from apps.Users.models import User
 
 # Import blueprints from different apps
 from apps.home.home import home_blueprint
@@ -13,12 +16,11 @@ from apps.home.home import home_blueprint
 # from apps.support.support import blueprint as support_bp
 from apps.Users.auth import auth_blueprint
 from apps.Users.users import blueprint as users_bp
-from apps.Users.models import User
 from apps.store.store import store_blueprint
-from apps.admin.admin import admin_blueprint
-
 from apps.chat.chat import chat_blueprint
 from apps.VPS.vps import vps_blueprint
+
+from apps.admin.admin import admin_blueprint
 
 from flask_login import LoginManager
 import os
@@ -32,6 +34,37 @@ from apps.VPS.models import VPSPlan
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth_blueprint.login'
+
+
+@users_bp.before_request
+@login_required
+def require_login_users():
+    pass
+
+
+@store_blueprint.before_request
+@login_required
+def require_login_store():
+    pass
+
+
+@chat_blueprint.before_request
+@login_required
+def require_login_chat():
+    pass
+
+
+@vps_blueprint.before_request
+@login_required
+def require_login_vps():
+    pass
+
+
+@admin_blueprint.before_request
+@admin_required
+@admin_2fa_required
+def require_admin():
+    pass
 
 
 @login_manager.user_loader
