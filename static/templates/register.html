@@ -41,9 +41,10 @@
         <div id="register-error" class="auth-error" style="display:none;"></div>
 
         <div class="auth-actions">
-          <button type="submit" class="button primary">Create account</button>
-          <a class="button" href="{{ url_for('auth_blueprint.login') }}">I already have an account</a>
+          <button type="submit" class="button primary auth-primary">Create account</button>
+          <a class="button ghost auth-secondary" href="{{ url_for('auth_blueprint.login') }}">I already have an account</a>
         </div>
+
 
         <div class="auth-meta">
           <span>By continuing you agree to our terms.</span>
@@ -57,7 +58,7 @@
 {% block extra_css %}
   {{ super() }}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/public.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}?v=3">
 {% endblock %}
 
 {% block extra_js %}

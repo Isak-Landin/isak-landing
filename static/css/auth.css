@@ -180,8 +180,24 @@ input[type="password"]{
   margin-top: 14px;
 }
 
+/* Prevent inputs from overflowing the card */
+.auth-card input,
+.auth-card select,
+.auth-card textarea {
+  box-sizing: border-box;   /* key fix */
+  width: 100%;
+}
+
+/* Narrow the form column inside the card */
+.auth-card .auth-form {
+  max-width: 420px;
+  margin-inline: auto;
+}
+
+
 
 /* Compact on small screens */
 @media (max-width: 540px){
   .auth-card{ padding: 18px; }
 }
+
