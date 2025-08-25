@@ -36,7 +36,6 @@
           <input id="confirm_password" name="confirm_password" type="password" placeholder="Repeat your password" required>
         </div>
 
-        {# Two error containers to satisfy both your old inline check and any AJAX/server errors #}
         <div id="password-error" class="auth-error" style="display:none;"></div>
         <div id="register-error" class="auth-error" style="display:none;"></div>
 
@@ -44,7 +43,6 @@
           <button type="submit" class="button primary auth-primary">Create account</button>
           <a class="button ghost auth-secondary" href="{{ url_for('auth_blueprint.login') }}">I already have an account</a>
         </div>
-
 
         <div class="auth-meta">
           <span>By continuing you agree to our terms.</span>
@@ -58,7 +56,7 @@
 {% block extra_css %}
   {{ super() }}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/public.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}?v=3">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
 {% endblock %}
 
 {% block extra_js %}
@@ -68,7 +66,6 @@
     const pw = document.getElementById('password');
     const confirmPw = document.getElementById('confirm_password');
     const pwError = document.getElementById('password-error');
-
     form.addEventListener('submit', function (e) {
       if (pw.value !== confirmPw.value) {
         e.preventDefault();
