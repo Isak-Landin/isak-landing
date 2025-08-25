@@ -155,3 +155,63 @@ input:focus{
 @media (max-width:540px){
   .auth-card{ padding:18px; }
 }
+
+
+/* =========================
+   Hard overrides (by ID)
+   ========================= */
+
+/* Constrain the forms themselves */
+#login-form,
+#register-form{
+  display: grid;                 /* keep your grid */
+  gap: 14px;
+  width: 100% !important;
+  max-width: 420px !important;   /* same as login look */
+  margin-inline: auto !important;
+  justify-items: stretch;
+}
+
+/* Nothing inside can outgrow the form */
+#login-form *, #login-form *::before, #login-form *::after,
+#register-form *, #register-form *::before, #register-form *::after{
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+}
+
+/* Inputs/buttons: clamp width and kill rogue min-widths */
+#login-form input,
+#login-form select,
+#login-form textarea,
+#login-form button,
+#login-form .button,
+#login-form a.button,
+#register-form input,
+#register-form select,
+#register-form textarea,
+#register-form button,
+#register-form .button,
+#register-form a.button{
+  width: 100% !important;
+  min-width: 0 !important;       /* defeats fixed/min widths from globals */
+}
+
+/* Keep the “primary wide + secondary compact” layout */
+#login-form .auth-actions,
+#register-form .auth-actions{
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  gap: 12px !important;
+}
+@media (max-width: 560px){
+  #login-form .auth-actions,
+  #register-form .auth-actions{
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Extra belt-and-suspenders on the card */
+.auth-card{
+  position: relative;
+  overflow: hidden;              /* clip any rendering bleed */
+}
