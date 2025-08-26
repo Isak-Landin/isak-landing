@@ -32,8 +32,16 @@
 /* Brand lockup (badge + wordmark) */
 .brand{
   display:inline-flex; align-items:center; gap:10px;
-  text-decoration:none;
+  text-decoration:none; /* kill underline */
+  box-shadow: 0 0 0 1px rgba(255,255,255,.15);  /* subtle halo */
+  border-radius: 10px;
+  padding:4px 8px;
+  transition: box-shadow .2s ease;
 }
+.brand:hover{
+  box-shadow: 0 0 0 1px rgba(255,255,255,.28), 0 0 12px rgba(255,255,255,.15);
+}
+
 .brand-badge{
   display:grid; place-items:center;
   width:28px; height:28px; border-radius:8px;
@@ -79,6 +87,41 @@
 .nav-actions{
   margin-left:auto; display:flex; align-items:center; gap:10px;
 }
+
+/* Normalize button sizing */
+.nav-actions .btn{
+  min-width:auto;
+  max-width:180px;        /* don’t stretch wider */
+  white-space:nowrap;     /* avoid breaking into 2 lines */
+  padding:.5rem 1rem;
+  font-size:14px;
+}
+
+/* Outline (Log in) */
+.btn.outline{
+  border:1px solid rgba(255,255,255,.28);
+  background:rgba(255,255,255,.04);
+  color:#fff;
+}
+.btn.outline:hover{
+  border-color:#fff;
+  background:rgba(255,255,255,.08);
+}
+
+/* Primary pill (Create account) */
+.btn.primary{
+  border:none;
+  color:#fff;
+  background:var(--cta-gradient);
+  font-weight:800;
+  border-radius:999px;
+  padding:.55rem 1.2rem;
+  box-shadow:0 0 0 1px rgba(255,255,255,.08) inset, 0 0 10px rgba(60,140,255,.35);
+}
+.btn.primary:hover{
+  box-shadow:0 0 0 1px rgba(255,255,255,.16) inset, 0 0 18px rgba(60,140,255,.55);
+}
+
 
 /* Buttons */
 .btn{
