@@ -37,6 +37,8 @@
   padding:4px 0;                      /* no chip/halo around it */
   box-shadow:none !important;         /* remove border/halo */
   transition:transform .2s ease;
+  border-bottom: none !important; /* kill underline if any */
+  border: none !important;
 }
 .brand:hover{
   transform:translateY(-1px);         /* tiny motion instead of underline */
