@@ -37,7 +37,7 @@ def setup_2fa():
         # Already verified user
         totp = pyotp.TOTP(current_user.totp_secret)
 
-    otp_uri = totp.provisioning_uri(name=current_user.email, issuer_name="Isaklandin Admin")
+    otp_uri = totp.provisioning_uri(name=current_user.email, issuer_name="HostNodex Admin")
     img = qrcode.make(otp_uri)
     buffer = io.BytesIO()
     img.save(buffer, format="PNG")
