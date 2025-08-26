@@ -1,19 +1,52 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <link rel="canonical" href="https://hostnodex.com/">
-  <meta charset="utf-8">
-  <meta name="description" content="HostNodex provides blazing-fast VPS hosting with NVMe storage, simple pricing, and human support.">
-  <meta name="keywords" content="VPS hosting, NVMe VPS, HostNodex, KVM, cloud servers, buy vps, use vps, vps for developers, vps for startups">
-  <meta name="author" content="HostNodex">
-  <meta property="og:title" content="HostNodex — Fast VPS Hosting">
-  <meta property="og:description" content="Spin up your server in minutes with NVMe storage and simple monthly pricing.">
-  <meta property="og:image" content="https://hostnodex.com/static/images/preview.png">
-  <meta property="og:url" content="https://hostnodex.com/">
-  <meta name="twitter:card" content="summary_large_image">
+  {# --- Canonical base (absolute) --- #}
+  {% set BASE_URL = "https://hostnodex.com" %}
+  <link rel="canonical" href="{{ BASE_URL ~ request.path }}">
 
-  <title>{% block page_title %}Isak Landing{% endblock %}</title>
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  {# --- SEO basics --- #}
+  {% block meta_title %}{% endblock %}
+  <title>{% block page_title %}HostNodex — Fast VPS Hosting{% endblock %}</title>
+
+  {# Page description (fallback) #}
+  {% set META_DESC = "HostNodex provides blazing-fast VPS hosting with NVMe storage, simple pricing, and human support." %}
+  <meta name="description" content="{% block meta_description %}{{ META_DESC }}{% endblock %}">
+  {# (Optional) keywords are mostly ignored by Google, harmless to keep #}
+  <meta name="keywords" content="VPS hosting, NVMe VPS, HostNodex, KVM, cloud servers, buy vps, vps for developers, vps for startups">
+  <meta name="author" content="HostNodex">
+
+  {# --- Open Graph --- #}
+  {% set OG_TITLE = self.page_title() or "HostNodex — Fast VPS Hosting" %}
+  {% set OG_DESC  = self.meta_description() or META_DESC %}
+  {% set OG_IMG   = BASE_URL ~ "/static/images/og/hostnodex-og.png" %}
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="HostNodex">
+  <meta property="og:title" content="{{ OG_TITLE }}">
+  <meta property="og:description" content="{{ OG_DESC }}">
+  <meta property="og:url" content="{{ BASE_URL ~ request.path }}">
+  <meta property="og:image" content="{{ OG_IMG }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="HostNodex — Fast VPS Hosting">
+
+  {# --- Twitter Cards --- #}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ OG_TITLE }}">
+  <meta name="twitter:description" content="{{ OG_DESC }}">
+  <meta name="twitter:image" content="{{ OG_IMG }}">
+
+  {# Favicons (nice polish) #}
+  <link rel="icon" href="{{ url_for('static', filename='images/favicon_io/favicon.ico') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/favicon_io/apple-touch-icon.png') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='images/favicon_io/site.webmanifest') }}">
+  <meta name="theme-color" content="#0b0f19">
+
+  {# Styles #}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_hero.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/public_nav.css') }}">
@@ -21,27 +54,22 @@
 </head>
 <body class="public-site">
   {% include "components/menu_public.html" %}
-
   <section class="ad-hero bg-default">
     <div class="ad-container">
       <h1 class="ad-title">{% block hero_title %}{% endblock %}</h1>
       <p class="hero-text">{% block hero_text %}{% endblock %}</p>
-      <div class="trust-strip">
-        {% block hero_meta %}{% endblock %}
-      </div>
-      <div class="ad-hero-actions">
-        {% block hero_actions %}{% endblock %}
-      </div>
+      <div class="trust-strip">{% block hero_meta %}{% endblock %}</div>
+      <div class="ad-hero-actions">{% block hero_actions %}{% endblock %}</div>
     </div>
   </section>
 
-<main class="container public-main">
+  <main class="container public-main">
     {% block page_content %}{% endblock %}
-</main>
+  </main>
 
   <footer class="site-footer" style="padding:24px 16px; border-top:1px solid rgba(255,255,255,.06); opacity:.9;">
     <div class="container" style="display:flex; gap:12px; flex-wrap:wrap;">
-      <span>© {{  caller() if false else '' }} Isaklandin</span>
+      <span>© HostNodex</span>
       <span style="opacity:.6;">VPS • Domains (soon)</span>
     </div>
   </footer>
