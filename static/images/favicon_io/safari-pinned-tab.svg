@@ -1,0 +1,8 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+ "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <rect width="256" height="256" fill="black"/>
+  <text x="50%" y="50%" font-family="DejaVu Sans, Arial, sans-serif" font-size="180" font-weight="bold"
+        text-anchor="middle" dominant-baseline="middle" fill="white">H</text>
+</svg>

@@ -8,6 +8,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
+  {# --- IE and safari --- #}
+  <!-- Safari pinned tab -->
+  <link rel="mask-icon" href="{{ url_for('static', filename='images/favicon_io/safari-pinned-tab.svg') }}" color="#3c8cff">
+
+  <!-- Windows tiles -->
+  <meta name="msapplication-TileColor" content="#0b0f19">
+  <meta name="msapplication-TileImage" content="{{ url_for('static', filename='images/favicon_io/android-chrome-192x192.png') }}">
+
+
   {# --- SEO basics --- #}
   {% block meta_title %}{% endblock %}
   <title>{% block page_title %}HostNodex — Fast VPS Hosting{% endblock %}</title>
