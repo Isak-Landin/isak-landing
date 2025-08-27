@@ -31,7 +31,10 @@
 }
 
 /* Header */
-.auth-head{ margin-bottom:14px; }
+.auth-head{
+    margin-bottom:14px;
+    text-align: center;
+ }
 .auth-head h2{ margin:0 0 4px; font-size:22px; font-weight:800; }
 .auth-head p{ margin:0; color:var(--muted); line-height:1.6; }
 
