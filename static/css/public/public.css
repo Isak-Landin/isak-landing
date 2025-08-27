@@ -146,6 +146,7 @@ body{
   background: radial-gradient(80% 120% at 20% 0%, rgba(255,255,255,.04), transparent 60%);
 }
 .callout-body{
+    text-align: center;
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 16px;
