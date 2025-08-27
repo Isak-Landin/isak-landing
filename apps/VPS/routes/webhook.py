@@ -11,9 +11,11 @@ from apps.Users.models import User                # map customer -> user
 from apps.VPS.models import BillingRecord         # new model
 
 
-def _find_or_bind_user(customer_id: str | None,
-                       client_reference_id: str | int | None = None,
-                       subscription_obj: dict | None = None):
+def _find_or_bind_user(
+    customer_id: Optional[str],
+    client_reference_id: Optional[Union[str, int]] = None,
+    subscription_obj: Optional[Dict[str, Any]] = None,
+):
     """
     Resolve the local User for a Stripe customer. If it's the user's first purchase,
     bind stripe_customer_id to the user using either client_reference_id or subscription metadata.
@@ -31,7 +33,7 @@ def _find_or_bind_user(customer_id: str | None,
                 fallback_user_id = int(md["user_id"])
             except Exception:
                 pass
-        if not fallback_user_id and client_reference_id:
+        if fallback_user_id is None and client_reference_id is not None:
             try:
                 fallback_user_id = int(client_reference_id)
             except Exception:
@@ -39,11 +41,11 @@ def _find_or_bind_user(customer_id: str | None,
         if fallback_user_id:
             user = User.query.get(fallback_user_id)
             if user and customer_id:
-                # Bind customer to user for future events
                 user.stripe_customer_id = customer_id
                 db.session.add(user)
                 db.session.commit()
     return user
+
 
 
 def _find_user_by_customer(customer_id: str):
