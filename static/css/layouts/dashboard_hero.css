@@ -3,101 +3,130 @@
    ================================ */
 
 /* full-bleed 6:1 banner */
-.ad-hero{
-  --min-h: 172px;
-  --max-h: 285px;
-  --ratio-h: calc(100vw / 6);
-  position: relative;
-  overflow: hidden;
-  height: clamp(var(--min-h), var(--ratio-h), var(--max-h));
-  padding: 0;
-  border-bottom: 1px solid rgba(0,0,0,.06);
-  text-align: center;
+.ad-hero {
+    --min-h: 172px;
+    --max-h: 285px;
+    --ratio-h: calc(100vw / 6);
+    position: relative;
+    overflow: hidden;
+    height: clamp(var(--min-h), var(--ratio-h), var(--max-h));
+    padding: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, .06);
+    text-align: center;
 }
 
 /* background image (provided via --hero-bg-url) + soft texture */
-.ad-hero::before{
-  content:"";
-  position:absolute; inset:0;
-  background:
-    radial-gradient(circle at 30% 10%,
-      rgba(255,255,255,.02) 0%,
-      rgba(197,199,198,.02) 50%,
-      rgba(171,171,171,.02) 100%),
-    var(--hero-bg-url, linear-gradient(180deg,#0e1320,#0b0f19));
-  background-position:center;
-  background-size:cover, cover;
-  background-repeat:no-repeat;
-  z-index:0;
+.ad-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 30% 10%,
+            rgba(255, 255, 255, .02) 0%,
+            rgba(197, 199, 198, .02) 50%,
+            rgba(171, 171, 171, .02) 100%),
+        var(--hero-bg-url, linear-gradient(180deg, #0e1320, #0b0f19));
+    background-position: center;
+    background-size: cover, cover;
+    background-repeat: no-repeat;
+    z-index: 0;
 }
 
 
 /* subtle animated glow to feel alive */
-.ad-hero::after{
-  content:"";
-  position:absolute; inset:-20%;
-  background:
-    radial-gradient(40% 60% at 20% 0%, rgba(255,255,255,.05), transparent 60%),
-    radial-gradient(35% 55% at 85% 30%, rgba(0,90,255,.05), transparent 60%),
-    radial-gradient(30% 60% at 50% 100%, rgba(0,0,0,.18), transparent 70%);
-  mix-blend-mode: screen;
-  opacity:.28;
-  z-index:0;
+.ad-hero::after {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    background:
+        radial-gradient(40% 60% at 20% 0%, rgba(255, 255, 255, .05), transparent 60%),
+        radial-gradient(35% 55% at 85% 30%, rgba(0, 90, 255, .05), transparent 60%),
+        radial-gradient(30% 60% at 50% 100%, rgba(0, 0, 0, .18), transparent 70%);
+    mix-blend-mode: screen;
+    opacity: .28;
+    z-index: 0;
 }
-@media (prefers-reduced-motion: no-preference){
-  .ad-hero::after{ animation: heroDrift 36s ease-in-out infinite alternate; }
+
+@media (prefers-reduced-motion: no-preference) {
+    .ad-hero::after {
+        animation: heroDrift 36s ease-in-out infinite alternate;
+    }
 }
-@keyframes heroDrift{
-  0%{   transform:translate3d(-1.5%,-1%,0) scale(1.02); }
-  100%{ transform:translate3d(1%,1.5%,0)  scale(1.05); }
+
+@keyframes heroDrift {
+    0% {
+        transform: translate3d(-1.5%, -1%, 0) scale(1.02);
+    }
+
+    100% {
+        transform: translate3d(1%, 1.5%, 0) scale(1.05);
+    }
 }
 
 /* content */
-.ad-hero .ad-container{
-  position:relative; z-index:1;
-  max-width:960px; margin:0 auto;
-  height:100%;
-  display:grid; place-content:center; gap:10px;
+.ad-hero .ad-container {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    height: 100%;
+    display: grid;
+    place-content: center;
+    gap: 10px;
 }
 
 /* title — exactly like VPS list scale */
-.ad-title{
-  margin:0;
-  font-weight:800;
-  line-height:1.1;
-  letter-spacing:.2px;
-  font-size: clamp(30px, 4vw, 46px);
-  color:#fff;
-  text-shadow:0 1px 2px rgba(0,0,0,.35);
+.ad-title {
+    margin: 0;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: .2px;
+    font-size: clamp(30px, 4vw, 46px);
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .35);
 }
 
 /* subline (same style the list hero uses) */
-.ad-hero .hero-text{
-  font-size: clamp(16px, 1.5vw, 20px);
-  color: rgba(255,255,255,.92);
-  text-shadow: 0 1px 2px rgba(0,0,0,.35);
-  margin-top: 6px;
+.ad-hero .hero-text {
+    font-size: clamp(16px, 1.5vw, 20px);
+    color: rgba(255, 255, 255, .92);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .35);
+    margin-top: 6px;
 }
 
 /* optional actions area (hidden by default) */
-.ad-hero .ad-hero-actions{ display:none; }
+.ad-hero .ad-hero-actions {
+    display: none;
+}
 
 /* pill row — identical look */
-.trust-strip{
-  display:flex; flex-wrap:wrap; gap:12px;
-  justify-content:center; margin-top:10px;
+.trust-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 10px;
 }
-.trust-pill{
-  display:inline-flex; align-items:center; gap:6px;
-  padding:6px 12px; border-radius:999px;
-  background:rgba(0,0,0,.05);
-  font-size:13px; color:#e8ecf6;
+
+.trust-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, .05);
+    font-size: 13px;
+    color: #e8ecf6;
 }
 
 /* optional user pill */
-.user-pill{ display:inline-flex; align-items:center; gap:8px; }
+.user-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
 
 /* default background hook (same art as VPS list hero) */
-.ad-hero.bg-default{
-  --hero-bg-url: url("/static/images/list_bg_image.png");
+.ad-hero.bg-default {
+    --hero-bg-url: url("/static/images/list_bg_image.png");
 }
