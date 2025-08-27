@@ -10,6 +10,8 @@ from apps.VPS.models import VpsSubscription, StripeEventLog, VPSPlan, VPS
 from apps.Users.models import User                # map customer -> user
 from apps.VPS.models import BillingRecord         # new model
 
+from typing import Optional, Union, Dict, Any
+
 
 def _find_or_bind_user(
     customer_id: Optional[str],
