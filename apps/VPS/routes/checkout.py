@@ -69,10 +69,6 @@ def vps_checkout():
                     "interval": interval
                 }
             },
-
-            # optional but recommended (keeps parity with your tax plans + coupons)
-            automatic_tax = {"enabled": True},
-            allow_promotion_codes = True,
         )
     except Exception as e:
         return jsonify({"ok": False, "error": f"Stripe error: {str(e)}"}), 500
