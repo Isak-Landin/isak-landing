@@ -58,13 +58,21 @@ def vps_checkout():
             customer=current_user.stripe_customer_id,
             success_url=success_url + "?session_id={CHECKOUT_SESSION_ID}",
             cancel_url=cancel_url,
+
+            # ✅ Add this: gives the webhook a second way to map to your user
+            client_reference_id=current_user.id,
+
             subscription_data={
                 "metadata": {
                     "user_id": current_user.id,
                     "plan_code": plan_code,
                     "interval": interval
                 }
-            }
+            },
+
+            # optional but recommended (keeps parity with your tax plans + coupons)
+            automatic_tax = {"enabled": True},
+            allow_promotion_codes = True,
         )
     except Exception as e:
         return jsonify({"ok": False, "error": f"Stripe error: {str(e)}"}), 500

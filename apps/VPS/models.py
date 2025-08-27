@@ -47,6 +47,7 @@ class BillingRecord(db.Model):
 
     user = db.relationship('User', backref=db.backref('billing_records', lazy=True))
 
+
 class VPS(db.Model):
     __tablename__ = 'vps'
 

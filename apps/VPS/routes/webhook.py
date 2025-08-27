@@ -11,15 +11,64 @@ from apps.Users.models import User                # map customer -> user
 from apps.VPS.models import BillingRecord         # new model
 
 
+def _find_or_bind_user(customer_id: str | None,
+                       client_reference_id: str | int | None = None,
+                       subscription_obj: dict | None = None):
+    """
+    Resolve the local User for a Stripe customer. If it's the user's first purchase,
+    bind stripe_customer_id to the user using either client_reference_id or subscription metadata.
+    """
+    user = None
+    if customer_id:
+        user = User.query.filter_by(stripe_customer_id=customer_id).first()
+
+    # Fallback: subscription metadata.user_id or client_reference_id
+    fallback_user_id = None
+    if not user:
+        md = (subscription_obj or {}).get("metadata") or {}
+        if md.get("user_id"):
+            try:
+                fallback_user_id = int(md["user_id"])
+            except Exception:
+                pass
+        if not fallback_user_id and client_reference_id:
+            try:
+                fallback_user_id = int(client_reference_id)
+            except Exception:
+                pass
+        if fallback_user_id:
+            user = User.query.get(fallback_user_id)
+            if user and customer_id:
+                # Bind customer to user for future events
+                user.stripe_customer_id = customer_id
+                db.session.add(user)
+                db.session.commit()
+    return user
+
+
 def _find_user_by_customer(customer_id: str):
     if not customer_id:
         return None
     return User.query.filter_by(stripe_customer_id=customer_id).first()
 
 
+
 def _upsert_invoice_record(inv: dict, livemode: bool):
-    """Persist/refresh a BillingRecord from a Stripe invoice object."""
-    user = _find_user_by_customer(inv.get('customer'))
+    # Try to resolve via invoice.customer. If unknown, try retrieving the subscription once
+    sub_obj = None
+    if not _find_user_by_customer(inv.get('customer')):
+        # Safe, single retrieval to get metadata.user_id
+        try:
+            if inv.get('subscription'):
+                sub_obj = stripe.Subscription.retrieve(inv['subscription'], expand=["items.data.price.product"])
+        except Exception:
+            sub_obj = None
+
+    user = _find_or_bind_user(
+        inv.get('customer'),
+        client_reference_id=None,
+        subscription_obj=sub_obj
+    )
     if not user:
         return None
 
@@ -65,9 +114,13 @@ def _upsert_invoice_record(inv: dict, livemode: bool):
     db.session.commit()
     return rec
 
+
 def _upsert_checkout_session(sess: dict, livemode: bool):
-    """Store checkout session for traceability (subs will be captured by invoice)."""
-    user = _find_user_by_customer(sess.get('customer'))
+    user = _find_or_bind_user(
+        sess.get('customer'),
+        client_reference_id=sess.get('client_reference_id'),
+        subscription_obj=None
+    )
     if not user:
         return None
 
@@ -244,40 +297,29 @@ def vps_webhook():
     try:
         if etype == "checkout.session.completed":
             session = event["data"]["object"]
-            # Store session for traceability
             _upsert_checkout_session(session, livemode)
 
-            # Retrieve the subscription to populate DB (both VPS model + history record)
             sub_id = session.get("subscription")
             if sub_id:
                 sub = stripe.Subscription.retrieve(sub_id, expand=["items.data.price.product"])
-                _upsert_subscription_from_stripe(sub)        # existing: update VpsSubscription
-                _upsert_subscription_record(sub, livemode)   # new: lightweight history row
+                _upsert_subscription_from_stripe(sub)
+                _upsert_subscription_record(sub, livemode)
 
-        elif etype in (
-            "customer.subscription.created",
-            "customer.subscription.updated",
-            "customer.subscription.deleted",
-        ):
+        elif etype in ("customer.subscription.created", "customer.subscription.updated",
+                       "customer.subscription.deleted"):
             sub_obj = event["data"]["object"]
-            # Normalize/expand subscription if needed
             if not (isinstance(sub_obj, dict) and sub_obj.get("items", {}).get("data")):
                 sub = stripe.Subscription.retrieve(sub_obj["id"], expand=["items.data.price.product"])
             else:
                 sub = sub_obj
+            _upsert_subscription_from_stripe(sub)
+            _upsert_subscription_record(sub, livemode)
 
-            _upsert_subscription_from_stripe(sub)            # existing model upsert
-            _upsert_subscription_record(sub, livemode)       # history row
-
-        elif etype in (
-            "invoice.finalized",
-            "invoice.payment_succeeded",
-            "invoice.paid",
-            "invoice.voided",
-            "invoice.marked_uncollectible",
-        ):
+        elif etype in ("invoice.finalized", "invoice.payment_succeeded", "invoice.paid", "invoice.voided",
+                       "invoice.marked_uncollectible"):
             inv = event["data"]["object"]
             _upsert_invoice_record(inv, livemode)
+
 
         elif etype in ("invoice.payment_failed", "customer.subscription.paused"):
             # Optional: flag subscription state or notify user

@@ -207,6 +207,7 @@
 
 /* Make the whole page dark and remove default margins */
 .dash-body{
+    text-align: center;
   margin: 0;
   background: var(--ds-color-bg, #0f1524);
   color: var(--ds-color-text, #e8ecf6);
