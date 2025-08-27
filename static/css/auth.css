@@ -180,3 +180,24 @@ input:focus{
 @media (max-width:540px){
   .auth-card{ padding:18px; }
 }
+
+/* Auth essentials that must not rely on global styles */
+.auth-wrap{display:grid;place-items:center;padding:28px 0 52px;}
+.auth-card{
+  width:100%; max-width:480px; background:#121725; color:#e6e9f3;
+  border:1px solid rgba(255,255,255,.08); border-radius:16px;
+  padding:24px; box-shadow:0 12px 28px rgba(0,0,0,.35);
+}
+.auth-form{display:grid;gap:14px;margin-top:8px;max-width:420px;margin-inline:auto;}
+.form-row{display:grid;gap:6px;}
+label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+input[type="email"],input[type="password"],input[type="text"]{
+  width:100%;padding:.7rem .8rem;border-radius:12px;border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.04);color:#e6e9f3;outline:0;
+}
+input:focus{border-color:rgba(116,164,255,.42);box-shadow:0 0 0 3px rgba(116,164,255,.18)}
+.auth-actions{display:grid;grid-template-columns:1fr auto;gap:12px;margin-top:8px}
+@media (max-width:560px){.auth-actions{grid-template-columns:1fr}}
+/* Make .button inside the card look right even without globals (belt & suspenders) */
+.auth-card .button{border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:.6rem 1rem;font-weight:800}
+.auth-card .button.primary{border:none;background:linear-gradient(90deg,#5b8cff,#3ac7ff);color:#fff}

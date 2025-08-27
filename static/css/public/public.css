@@ -153,6 +153,7 @@ body{
 }
 .cta-row{
   display:flex; gap:10px; flex-wrap:wrap; margin-top: 10px;
+  justify-content: center;
 }
 
 /* Final CTA */
