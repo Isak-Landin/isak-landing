@@ -1,0 +1,31 @@
+{% extends "layouts/dashboard_content_base.html" %}
+{% block page_title %}Payment Processing{% endblock %}
+
+{% block hero_title %}We’re confirming your payment…{% endblock %}
+{% block hero_text %}This usually takes a few seconds. You’ll be redirected automatically.{% endblock %}
+{% block hero_actions %}{% endblock %}
+
+{% block page_content %}
+  <div class="container" style="text-align:center;padding:2rem 0;">
+    {% if invoice_id %}<p>Invoice: {{ invoice_id }}</p>{% endif %}
+    <p>Session: {{ session_id }}</p>
+    <p>If this takes longer than a minute, check your email or <a href="{{ url_for('vps_blueprint.vps_list_page') }}">return to plans</a>.</p>
+  </div>
+
+  <script>
+  (function poll(){
+    fetch("{{ url_for('vps_blueprint.checkout_status') }}?session_id={{ session_id|urlencode }}", { credentials: "same-origin" })
+      .then(r => r.json())
+      .then(j => {
+        if (j.state === "paid") {
+          window.location = "{{ url_for('vps_blueprint.vps_success') }}?session_id={{ session_id|urlencode }}&ok=1";
+        } else if (j.state === "failed") {
+          window.location = "{{ url_for('vps_blueprint.vps_cancel') }}";
+        } else {
+          setTimeout(poll, 2500);
+        }
+      })
+      .catch(() => setTimeout(poll, 3000));
+  })();
+  </script>
+{% endblock %}
