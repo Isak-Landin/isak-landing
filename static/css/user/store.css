@@ -1,94 +1,96 @@
-/* Store page-specific styles (cards + empty state)
-   Safe with your dashboard_* base styles. Uses CSS vars with fallbacks. */
+/* Store page (user) — blends with dashboard_content_base + dashboard_components
+   Uses the same tokens: --ad-*, surface/border/shadow scales. */
 
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.25rem;
-  align-items: stretch;
+.ad-main .cards-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: .75rem;
 }
 
-.card {
-  background: var(--panel-bg, #fff);
-  border: 1px solid var(--panel-border, rgba(0, 0, 0, 0.08));
-  border-radius: 16px;
-  box-shadow: var(--panel-shadow, 0 8px 24px rgba(0, 0, 0, 0.06));
-  padding: 1.25rem 1.25rem 1.35rem;
-  display: flex;
-  flex-direction: column;
-  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+/* Card base matches dark panels used elsewhere */
+.ad-main .card{
+  background: var(--ad-panel, #1b2132);
+  border: 1px solid var(--ad-line, rgba(255,255,255,.08));
+  border-radius: var(--ad-radius, 14px);
+  box-shadow: var(--ad-shadow-soft, 0 3px 10px rgba(0,0,0,.20));
+  color: var(--ad-text, #e8ecf6);
+  padding: 1rem 1.1rem 1.15rem;
+  display:flex;
+  flex-direction:column;
+  min-height: 140px;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
 }
 
-.card:hover {
+.ad-main .card:hover{
   transform: translateY(-2px);
-  box-shadow: var(--panel-shadow-hover, 0 12px 28px rgba(0, 0, 0, 0.08));
-  border-color: var(--panel-border-strong, rgba(0, 0, 0, 0.12));
+  box-shadow: var(--ad-shadow, 0 6px 18px rgba(0,0,0,.25));
+  border-color: var(--ad-line-strong, rgba(255,255,255,.14));
 }
 
-.card h3 {
-  margin: 0 0 0.35rem;
-  font-size: clamp(1.05rem, 1vw + 0.8rem, 1.25rem);
-  line-height: 1.25;
+.ad-main .card h3{
+  margin: 0 0 .35rem;
+  font-weight: 800;
+  font-size: clamp(1.05rem, 1vw + .95rem, 1.25rem);
+  color: var(--ad-text, #e8ecf6);
 }
 
-.card p {
-  margin: 0 0 0.75rem;
-  color: var(--text-muted, #555);
+.ad-main .card p{
+  margin: 0 0 .8rem;
+  color: var(--ad-text-mute, #8c97b4);
 }
 
-.card-cta {
-  border: 1px solid var(--accent-border, rgba(56, 189, 248, 0.35));
+/* Primary CTA card gets a very subtle accent treatment */
+.ad-main .card-cta{
+  position:relative;
+  border-color: color-mix(in oklab, var(--ad-accent, #2f6cf6) 35%, transparent);
   background:
-    radial-gradient(60% 80% at 10% -10%, rgba(56, 189, 248, 0.10), transparent 60%),
-    var(--panel-bg, #fff);
+    radial-gradient(60% 80% at 0% 0%, color-mix(in oklab, var(--ad-accent,#2f6cf6) 10%, transparent) , transparent 60%),
+    var(--ad-panel, #1b2132);
 }
 
-.card-cta .button {
-  margin-top: auto; /* push CTA to bottom */
+/* Keep buttons aligned to bottom without breaking global .button styles */
+.ad-main .card-cta .button{
+  margin-top: auto;
   align-self: flex-start;
 }
 
-/* Muted placeholders (“Coming soon”) */
-.card.muted {
-  opacity: 0.85;
-  background: var(--panel-bg, #fff);
+/* Muted placeholders (“Coming soon.”) */
+.ad-main .card.muted{
+  opacity: .9;
+  background: var(--ad-panel, #1b2132);
+  border-style: dashed;
 }
-.card.muted h3,
-.card.muted p {
-  filter: grayscale(0.2);
+.ad-main .card.muted h3{
+  color: var(--ad-text-dim, #b9c2da);
 }
-
-/* Empty state */
-.empty-state {
-  text-align: center;
-  background: var(--panel-bg, #fff);
-  border: 1px dashed var(--panel-border, rgba(0, 0, 0, 0.12));
-  border-radius: 16px;
-  padding: 1.75rem 1rem;
+.ad-main .card.muted p{
+  color: var(--ad-text-mute, #8c97b4);
 }
 
-.empty-state .emoji {
-  font-size: 2rem;
+/* Empty state block matches panel tone and dashed line language */
+.ad-main .empty-state{
+  margin-top: 1.25rem;
+  text-align:center;
+  background: var(--ad-panel, #1b2132);
+  border: 1px dashed var(--ad-line, rgba(255,255,255,.08));
+  border-radius: var(--ad-radius, 14px);
+  box-shadow: var(--ad-shadow-soft, 0 3px 10px rgba(0,0,0,.20));
+  padding: 1.5rem 1rem;
+  color: var(--ad-text, #e8ecf6);
+}
+.ad-main .empty-state .emoji{
+  font-size: 1.9rem;
   line-height: 1;
-  margin-bottom: 0.4rem;
+  margin-bottom: .35rem;
+}
+.ad-main .empty-state .empty-text{
+  margin: .2rem 0 .6rem;
+  color: var(--ad-text-dim, #b9c2da);
 }
 
-.empty-state .empty-text {
-  margin: 0.25rem 0 0.75rem;
-  color: var(--text-muted, #666);
-}
-
-/* Buttons inside cards keep your global .button styles; add small spacing */
-.card .button + .button {
-  margin-left: 0.5rem;
-}
-
-/* Responsive tweaks */
-@media (max-width: 520px) {
-  .cards-grid {
-    gap: 1rem;
-  }
-  .card {
-    padding: 1rem 1rem 1.1rem;
-  }
+/* Small-screen tweaks */
+@media (max-width: 520px){
+  .ad-main .cards-grid{ gap: .85rem; }
+  .ad-main .card{ padding: .9rem 1rem 1.05rem; }
 }
