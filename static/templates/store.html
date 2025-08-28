@@ -41,5 +41,7 @@
   </div>
 {% endblock %}
 
-{% block extra_css %}{{ super() }}{% endblock %}
+{% block extra_css %}{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user/store.css') }}">
+{% endblock %}
 {% block extra_js %}{{ super() }}{% endblock %}

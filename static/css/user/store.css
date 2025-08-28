@@ -1,0 +1,94 @@
+/* Store page-specific styles (cards + empty state)
+   Safe with your dashboard_* base styles. Uses CSS vars with fallbacks. */
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+.card {
+  background: var(--panel-bg, #fff);
+  border: 1px solid var(--panel-border, rgba(0, 0, 0, 0.08));
+  border-radius: 16px;
+  box-shadow: var(--panel-shadow, 0 8px 24px rgba(0, 0, 0, 0.06));
+  padding: 1.25rem 1.25rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--panel-shadow-hover, 0 12px 28px rgba(0, 0, 0, 0.08));
+  border-color: var(--panel-border-strong, rgba(0, 0, 0, 0.12));
+}
+
+.card h3 {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.05rem, 1vw + 0.8rem, 1.25rem);
+  line-height: 1.25;
+}
+
+.card p {
+  margin: 0 0 0.75rem;
+  color: var(--text-muted, #555);
+}
+
+.card-cta {
+  border: 1px solid var(--accent-border, rgba(56, 189, 248, 0.35));
+  background:
+    radial-gradient(60% 80% at 10% -10%, rgba(56, 189, 248, 0.10), transparent 60%),
+    var(--panel-bg, #fff);
+}
+
+.card-cta .button {
+  margin-top: auto; /* push CTA to bottom */
+  align-self: flex-start;
+}
+
+/* Muted placeholders (“Coming soon”) */
+.card.muted {
+  opacity: 0.85;
+  background: var(--panel-bg, #fff);
+}
+.card.muted h3,
+.card.muted p {
+  filter: grayscale(0.2);
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  background: var(--panel-bg, #fff);
+  border: 1px dashed var(--panel-border, rgba(0, 0, 0, 0.12));
+  border-radius: 16px;
+  padding: 1.75rem 1rem;
+}
+
+.empty-state .emoji {
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+
+.empty-state .empty-text {
+  margin: 0.25rem 0 0.75rem;
+  color: var(--text-muted, #666);
+}
+
+/* Buttons inside cards keep your global .button styles; add small spacing */
+.card .button + .button {
+  margin-left: 0.5rem;
+}
+
+/* Responsive tweaks */
+@media (max-width: 520px) {
+  .cards-grid {
+    gap: 1rem;
+  }
+  .card {
+    padding: 1rem 1rem 1.1rem;
+  }
+}
