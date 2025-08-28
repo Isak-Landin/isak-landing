@@ -1,5 +1,5 @@
 from flask import Flask, session, request, g
-from flask_login import login_required
+from flask_login import login_required, current_user
 from dotenv import load_dotenv
 from extensions import db, socketio
 from decorators import admin_required, admin_2fa_required
@@ -54,10 +54,19 @@ def require_login_chat():
     pass
 
 
+PUBLIC_VPS_ENDPOINTS = {"vps_blueprint.vps_webhook"}
+
+
 @vps_blueprint.before_request
-@login_required
 def require_login_vps():
-    pass
+    # Allow Stripe webhooks (no auth)
+    if request.endpoint in PUBLIC_VPS_ENDPOINTS:
+        return None
+
+    # Require login for everything else under /vps
+    if current_user.is_authenticated:
+        return None
+    return login_manager.unauthorized()
 
 
 @admin_blueprint.before_request
