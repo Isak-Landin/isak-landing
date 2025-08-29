@@ -87,7 +87,7 @@
           <a href="{{ url_for('store_blueprint.store') }}">Store</a>
         </nav>
         <div class="dash-footer-meta">
-          <span class="text">User</span>
+          <span class="text">User: {{ current_user.email }}</span>
           <span class="sep">·</span>
           <span class="version">v{{ app_version or "—" }}</span>
         </div>
