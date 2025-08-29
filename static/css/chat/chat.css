@@ -1,7 +1,7 @@
 /* =========================
    Chat History Container
    ========================= */
-.chat-history {
+#chat-messages.chat-history {
   font-size: 14px;
   line-height: 1.45;
 
@@ -16,9 +16,9 @@
 }
 
 /* Optional: nicer scrollbar (WebKit) */
-.chat-history::-webkit-scrollbar { width: 6px; }
-.chat-history::-webkit-scrollbar-track { background: transparent; }
-.chat-history::-webkit-scrollbar-thumb {
+#chat-messages.chat-history::-webkit-scrollbar { width: 6px; }
+#chat-messages.chat-history::-webkit-scrollbar-track { background: transparent; }
+#chat-messages.chat-history::-webkit-scrollbar-thumb {
   background: rgba(0,0,0,0.2);
   border-radius: 3px;
 }
@@ -28,24 +28,28 @@
    ========================= */
 
 /* Each message is a flex column so header+body move together as a "bubble". */
-.chat-message {
+#chat-messages .chat-message {
   margin: 10px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;    /* default side = left (me) */
-  text-align: initial !important;   /* neutralize any inherited text-align */
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;   /* default side = left (me) */
+  text-align: initial !important;       /* kill any old text-align */
+  float: none !important;               /* kill any legacy float rules */
+  clear: both !important;
 }
 
 /* Right side for "them" */
-.chat-message.them { align-items: flex-end; }
+#chat-messages .chat-message.them {
+  align-items: flex-end !important;
+}
 
 /* Soft hairline between messages */
-.chat-message + .chat-message {
+#chat-messages .chat-message + .chat-message {
   margin-top: 14px;
   padding-top: 14px;
   position: relative;
 }
-.chat-message + .chat-message::before {
+#chat-messages .chat-message + .chat-message::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;   /* top:0; left/right:0 */
@@ -62,24 +66,26 @@
 /* =========================
    Message Bubble
    ========================= */
-.msg-bubble {
+#chat-messages .msg-bubble {
+  display: inline-block;                /* hug content */
   max-width: min(72%, 46rem);
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.10);
   border-radius: 12px;
   padding: 10px 12px;
   box-shadow: 0 3px 10px rgba(0,0,0,.15);
+  box-sizing: border-box;
 }
 
 /* Left bubble (me) */
-.chat-message.me .msg-bubble {
+#chat-messages .chat-message.me .msg-bubble {
   align-self: flex-start;
   background: linear-gradient(180deg, rgba(47,108,246,.08), rgba(47,108,246,.04));
   border-color: rgba(47,108,246,.35);
 }
 
 /* Right bubble (them) */
-.chat-message.them .msg-bubble {
+#chat-messages .chat-message.them .msg-bubble {
   align-self: flex-end;
   background: rgba(21,32,54,.6);
   border-color: rgba(255,255,255,.12);
@@ -88,14 +94,17 @@
 /* =========================
    Header + Body
    ========================= */
-.msg-header {
-  display: flex;
+#chat-messages .msg-header {
+  display: flex !important;
   gap: 8px;
   align-items: baseline;
+  justify-content: flex-start !important;  /* ensure not centered by old css */
+  width: 100%;
 }
 
-.msg-header .sender { font-weight: 600; }
-.msg-header .timestamp {
+#chat-messages .msg-header .sender { font-weight: 600; }
+
+#chat-messages .msg-header .timestamp {
   margin-left: auto;             /* default (me): time on the right */
   opacity: .75;
   font-size: 12px;
@@ -103,39 +112,41 @@
 }
 
 /* Flip header order for them (sender at far right, time to its left) */
-.chat-message.them .msg-header { flex-direction: row-reverse; }
-.chat-message.them .msg-header .timestamp {
+#chat-messages .chat-message.them .msg-header {
+  flex-direction: row-reverse !important;
+}
+#chat-messages .chat-message.them .msg-header .timestamp {
   margin-left: 0;
   margin-right: auto;
 }
 
-.msg-body {
+#chat-messages .msg-body {
   white-space: pre-wrap;
   word-break: break-word;
   margin-top: 4px;
 }
 
 /* Optional color accents for names */
-.chat-message.me   .sender { color: #2f6cf6; }
-.chat-message.them .sender { color: #9aa4b5; }
+#chat-messages .chat-message.me   .sender { color: #2f6cf6; }
+#chat-messages .chat-message.them .sender { color: #9aa4b5; }
 
 /* =========================
    Input Form
    ========================= */
-.chat-form {
+#chat-messages ~ .chat-form {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-top: 12px;
 }
-.chat-form textarea {
+#chat-messages ~ .chat-form textarea {
   width: 100%;
   min-height: 110px;
   padding: 12px;
   resize: vertical;
   box-sizing: border-box;
 }
-.chat-form .button {
+#chat-messages ~ .chat-form .button {
   display: inline-block;
   width: 100%;
   padding: 12px 16px;
@@ -145,9 +156,7 @@
 /* =========================
    Sticky Overlay + Indicator
    ========================= */
-
-/* Overlay anchor that sticks to the bottom INSIDE .chat-history */
-.chat-overlay {
+#chat-messages .chat-overlay {
   position: sticky;
   bottom: 0;
   height: 0;              /* don't affect layout flow */
@@ -156,7 +165,7 @@
 }
 
 /* Restyled chip: bottom-center, neutral, square corners */
-.new-messages-indicator {
+#chat-messages .new-messages-indicator {
   position: absolute;
   left: 50%;
   bottom: 0;
@@ -175,12 +184,12 @@
   white-space: nowrap;
   cursor: pointer;
 }
-.new-messages-indicator.show {
+#chat-messages .new-messages-indicator.show {
   display: inline-flex;
   gap: 8px;
   align-items: center;
 }
-.new-messages-indicator .count {
+#chat-messages .new-messages-indicator .count {
   opacity: .9;
   font-variant-numeric: tabular-nums;
 }
@@ -189,5 +198,5 @@
    Responsive
    ========================= */
 @media (max-width: 520px) {
-  .msg-bubble { max-width: 88%; }
+  #chat-messages .msg-bubble { max-width: 88%; }
 }
