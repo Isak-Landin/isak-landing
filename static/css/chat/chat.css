@@ -67,8 +67,21 @@
 .msg-body { white-space: pre-wrap; word-break: break-word; }
 
 /* Optional “who sent it” accent */
-.chat-message.me   .sender { color: #0b5ed7; }
-.chat-message.them .sender { color: #6c757d; }
+.chat-message.me   .sender {
+    color: #0b5ed7;
+
+ }
+.chat-message.them .sender {
+    color: #6c757d;
+ }
+
+ .chat-message.me {
+    text-align: left;
+ }
+
+.chat-message.them {
+    text-align: right;
+ }
 
 /* =========================
    Input Form
