@@ -317,3 +317,70 @@
 }
 
 /* End of STORE MODULE */
+
+/* --- VPS explainer (replaces bullets on the featured card) --------------- */
+
+.store-explainer{
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(47,108,246,.10), rgba(255,255,255,0) 120%),
+    var(--store-panel);
+  border: 1px solid rgba(47,108,246,.35);
+  border-radius: 12px;
+  box-shadow: var(--store-shadow-soft);
+  padding: .9rem .95rem;
+  color: var(--store-text);
+}
+
+/* subtle accent rail on the left */
+.store-explainer::before{
+  content:"";
+  position:absolute; inset:-1px auto -1px -1px;
+  width:4px;
+  background: linear-gradient(180deg, #9cb6ff, #2f6cf6);
+  border-radius: 12px 0 0 12px;
+  opacity:.95;
+}
+
+.store-explainer p{
+  margin: 0;
+  line-height: 1.6;
+}
+
+.store-explainer p + p{ margin-top: .7rem; }
+
+.store-explainer strong{
+  color:#c7d6ff;
+  font-weight:800;
+  letter-spacing:.2px;
+  text-shadow:0 1px 0 rgba(0,0,0,.15);
+}
+
+/* compact “badges” row; no bullets */
+.store-explainer-meta{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap:.5rem .75rem;
+}
+
+.store-explainer-meta span{
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
+  padding:.38rem .6rem;
+  background: rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius: 999px;
+  font-weight:600;
+  color: var(--store-text);
+  white-space: nowrap;
+}
+
+/* tiny accent dot (not a list marker) */
+.store-explainer-meta span::before{
+  content:"";
+  width:8px; height:8px; border-radius:50%;
+  background:#9cb6ff;
+  box-shadow:0 0 0 3px rgba(156,182,255,.15);
+}
+
