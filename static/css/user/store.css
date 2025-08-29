@@ -175,24 +175,21 @@
 .store-explainer::before{
   content:""; position:absolute; top:-1px; bottom:-1px; left:-1px; width: var(--rail);
   background: linear-gradient(180deg, #9cb6ff, #2f6cf6);
-
+} /* <-- FIX #1: close the ::before rule */
 
 /* Align lists with CTA text + general content rhythm */
 .store-card .store-points{
-  /* match the CTA's horizontal text padding */
   padding-left: var(--store-btn-pad-x);
 }
-
 .store-card .store-points li{
-  /* keep individual items flush with the new list gutter */
   padding-left: 0;
 }
 
 .store-empty-pane{
-    padding-top: 1.5rem;
+  padding-top: 1.5rem;
 }
 
 /* Slightly tighter on very small screens */
 @media (max-width: 520px){
   .store-card .store-points{ padding-left: calc(var(--store-btn-pad-x) - 4px); }
-}
+} /* <-- FIX #2: close the @media block */
