@@ -124,11 +124,16 @@
   font-weight: 800;
   font-size: clamp(1.05rem, 1vw + .95rem, 1.28rem);
   color: var(--store-text);
+  text-align: center;
+  text-wrap: balance;
+  letter-spacing: .15px;
 }
 .store-card-lead{
   margin: 0 0 .75rem 0;
   color: var(--store-text-mute);
   text-wrap: balance;
+
+  text-align: center;
 }
 
 /* 6) POINT LIST (custom bullets; no global list bleed) ------------------- */
@@ -285,6 +290,25 @@
   .store-backdrop{ display:none!important; }
   .store-card{ box-shadow:none; border-color:#000; }
   .store-btn{ border:1px solid #000; background:#fff; color:#000; }
+}
+
+/* 2) Remove all bullet decorations from the points list */
+.store-points{ list-style: none; padding: 0; margin: .65rem 0 1rem; }
+.store-points li{
+  display: block;
+  margin: .38rem 0;
+  padding-left: 0;        /* ensure no leftover indent */
+}
+.store-points li::before{ content: none !important; }  /* kill the custom bullet */
+
+/* 3) Make the subtext (microcopy) feel independent/standalone */
+.store-card-cta{ gap: .6rem; }
+.store-card-cta .store-microcopy{
+  margin-top: .1rem;
+  padding-top: .6rem;
+  border-top: 1px solid var(--store-line);
+  color: var(--store-text-mute);
+  text-align: center;     /* reads like a footer note */
 }
 
 /* End of STORE MODULE */
