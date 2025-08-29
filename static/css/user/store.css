@@ -72,6 +72,10 @@
   min-height: 220px;
   text-align: left;
   transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+
+  /* crisper type on dark */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 @media (hover:hover){
   .store-card:hover{
@@ -132,35 +136,45 @@
 }
 .store-card-lead{
   margin: 0 0 .75rem 0;
-  color: var(--store-text-mute);
-  text-align: center;         /* optional – matches screenshot */
-  text-wrap: balance;
+  text-align: center;
+
+  /* brighter & easier to read */
+  color: color-mix(in oklab, var(--store-text) 86%, var(--store-text-mute));
+  font-size: 1rem;
+  line-height: 1.5;
+  letter-spacing: .2px;
+  text-shadow: 0 1px 0 rgba(0,0,0,.15);
 }
 
-/* 6) POINT LIST (no bullets, no markers, no before) ---------------------- */
-/* Single definition; beats globals and older rules */
+/* 6) POINT LIST (single definition, bullets OFF) ------------------------- */
+/* Nuke UA markers & any previous pseudo-bullets once, here */
 .store-points{
-  list-style: none !important;         /* nuke UA markers + stubborn globals */
+  list-style: none !important;
   list-style-type: none !important;
-  margin: .65rem 0 1rem;
+  margin: .9rem 0 1.1rem;
   padding: 0;
   color: var(--store-text-mute);
 }
 .store-points li{
-  margin: .38rem 0;
-  padding-left: 0;
-  display: block;                      /* avoid list-item marker rendering */
+  display: block;              /* no marker layout */
+  margin: 0;
+  padding: .2rem 0 .4rem 0;
+
+  /* stronger, less “texty” */
+  color: var(--store-text);
+  font-weight: 600;
+  line-height: 1.55;
+  letter-spacing: .2px;
+  text-shadow: 0 1px 0 rgba(0,0,0,.12);
 }
-/* In case any previous CSS added bullets via pseudo-elements */
+.store-points li + li{
+  border-top: 1px solid rgba(255,255,255,.06);
+  margin-top: .35rem;
+  padding-top: .55rem;
+}
+.store-points li::marker{ content: "" !important; font-size: 0 !important; }
 .store-points li::before,
-.store-points li::after{
-  content: none !important;
-}
-/* Nuke UA ::marker in modern browsers */
-.store-points li::marker{
-  content: "" !important;
-  font-size: 0 !important;
-}
+.store-points li::after{ content: none !important; }
 
 /* 7) CTA AREA ------------------------------------------------------------- */
 .store-card-cta{
@@ -215,6 +229,7 @@
   --fg: #fff;
   --bd: rgba(47,108,246,.7);
   box-shadow: 0 2px 10px rgba(0,0,0,.25);
+  font-weight: 700; /* keep CTA dominant */
 }
 @media (hover:hover){
   .store-btn--accent:hover{ box-shadow: 0 8px 26px rgba(47,108,246,.28); }
@@ -302,54 +317,3 @@
 }
 
 /* End of STORE MODULE */
-
-/* ===== Store text visibility & scanability boost ======================= */
-
-/* Crisper type on dark bg */
-.store-card{
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Make the lead line brighter and a touch larger */
-.store-card-lead{
-  color: color-mix(in oklab, var(--store-text) 86%, var(--store-text-mute));
-  font-size: 1rem;
-  line-height: 1.5;
-  letter-spacing: .2px;
-  text-shadow: 0 1px 0 rgba(0,0,0,.15);
-}
-
-/* Keep bullets OFF, but make each point read like its own row */
-.store-points{
-  list-style: none !important;
-  list-style-type: none !important;
-  margin: .9rem 0 1.1rem;
-  padding: 0;
-}
-.store-points li{
-  display: block;        /* no marker layout */
-  padding: .2rem 0 .4rem 0;
-  margin: 0;
-  color: var(--store-text);               /* brighter text */
-  font-weight: 600;                       /* less “texty” */
-  line-height: 1.55;
-  letter-spacing: .2px;
-  text-shadow: 0 1px 0 rgba(0,0,0,.12);
-}
-.store-points li::before,
-.store-points li::after{ content: none !important; }
-.store-points li::marker{ content: "" !important; font-size: 0 !important; }
-
-/* Subtle separators between lines for scannability (not bullets) */
-.store-points li + li{
-  border-top: 1px solid rgba(255,255,255,.06);
-  margin-top: .35rem;
-  padding-top: .55rem;
-}
-
-/* CTA stays dominant */
-.store-card-cta .store-btn.store-btn--accent{
-  font-weight: 700;
-}
-
