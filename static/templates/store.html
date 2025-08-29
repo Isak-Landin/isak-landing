@@ -15,91 +15,87 @@
 
 {# BODY #}
 {% block page_content %}
-<div class="store">
+<div class="store-wrap">
 
-  <!-- Promo strip (subtle, on-brand) -->
-  <div class="store-banner" aria-hidden="true">
-    <div class="orb orb-a"></div>
-    <div class="orb orb-b"></div>
-  </div>
+  <!-- optional soft backdrop -->
+  <div class="store-backdrop" aria-hidden="true"></div>
 
   <section class="store-grid">
 
     <!-- Featured VPS card -->
-    <article class="store-card is-featured">
-      <header class="card-head">
-        <span class="pill">⚡ Instant setup</span>
-        <span class="pill">🧾 Simple billing</span>
-        <span class="pill">🔒 Secure checkout</span>
+    <article class="store-card store-card--featured">
+      <header class="store-card-head">
+        <span class="store-pill">⚡ Instant setup</span>
+        <span class="store-pill">🧾 Simple monthly billing</span>
+        <span class="store-pill">🔒 Secure checkout</span>
       </header>
 
-      <h3 class="card-title">Get a VPS</h3>
-      <p class="card-lead">Fast NVMe storage and generous bandwidth. No lock-ins.</p>
+      <h3 class="store-card-title">Get a VPS</h3>
+      <p class="store-card-lead">Fast NVMe storage and generous bandwidth. No lock-ins.</p>
 
-      <ul class="card-points">
+      <ul class="store-points">
         <li>1-click checkout with Stripe</li>
-        <li>Scale when you need more</li>
+        <li>Scale up when you need more</li>
         <li>Clear pricing — no hidden fees</li>
       </ul>
 
-      <div class="card-cta">
-        <a class="btn btn-accent" href="{{ url_for('vps_blueprint.vps_list_page') }}">View VPS plans</a>
-        <p class="microcopy">See full specs and regions on the next page.</p>
+      <div class="store-card-cta">
+        <a class="store-btn store-btn--accent" href="{{ url_for('vps_blueprint.vps_list_page') }}">View VPS plans</a>
+        <small class="store-microcopy">See full specs and regions on the next page.</small>
       </div>
     </article>
 
     <!-- Domains placeholder -->
-    <article class="store-card is-muted">
-      <header class="card-head">
-        <span class="pill is-muted">🌐 Domains</span>
+    <article class="store-card store-card--muted">
+      <header class="store-card-head">
+        <span class="store-pill store-pill--muted">🌐 Domains</span>
       </header>
 
-      <h3 class="card-title">Domains</h3>
-      <p class="card-lead">Coming soon.</p>
+      <h3 class="store-card-title">Domains</h3>
+      <p class="store-card-lead">Coming soon.</p>
 
-      <ul class="card-points">
+      <ul class="store-points">
         <li>Managed DNS</li>
         <li>Privacy options</li>
         <li>One-click link to your VPS</li>
       </ul>
 
-      <div class="card-cta">
-        <button class="btn btn-ghost" disabled aria-disabled="true">Not available yet</button>
+      <div class="store-card-cta">
+        <button class="store-btn store-btn--ghost" disabled aria-disabled="true">Not available yet</button>
       </div>
     </article>
 
-    <!-- Web hosting placeholder -->
-    <article class="store-card is-muted">
-      <header class="card-head">
-        <span class="pill is-muted">📦 Web hosting</span>
+    <!-- Web Hosting placeholder -->
+    <article class="store-card store-card--muted">
+      <header class="store-card-head">
+        <span class="store-pill store-pill--muted">📦 Web hosting</span>
       </header>
 
-      <h3 class="card-title">Web Hosting</h3>
-      <p class="card-lead">Coming soon.</p>
+      <h3 class="store-card-title">Web Hosting</h3>
+      <p class="store-card-lead">Coming soon.</p>
 
-      <ul class="card-points">
+      <ul class="store-points">
         <li>Simple control panel</li>
         <li>Free SSL</li>
         <li>Automated backups</li>
       </ul>
 
-      <div class="card-cta">
-        <button class="btn btn-ghost" disabled aria-disabled="true">Not available yet</button>
+      <div class="store-card-cta">
+        <button class="store-btn store-btn--ghost" disabled aria-disabled="true">Not available yet</button>
       </div>
     </article>
 
   </section>
 
   <section class="store-empty">
-    <div class="empty-pane">
-      <div class="emoji" aria-hidden="true">🛒</div>
-      <p class="empty-text">More products are on the way. Start with a VPS today.</p>
+    <div class="store-empty-pane">
+      <div class="store-emoji" aria-hidden="true">🛒</div>
+      <p class="store-empty-text">More products are on the way. Start with a VPS today.</p>
     </div>
   </section>
 
 </div>
 {% endblock %}
-
 
 {% block extra_css %}{{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/user/store.css') }}">
