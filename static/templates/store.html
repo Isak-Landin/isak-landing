@@ -33,20 +33,14 @@
       <h3 class="store-card-title">Get a VPS</h3>
       <p class="store-card-lead">Fast NVMe storage and generous bandwidth. No lock-ins.</p>
 
-      <div class="store-explainer">
-        <p>
-          <strong>What is a VPS?</strong>
-          A Virtual Private Server is your own isolated compute space with dedicated CPU, RAM,
-          and fast NVMe storage. You get full root access to deploy apps, host sites, or run
-          services—without noisy-neighbour limits.
-        </p>
-
-        <p class="store-explainer-meta">
-          <span>1-click Stripe checkout</span>
-          <span>Scale up anytime</span>
-          <span>No hidden fees</span>
-        </p>
-      </div>
+      <ul class="store-points">
+        <li>Dedicated resources (CPU/RAM)</li>
+        <li>Fast NVMe storage</li>
+        <li>Full root access</li>
+        <li>Scale up anytime</li>
+        <li>1-click Stripe checkout</li>
+        <li>No hidden fees</li>
+      </ul>
 
       <div class="store-card-cta">
         <a class="store-btn store-btn--accent" href="{{ url_for('vps_blueprint.vps_list_page') }}">View VPS plans</a>
@@ -105,6 +99,7 @@
 
 </div>
 {% endblock %}
+
 
 {% block extra_css %}{{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/user/store.css') }}">
