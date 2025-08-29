@@ -174,7 +174,7 @@
 }
 .store-explainer::before{
   content:""; position:absolute; top:-1px; bottom:-1px; left:-1px; width: var(--rail);
-  background: linear-gradient(180deg, #9cb6ff, #2f6cf6
+  background: linear-gradient(180deg, #9cb6ff, #2f6cf6);
 
 
 /* Align lists with CTA text + general content rhythm */
