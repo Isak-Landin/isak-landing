@@ -1,6 +1,11 @@
-/* Store page (user) — blends with dashboard_content_base + dashboard_components
-   Uses the same tokens: --ad-*, surface/border/shadow scales. */
+/* =============================================================================
+   Store page (user)
+   - Designed to blend with dashboard_content_base + dashboard_components
+   - Uses your dark tokens: --ad-*
+   - Fixes: left-aligned content, proper bullets, enticing CTA button, clean empty state
+   ============================================================================ */
 
+/* Layout ------------------------------------------------------------------- */
 .ad-main .cards-grid{
   display:grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -8,7 +13,7 @@
   margin-top: .75rem;
 }
 
-/* Card base matches dark panels used elsewhere */
+/* Card base ---------------------------------------------------------------- */
 .ad-main .card{
   background: var(--ad-panel, #1b2132);
   border: 1px solid var(--ad-line, rgba(255,255,255,.08));
@@ -18,14 +23,17 @@
   padding: 1rem 1.1rem 1.15rem;
   display:flex;
   flex-direction:column;
-  min-height: 140px;
+  text-align: left; /* ensure no center text bleed from globals */
+  min-height: 160px;
   transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
 }
 
-.ad-main .card:hover{
-  transform: translateY(-2px);
-  box-shadow: var(--ad-shadow, 0 6px 18px rgba(0,0,0,.25));
-  border-color: var(--ad-line-strong, rgba(255,255,255,.14));
+@media (hover:hover){
+  .ad-main .card:hover{
+    transform: translateY(-2px);
+    box-shadow: var(--ad-shadow, 0 6px 18px rgba(0,0,0,.25));
+    border-color: var(--ad-line-strong, rgba(255,255,255,.14));
+  }
 }
 
 .ad-main .card h3{
@@ -33,6 +41,7 @@
   font-weight: 800;
   font-size: clamp(1.05rem, 1vw + .95rem, 1.25rem);
   color: var(--ad-text, #e8ecf6);
+  text-wrap: balance;
 }
 
 .ad-main .card p{
@@ -40,35 +49,112 @@
   color: var(--ad-text-mute, #8c97b4);
 }
 
-/* Primary CTA card gets a very subtle accent treatment */
-.ad-main .card-cta{
-  position:relative;
-  border-color: color-mix(in oklab, var(--ad-accent, #2f6cf6) 35%, transparent);
-  background:
-    radial-gradient(60% 80% at 0% 0%, color-mix(in oklab, var(--ad-accent,#2f6cf6) 10%, transparent) , transparent 60%),
-    var(--ad-panel, #1b2132);
-}
-
-/* Keep buttons aligned to bottom without breaking global .button styles */
-.ad-main .card-cta .button{
-  margin-top: auto;
-  align-self: flex-start;
-}
-
-/* Muted placeholders (“Coming soon.”) */
-.ad-main .card.muted{
-  opacity: .9;
-  background: var(--ad-panel, #1b2132);
-  border-style: dashed;
-}
-.ad-main .card.muted h3{
-  color: var(--ad-text-dim, #b9c2da);
-}
-.ad-main .card.muted p{
+.ad-main .card .lead{
+  margin: 0 0 .7rem;
   color: var(--ad-text-mute, #8c97b4);
 }
 
-/* Empty state block matches panel tone and dashed line language */
+/* Accent card -------------------------------------------------------------- */
+.ad-main .card-cta{
+  position:relative;
+  /* graceful fallback if color-mix unsupported */
+  border-color: rgba(47,108,246,.35);
+  background:
+    radial-gradient(60% 80% at 0% 0%, rgba(47,108,246,.10), transparent 60%),
+    var(--ad-panel, #1b2132);
+}
+
+/* Pills row inside cards (uses your existing .trust-pill, just spacing) ----- */
+.ad-main .card-head{
+  display:flex;
+  gap:.5rem;
+  flex-wrap:wrap;
+  margin-bottom:.5rem;
+}
+.ad-main .card-head .trust-pill{
+  margin: 0;               /* prevent stacked margins */
+  line-height: 1.1;
+}
+
+/* Bullet list: custom markers, consistent alignment ------------------------ */
+.ad-main .card-points{
+  list-style: none;
+  margin:.2rem 0 .95rem;
+  padding:0;
+  color: var(--ad-text-mute, #8c97b4);
+}
+.ad-main .card-points li{
+  display:flex;
+  align-items: baseline;
+  gap:.5rem;
+  margin:.28rem 0;
+}
+.ad-main .card-points li::before{
+  content:"•";
+  color:#8fb0ff; /* accent-ish bullet */
+  font-weight: 900;
+  transform: translateY(-1px);
+}
+
+/* Links + CTA button ------------------------------------------------------- */
+.ad-main .card a{
+  color: color-mix(in oklab, var(--ad-accent, #2f6cf6) 75%, #c9d3f5);
+  text-underline-offset: 2px;
+}
+
+.ad-main .card .button.primary,
+.ad-main .card .cta{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:.55rem .9rem;
+  border-radius: 10px;
+  background: var(--ad-accent, #2f6cf6);
+  color:#fff !important;
+  text-decoration:none !important;
+  border: 1px solid rgba(47,108,246,.7);
+  box-shadow: 0 2px 10px rgba(0,0,0,.25);
+  transition: transform .1s ease, box-shadow .1s ease, background .1s ease;
+}
+@media (hover:hover){
+  .ad-main .card .button.primary:hover,
+  .ad-main .card .cta:hover{
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0,0,0,.28);
+  }
+}
+.ad-main .card .button.primary:focus-visible,
+.ad-main .card .cta:focus-visible{
+  outline: 2px solid #9cc2ff;
+  outline-offset: 2px;
+}
+
+.ad-main .card-cta .button.primary,
+.ad-main .card-cta .cta{
+  margin-top: auto;     /* pin CTA to bottom of card */
+  align-self: flex-start;
+}
+
+/* Microcopy under CTA ------------------------------------------------------ */
+.ad-main .microcopy{
+  margin-top:.45rem;
+  display:block;
+  font-size:.86rem;
+  color: var(--ad-text-dim, #b9c2da);
+  opacity:.95;
+}
+
+/* Muted placeholders (“Coming soon.”) -------------------------------------- */
+.ad-main .card.muted{
+  opacity:.95;
+  background: var(--ad-panel, #1b2132);
+  border-style: dashed;
+}
+.ad-main .card.muted h3{ color: var(--ad-text-dim, #b9c2da); }
+.ad-main .card.muted p,
+.ad-main .card.muted .card-points{ color: var(--ad-text-mute, #8c97b4); }
+
+/* Empty state --------------------------------------------------------------- */
 .ad-main .empty-state{
   margin-top: 1.25rem;
   text-align:center;
@@ -89,31 +175,19 @@
   color: var(--ad-text-dim, #b9c2da);
 }
 
-/* Store: light structure for content inside cards */
-.ad-main .card-head{
-  display:flex;
-  gap:.5rem;
-  flex-wrap:wrap;
-  margin-bottom:.5rem;
+/* Focus/contrast & reduced-motion niceties --------------------------------- */
+@media (prefers-contrast: more){
+  .ad-main .card{ border-color: rgba(255,255,255,.22); }
+  .ad-main .card-cta{ border-color: rgba(47,108,246,.55); }
 }
 
-.ad-main .card-points{
-  margin:.15rem 0 .9rem;
-  padding-left:1.1rem;
-  color: var(--ad-text-mute, #8c97b4);
-}
-.ad-main .card-points li{ margin:.2rem 0; }
-
-.ad-main .microcopy{
-  margin-top:.4rem;
-  display:block;
-  font-size:.85rem;
-  color: var(--ad-text-dim, #b9c2da);
-  opacity:.95;
+@media (prefers-reduced-motion: reduce){
+  .ad-main .card,
+  .ad-main .card .button.primary,
+  .ad-main .card .cta{ transition: none; }
 }
 
-
-/* Small-screen tweaks */
+/* Responsive ---------------------------------------------------------------- */
 @media (max-width: 520px){
   .ad-main .cards-grid{ gap: .85rem; }
   .ad-main .card{ padding: .9rem 1rem 1.05rem; }
