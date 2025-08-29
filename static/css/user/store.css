@@ -7,16 +7,18 @@
 /* 0) THEME TOKENS (scoped to wrapper) ------------------------------------ */
 .store-wrap{
   /* palette */
-  --store-bg: #0f1629;                 /* page background reference (not applied directly) */
-  --store-panel: #1b2234;              /* main panel */
-  --store-panel-2: #172033;            /* slightly darker panel */
-  --store-line: rgba(255,255,255,.09); /* hairline */
+  --store-bg: #0f1629;
+  --store-panel: #1b2234;
+  --store-panel-2: #172033;
+  --store-line: rgba(255,255,255,.09);
   --store-line-strong: rgba(255,255,255,.16);
-  --store-text: #e8ecf6;               /* main text */
+  --store-text: #e8ecf6;
   --store-text-dim: #c1cbe6;
   --store-text-mute: #8c97b4;
-  --store-accent: #2f6cf6;             /* brand accent */
-  --store-accent-2: #9cb6ff;           /* accent for text */
+  --store-accent: #2f6cf6;
+  --store-accent-2: #9cb6ff;
+
+  /* states */
   --store-good: #22c55e;
   --store-warn: #f59e0b;
   --store-bad:  #ef4444;
@@ -32,7 +34,7 @@
   --store-btn-pad-x: 14px;
 
   position: relative;
-  isolation: isolate; /* keep backdrop under content */
+  isolation: isolate;
 }
 
 /* 1) BACKDROP (soft color orbs) ------------------------------------------ */
@@ -124,36 +126,40 @@
   font-weight: 800;
   font-size: clamp(1.05rem, 1vw + .95rem, 1.28rem);
   color: var(--store-text);
-  text-align: center;
+  text-align: center;         /* centered titles */
   text-wrap: balance;
   letter-spacing: .15px;
 }
 .store-card-lead{
   margin: 0 0 .75rem 0;
   color: var(--store-text-mute);
+  text-align: center;         /* optional – matches screenshot */
   text-wrap: balance;
-
-  text-align: center;
 }
 
-/* 6) POINT LIST (custom bullets; no global list bleed) ------------------- */
+/* 6) POINT LIST (no bullets, no markers, no before) ---------------------- */
+/* Single definition; beats globals and older rules */
 .store-points{
-  list-style: none;
-  margin: .2rem 0 .95rem 0;
+  list-style: none !important;         /* nuke UA markers + stubborn globals */
+  list-style-type: none !important;
+  margin: .65rem 0 1rem;
   padding: 0;
   color: var(--store-text-mute);
 }
 .store-points li{
-  display: flex;
-  align-items: baseline;
-  gap: .55rem;
-  margin: .3rem 0;
+  margin: .38rem 0;
+  padding-left: 0;
+  display: block;                      /* avoid list-item marker rendering */
 }
-.store-points li::before{
-  content: "•";
-  color: #8fb0ff; /* accent-ish bullet */
-  font-weight: 900;
-  transform: translateY(-1px);
+/* In case any previous CSS added bullets via pseudo-elements */
+.store-points li::before,
+.store-points li::after{
+  content: none !important;
+}
+/* Nuke UA ::marker in modern browsers */
+.store-points li::marker{
+  content: "" !important;
+  font-size: 0 !important;
 }
 
 /* 7) CTA AREA ------------------------------------------------------------- */
@@ -161,12 +167,15 @@
   margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: .45rem;
+  gap: .6rem;                           /* a bit more air */
 }
 .store-microcopy{
   margin: 0;
+  padding-top: .6rem;                   /* standalone feel */
+  border-top: 1px solid var(--store-line);
   font-size: .86rem;
-  color: var(--store-text-dim);
+  color: var(--store-text-mute);
+  text-align: center;
 }
 
 /* 8) BUTTONS -------------------------------------------------------------- */
@@ -250,7 +259,7 @@
 .store-nowrap{ white-space: nowrap; }
 .store-sep{ border-top: 1px solid var(--store-line); margin: .6rem 0; }
 
-/* 12) STATE BORDERS (optional) -------------------------------------------- */
+/* 12) STATE BORDERS (optional) ------------------------------------------- */
 .store-card--success{ border-color: rgba(34,197,94,.45); }
 .store-card--warn{    border-color: rgba(245,158,11,.45); }
 .store-card--error{   border-color: rgba(239,68,68,.45); }
@@ -290,25 +299,6 @@
   .store-backdrop{ display:none!important; }
   .store-card{ box-shadow:none; border-color:#000; }
   .store-btn{ border:1px solid #000; background:#fff; color:#000; }
-}
-
-/* 2) Remove all bullet decorations from the points list */
-.store-points{ list-style: none; padding: 0; margin: .65rem 0 1rem; }
-.store-points li{
-  display: block;
-  margin: .38rem 0;
-  padding-left: 0;        /* ensure no leftover indent */
-}
-.store-points li::before{ content: none !important; }  /* kill the custom bullet */
-
-/* 3) Make the subtext (microcopy) feel independent/standalone */
-.store-card-cta{ gap: .6rem; }
-.store-card-cta .store-microcopy{
-  margin-top: .1rem;
-  padding-top: .6rem;
-  border-top: 1px solid var(--store-line);
-  color: var(--store-text-mute);
-  text-align: center;     /* reads like a footer note */
 }
 
 /* End of STORE MODULE */
