@@ -16,29 +16,55 @@
 {# BODY #}
 {% block page_content %}
   <div class="cards-grid">
-    <!-- VPS entry point -->
+
+  <!-- VPS entry point (primary) -->
     <article class="card card-cta">
+      <header class="card-head">
+        <span class="trust-pill">⚡ Instant setup</span>
+        <span class="trust-pill">🧾 Simple monthly billing</span>
+      </header>
+
       <h3>Get a VPS</h3>
-      <p>Fast NVMe storage, generous bandwidth, simple monthly pricing.</p>
+      <p>Fast NVMe storage and generous bandwidth. No lock-ins.</p>
+
+      <ul class="card-points">
+        <li>1-click checkout with Stripe</li>
+        <li>Scale up when you need more</li>
+        <li>Clear pricing—no hidden fees</li>
+      </ul>
+
       <a class="button primary" href="{{ url_for('vps_blueprint.vps_list_page') }}">View VPS plans</a>
+      <small class="microcopy">See full specs and regions on the next page.</small>
     </article>
 
-    <!-- Placeholder for future products -->
+    <!-- Planned products -->
     <article class="card muted">
       <h3>Domains</h3>
       <p>Coming soon.</p>
+      <ul class="card-points">
+        <li>Managed DNS</li>
+        <li>Privacy options</li>
+        <li>One-click link to your VPS</li>
+      </ul>
     </article>
 
     <article class="card muted">
       <h3>Web Hosting</h3>
       <p>Coming soon.</p>
+      <ul class="card-points">
+        <li>Simple control panel</li>
+        <li>Free SSL</li>
+        <li>Automated backups</li>
+      </ul>
     </article>
+
   </div>
 
   <div class="empty-state" style="margin-top:2rem;">
     <div class="emoji">🛒</div>
     <p class="empty-text">More products are on the way. Start with a VPS today.</p>
   </div>
+
 {% endblock %}
 
 {% block extra_css %}{{ super() }}

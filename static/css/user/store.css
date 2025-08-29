@@ -89,6 +89,30 @@
   color: var(--ad-text-dim, #b9c2da);
 }
 
+/* Store: light structure for content inside cards */
+.ad-main .card-head{
+  display:flex;
+  gap:.5rem;
+  flex-wrap:wrap;
+  margin-bottom:.5rem;
+}
+
+.ad-main .card-points{
+  margin:.15rem 0 .9rem;
+  padding-left:1.1rem;
+  color: var(--ad-text-mute, #8c97b4);
+}
+.ad-main .card-points li{ margin:.2rem 0; }
+
+.ad-main .microcopy{
+  margin-top:.4rem;
+  display:block;
+  font-size:.85rem;
+  color: var(--ad-text-dim, #b9c2da);
+  opacity:.95;
+}
+
+
 /* Small-screen tweaks */
 @media (max-width: 520px){
   .ad-main .cards-grid{ gap: .85rem; }
