@@ -1,194 +1,589 @@
 /* =============================================================================
-   Store page (user)
-   - Designed to blend with dashboard_content_base + dashboard_components
-   - Uses your dark tokens: --ad-*
-   - Fixes: left-aligned content, proper bullets, enticing CTA button, clean empty state
-   ============================================================================ */
+   Store (User) — Module Styles
+   Theme: Dark dashboard (colors only). Namespaced under .ad-main .store
+   Safe to drop in: no globals touched.
+   ========================================================================== */
 
-/* Layout ------------------------------------------------------------------- */
-.ad-main .cards-grid{
-  display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1rem;
-  margin-top: .75rem;
+/* ---------- 0. TOKENS (scoped) ------------------------------------------- */
+
+.ad-main .store {
+  /* Core palette derives from your existing theme tokens */
+  --store-bg:           var(--ad-bg, #0f1629);
+  --store-panel:        var(--ad-panel, #1b2132);
+  --store-panel-2:      color-mix(in oklab, var(--store-panel) 92%, #000);
+  --store-line:         var(--ad-line, rgba(255,255,255,.08));
+  --store-line-strong:  var(--ad-line-strong, rgba(255,255,255,.14));
+  --store-shadow:       var(--ad-shadow, 0 6px 18px rgba(0,0,0,.25));
+  --store-shadow-soft:  var(--ad-shadow-soft, 0 3px 10px rgba(0,0,0,.20));
+  --store-text:         var(--ad-text, #e8ecf6);
+  --store-text-dim:     var(--ad-text-dim, #b9c2da);
+  --store-text-mute:    var(--ad-text-mute, #8c97b4);
+  --store-accent:       var(--ad-accent, #2f6cf6);
+  --store-accent-2:     color-mix(in oklab, var(--store-accent) 70%, #c9d3f5);
+  --store-accent-3:     color-mix(in oklab, var(--store-accent) 35%, transparent);
+  --store-good:         var(--ad-good, #22c55e);
+  --store-warn:         var(--ad-warn, #f59e0b);
+  --store-bad:          var(--ad-bad, #ef4444);
+  --store-radius:       var(--ad-radius, 14px);
+  --store-radius-lg:    18px;
+  --store-radius-pill:  999px;
+
+  /* Button scale */
+  --btn-h:              40px;
+  --btn-pad-x:          14px;
+
+  /* Effects */
+  --glow-accent:        0 0 0 1px rgba(47,108,246,.5), 0 8px 30px rgba(47,108,246,.18);
+  --glow-soft:          0 0 0 1px rgba(255,255,255,.04), 0 6px 22px rgba(0,0,0,.22);
 }
 
-/* Card base ---------------------------------------------------------------- */
-.ad-main .card{
-  background: var(--ad-panel, #1b2132);
-  border: 1px solid var(--ad-line, rgba(255,255,255,.08));
-  border-radius: var(--ad-radius, 14px);
-  box-shadow: var(--ad-shadow-soft, 0 3px 10px rgba(0,0,0,.20));
-  color: var(--ad-text, #e8ecf6);
+/* ---------- 1. MODULE LAYOUT -------------------------------------------- */
+
+.ad-main .store {
+  position: relative;
+  z-index: 0;
+  isolation: isolate; /* keep orbs behind */
+}
+
+/* subtle decorative banner behind grid */
+.ad-main .store .store-banner {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 160px;
+  overflow: hidden;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.ad-main .store .store-banner .orb {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  filter: blur(36px);
+  opacity: .18;
+}
+
+.ad-main .store .store-banner .orb-a {
+  background: radial-gradient(closest-side, var(--store-accent), transparent 65%);
+  top: -120px;
+  left: -120px;
+}
+
+.ad-main .store .store-banner .orb-b {
+  background: radial-gradient(closest-side, #6ee7b7, transparent 65%);
+  top: -140px;
+  right: -140px;
+}
+
+/* Grid wrapper */
+.ad-main .store .store-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 1.1rem;
+  margin-top: .6rem;
+}
+
+/* Empty section */
+.ad-main .store .store-empty {
+  margin-top: 1.25rem;
+}
+
+/* ---------- 2. CARD ------------------------------------------------------ */
+
+.ad-main .store .store-card {
+  background: var(--store-panel);
+  border: 1px solid var(--store-line);
+  border-radius: var(--store-radius);
+  box-shadow: var(--store-shadow-soft);
   padding: 1rem 1.1rem 1.15rem;
-  display:flex;
-  flex-direction:column;
-  text-align: left; /* ensure no center text bleed from globals */
-  min-height: 160px;
+  color: var(--store-text);
+  display: flex;
+  flex-direction: column;
+  min-height: 220px;
+  text-align: left;
   transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
 }
 
-@media (hover:hover){
-  .ad-main .card:hover{
+@media (hover:hover) {
+  .ad-main .store .store-card:hover {
     transform: translateY(-2px);
-    box-shadow: var(--ad-shadow, 0 6px 18px rgba(0,0,0,.25));
-    border-color: var(--ad-line-strong, rgba(255,255,255,.14));
+    border-color: var(--store-line-strong);
+    box-shadow: var(--store-shadow);
   }
 }
 
-.ad-main .card h3{
-  margin: 0 0 .35rem;
+/* Featured (primary) */
+.ad-main .store .store-card.is-featured {
+  position: relative;
+  background:
+    radial-gradient(60% 80% at 0% 0%, color-mix(in oklab, var(--store-accent) 12%, transparent) 0%, transparent 70%),
+    var(--store-panel-2);
+  border-color: var(--store-accent-3);
+}
+
+.ad-main .store .store-card.is-featured::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,0));
+  mix-blend-mode: soft-light;
+  opacity: .35;
+}
+
+/* Muted (Coming soon) */
+.ad-main .store .store-card.is-muted {
+  opacity: .98;
+  border-style: dashed;
+}
+
+/* Card head (pills row) */
+.ad-main .store .card-head {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  margin-bottom: .55rem;
+}
+
+/* Title + lead */
+.ad-main .store .card-title {
+  margin: 0 0 .25rem 0;
   font-weight: 800;
-  font-size: clamp(1.05rem, 1vw + .95rem, 1.25rem);
-  color: var(--ad-text, #e8ecf6);
+  font-size: clamp(1.05rem, 1vw + .95rem, 1.28rem);
+  color: var(--store-text);
+}
+
+.ad-main .store .card-lead {
+  margin: 0 0 .75rem 0;
+  color: var(--store-text-mute);
   text-wrap: balance;
 }
 
-.ad-main .card p{
-  margin: 0 0 .8rem;
-  color: var(--ad-text-mute, #8c97b4);
-}
-
-.ad-main .card .lead{
-  margin: 0 0 .7rem;
-  color: var(--ad-text-mute, #8c97b4);
-}
-
-/* Accent card -------------------------------------------------------------- */
-.ad-main .card-cta{
-  position:relative;
-  /* graceful fallback if color-mix unsupported */
-  border-color: rgba(47,108,246,.35);
-  background:
-    radial-gradient(60% 80% at 0% 0%, rgba(47,108,246,.10), transparent 60%),
-    var(--ad-panel, #1b2132);
-}
-
-/* Pills row inside cards (uses your existing .trust-pill, just spacing) ----- */
-.ad-main .card-head{
-  display:flex;
-  gap:.5rem;
-  flex-wrap:wrap;
-  margin-bottom:.5rem;
-}
-.ad-main .card-head .trust-pill{
-  margin: 0;               /* prevent stacked margins */
-  line-height: 1.1;
-}
-
-/* Bullet list: custom markers, consistent alignment ------------------------ */
-.ad-main .card-points{
+/* Points list with custom markers */
+.ad-main .store .card-points {
   list-style: none;
-  margin:.2rem 0 .95rem;
-  padding:0;
-  color: var(--ad-text-mute, #8c97b4);
+  padding: 0;
+  margin: .2rem 0 .95rem 0;
+  color: var(--store-text-mute);
 }
-.ad-main .card-points li{
-  display:flex;
+
+.ad-main .store .card-points li {
+  display: flex;
   align-items: baseline;
-  gap:.5rem;
-  margin:.28rem 0;
+  gap: .55rem;
+  margin: .28rem 0;
 }
-.ad-main .card-points li::before{
-  content:"•";
-  color:#8fb0ff; /* accent-ish bullet */
+
+.ad-main .store .card-points li::before {
+  content: "•";
+  color: color-mix(in oklab, var(--store-accent) 85%, #aab4d4);
   font-weight: 900;
   transform: translateY(-1px);
 }
 
-/* Links + CTA button ------------------------------------------------------- */
-.ad-main .card a{
-  color: color-mix(in oklab, var(--ad-accent, #2f6cf6) 75%, #c9d3f5);
-  text-underline-offset: 2px;
+/* CTA area pinned bottom */
+.ad-main .store .card-cta {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
 }
 
-.ad-main .card .button.primary,
-.ad-main .card .cta{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:.55rem .9rem;
-  border-radius: 10px;
-  background: var(--ad-accent, #2f6cf6);
-  color:#fff !important;
-  text-decoration:none !important;
-  border: 1px solid rgba(47,108,246,.7);
-  box-shadow: 0 2px 10px rgba(0,0,0,.25);
-  transition: transform .1s ease, box-shadow .1s ease, background .1s ease;
+/* Microcopy */
+.ad-main .store .microcopy {
+  margin: 0;
+  font-size: .86rem;
+  color: var(--store-text-dim);
 }
+
+/* ---------- 3. PILLS / BADGES ------------------------------------------- */
+
+.ad-main .store .pill {
+  --pill-bg: color-mix(in oklab, var(--store-accent) 18%, transparent);
+  --pill-border: color-mix(in oklab, var(--store-accent) 35%, transparent);
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  height: 26px;
+  border-radius: var(--store-radius-pill);
+  padding: 0 .6rem;
+  font-size: .85rem;
+  color: var(--store-text);
+  background: var(--pill-bg);
+  border: 1px solid var(--pill-border);
+  white-space: nowrap;
+}
+
+.ad-main .store .pill.is-muted {
+  --pill-bg: rgba(255,255,255,.04);
+  --pill-border: rgba(255,255,255,.08);
+  color: var(--store-text-dim);
+}
+
+/* ---------- 4. BUTTONS --------------------------------------------------- */
+
+.ad-main .store .btn {
+  --btn-bg: var(--store-panel-2);
+  --btn-fg: var(--store-text);
+  --btn-bd: var(--store-line);
+  height: var(--btn-h);
+  padding: 0 var(--btn-pad-x);
+  border-radius: 10px;
+  border: 1px solid var(--btn-bd);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  text-decoration: none;
+  box-shadow: var(--store-shadow-soft);
+  transition: transform .1s ease, box-shadow .1s ease, background .1s ease, border-color .1s ease;
+}
+
 @media (hover:hover){
-  .ad-main .card .button.primary:hover,
-  .ad-main .card .cta:hover{
+  .ad-main .store .btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(0,0,0,.28);
+    border-color: var(--store-line-strong);
+    box-shadow: var(--store-shadow);
   }
 }
-.ad-main .card .button.primary:focus-visible,
-.ad-main .card .cta:focus-visible{
-  outline: 2px solid #9cc2ff;
+
+.ad-main .store .btn:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--store-accent) 65%, #9cc2ff);
   outline-offset: 2px;
 }
 
-.ad-main .card-cta .button.primary,
-.ad-main .card-cta .cta{
-  margin-top: auto;     /* pin CTA to bottom of card */
-  align-self: flex-start;
+/* Accent button (primary CTA) */
+.ad-main .store .btn-accent {
+  --btn-bg: var(--store-accent);
+  --btn-fg: #fff;
+  --btn-bd: color-mix(in oklab, var(--store-accent) 70%, #000);
+  box-shadow: 0 2px 10px rgba(0,0,0,.25);
 }
 
-/* Microcopy under CTA ------------------------------------------------------ */
-.ad-main .microcopy{
-  margin-top:.45rem;
-  display:block;
-  font-size:.86rem;
-  color: var(--ad-text-dim, #b9c2da);
-  opacity:.95;
+@media (hover:hover){
+  .ad-main .store .btn-accent:hover {
+    box-shadow: 0 8px 26px rgba(47,108,246,.28);
+  }
 }
 
-/* Muted placeholders (“Coming soon.”) -------------------------------------- */
-.ad-main .card.muted{
-  opacity:.95;
-  background: var(--ad-panel, #1b2132);
-  border-style: dashed;
+/* Ghost button (placeholders) */
+.ad-main .store .btn-ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--store-text-dim);
+  --btn-bd: rgba(255,255,255,.12);
+  cursor: not-allowed;
+  filter: grayscale(.2);
 }
-.ad-main .card.muted h3{ color: var(--ad-text-dim, #b9c2da); }
-.ad-main .card.muted p,
-.ad-main .card.muted .card-points{ color: var(--ad-text-mute, #8c97b4); }
 
-/* Empty state --------------------------------------------------------------- */
-.ad-main .empty-state{
-  margin-top: 1.25rem;
-  text-align:center;
-  background: var(--ad-panel, #1b2132);
-  border: 1px dashed var(--ad-line, rgba(255,255,255,.08));
-  border-radius: var(--ad-radius, 14px);
-  box-shadow: var(--ad-shadow-soft, 0 3px 10px rgba(0,0,0,.20));
+/* ---------- 5. LINKS ----------------------------------------------------- */
+
+.ad-main .store a {
+  color: color-mix(in oklab, var(--store-accent) 75%, #c9d3f5);
+  text-underline-offset: 2px;
+}
+
+/* ---------- 6. EMPTY STATE ------------------------------------------------ */
+
+.ad-main .store .empty-pane {
+  text-align: center;
+  background: var(--store-panel);
+  border: 1px dashed var(--store-line);
+  border-radius: var(--store-radius);
+  box-shadow: var(--store-shadow-soft);
   padding: 1.5rem 1rem;
-  color: var(--ad-text, #e8ecf6);
+  color: var(--store-text);
 }
-.ad-main .empty-state .emoji{
+
+.ad-main .store .empty-pane .emoji {
   font-size: 1.9rem;
   line-height: 1;
   margin-bottom: .35rem;
 }
-.ad-main .empty-state .empty-text{
+
+.ad-main .store .empty-pane .empty-text {
   margin: .2rem 0 .6rem;
-  color: var(--ad-text-dim, #b9c2da);
+  color: var(--store-text-dim);
 }
 
-/* Focus/contrast & reduced-motion niceties --------------------------------- */
-@media (prefers-contrast: more){
-  .ad-main .card{ border-color: rgba(255,255,255,.22); }
-  .ad-main .card-cta{ border-color: rgba(47,108,246,.55); }
+/* ---------- 7. UTILITIES (scoped) --------------------------------------- */
+
+.ad-main .store .u-row     { display: flex; gap: .6rem; align-items: center; }
+.ad-main .store .u-col     { display: flex; flex-direction: column; gap: .5rem; }
+.ad-main .store .u-muted   { color: var(--store-text-mute); }
+.ad-main .store .u-dim     { color: var(--store-text-dim); }
+.ad-main .store .u-accent  { color: var(--store-accent-2); }
+.ad-main .store .u-right   { margin-left: auto; }
+.ad-main .store .u-center  { text-align: center; }
+.ad-main .store .u-nowrap  { white-space: nowrap; }
+.ad-main .store .u-divider { border-top: 1px solid var(--store-line); margin: .6rem 0; }
+
+/* ---------- 8. RIBBONS / TAGS (optional, color-only) -------------------- */
+
+.ad-main .store .ribbon {
+  position: absolute;
+  top: .9rem;
+  right: .9rem;
+  padding: .25rem .5rem;
+  border-radius: 8px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  color: var(--store-text);
+  font-size: .8rem;
 }
 
-@media (prefers-reduced-motion: reduce){
-  .ad-main .card,
-  .ad-main .card .button.primary,
-  .ad-main .card .cta{ transition: none; }
+.ad-main .store .ribbon.is-new {
+  background: color-mix(in oklab, var(--store-good) 20%, transparent);
+  border-color: color-mix(in oklab, var(--store-good) 45%, transparent);
 }
 
-/* Responsive ---------------------------------------------------------------- */
-@media (max-width: 520px){
-  .ad-main .cards-grid{ gap: .85rem; }
-  .ad-main .card{ padding: .9rem 1rem 1.05rem; }
+/* ---------- 9. ICON LIST (alt style) ------------------------------------ */
+
+.ad-main .store .icon-points {
+  list-style: none;
+  padding: 0;
+  margin: .4rem 0 .8rem 0;
+  color: var(--store-text-mute);
 }
+
+.ad-main .store .icon-points li {
+  display: grid;
+  grid-template-columns: 1.2rem auto;
+  gap: .55rem;
+  align-items: start;
+  margin: .36rem 0;
+}
+
+.ad-main .store .icon-points .ico {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 4px;
+  background: color-mix(in oklab, var(--store-accent) 18%, transparent);
+  border: 1px solid color-mix(in oklab, var(--store-accent) 40%, transparent);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.15);
+}
+
+/* ---------- 10. CALLOUT BARS -------------------------------------------- */
+
+.ad-main .store .callout {
+  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0));
+  border: 1px solid var(--store-line);
+  border-radius: var(--store-radius);
+  padding: .75rem .9rem;
+  color: var(--store-text);
+}
+
+.ad-main .store .callout.is-accent {
+  border-color: var(--store-accent-3);
+  box-shadow: var(--glow-soft);
+}
+
+/* ---------- 11. ELEVATION HELPERS --------------------------------------- */
+
+.ad-main .store .elev-1 { box-shadow: var(--store-shadow-soft); }
+.ad-main .store .elev-2 { box-shadow: var(--store-shadow); }
+.ad-main .store .elev-glow { box-shadow: var(--glow-accent); }
+
+/* ---------- 12. FOCUS / ACCESSIBILITY ----------------------------------- */
+
+.ad-main .store .visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+/* ---------- 13. TABLET / MOBILE ----------------------------------------- */
+
+@media (max-width: 1024px) {
+  .ad-main .store .store-grid { gap: 1rem; }
+}
+
+@media (max-width: 720px) {
+  .ad-main .store .store-grid {
+    grid-template-columns: 1fr;
+    gap: .9rem;
+  }
+  .ad-main .store .store-card { min-height: 0; }
+}
+
+/* ---------- 14. HIGH CONTRAST & REDUCED MOTION -------------------------- */
+
+@media (prefers-contrast: more) {
+  .ad-main .store .store-card { border-color: rgba(255,255,255,.22); }
+  .ad-main .store .store-card.is-featured { border-color: rgba(47,108,246,.55); }
+  .ad-main .store .btn { border-color: rgba(255,255,255,.2); }
+  .ad-main .store .pill { border-color: rgba(255,255,255,.28); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ad-main .store .store-card,
+  .ad-main .store .btn { transition: none; }
+}
+
+/* ---------- 15. PRINT (keeps structure readable) ------------------------ */
+
+@media print {
+  .ad-main .store .store-banner { display: none !important; }
+  .ad-main .store .store-card { break-inside: avoid; box-shadow: none; }
+  .ad-main .store .btn { border: 1px solid #000; background: #fff; color: #000; }
+}
+
+/* ---------- 16. OPTIONAL VARIANTS (color-only) -------------------------- */
+
+/* Soft gradient border for featured card (focus/hover) */
+@media (hover:hover){
+  .ad-main .store .store-card.is-featured:hover {
+    box-shadow: var(--store-shadow), 0 0 0 1px var(--store-accent-3);
+  }
+}
+
+/* Outline pill variant */
+.ad-main .store .pill.is-outline {
+  background: transparent;
+  border-color: var(--store-line-strong);
+  color: var(--store-text-dim);
+}
+
+/* ---------- 17. FORMATTED LINKS INSIDE CARDS ---------------------------- */
+
+.ad-main .store .store-card a:not(.btn){
+  color: var(--store-accent-2);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ---------- 18. SPACING UTILITIES --------------------------------------- */
+
+.ad-main .store .mt-0{ margin-top: 0 !important; }
+.ad-main .store .mt-1{ margin-top: .25rem !important; }
+.ad-main .store .mt-2{ margin-top: .5rem !important; }
+.ad-main .store .mt-3{ margin-top: .75rem !important; }
+.ad-main .store .mt-4{ margin-top: 1rem !important; }
+.ad-main .store .mb-0{ margin-bottom: 0 !important; }
+.ad-main .store .mb-1{ margin-bottom: .25rem !important; }
+.ad-main .store .mb-2{ margin-bottom: .5rem !important; }
+.ad-main .store .mb-3{ margin-bottom: .75rem !important; }
+.ad-main .store .mb-4{ margin-bottom: 1rem !important; }
+
+/* ---------- 19. WIDTH UTILITIES ----------------------------------------- */
+
+.ad-main .store .w-100{ width:100%; }
+.ad-main .store .w-auto{ width:auto; }
+
+/* ---------- 20. TEXT UTILITIES ------------------------------------------ */
+
+.ad-main .store .text-center{ text-align:center; }
+.ad-main .store .text-right{ text-align:right; }
+.ad-main .store .text-dim{ color: var(--store-text-dim); }
+.ad-main .store .text-mute{ color: var(--store-text-mute); }
+.ad-main .store .text-accent{ color: var(--store-accent-2); }
+
+/* ---------- 21. DIVIDERS & SEPARATORS ----------------------------------- */
+
+.ad-main .store .sep{
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--store-line), transparent);
+  margin: .75rem 0;
+}
+
+/* ---------- 22. CARD FOOT SUBTLE ---------------------------------------- */
+
+.ad-main .store .card-foot {
+  margin-top: .6rem;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  color: var(--store-text-dim);
+  border-top: 1px solid var(--store-line);
+  padding-top: .6rem;
+}
+
+/* ---------- 23. BADGE STRIP (optional) ---------------------------------- */
+
+.ad-main .store .badge-strip{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem;
+  margin:.3rem 0 .8rem 0;
+}
+
+.ad-main .store .badge {
+  padding:.18rem .45rem;
+  border-radius: 8px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  color: var(--store-text-dim);
+  font-size:.78rem;
+}
+
+/* ---------- 24. OVERLAY (for future placeholders) ----------------------- */
+
+.ad-main .store .overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(15,22,41,.35);
+  border: 1px dashed rgba(255,255,255,.12);
+  display: grid;
+  place-items: center;
+  color: var(--store-text-dim);
+}
+
+/* ---------- 25. PROGRESS (for later use) -------------------------------- */
+
+.ad-main .store .progress {
+  width: 100%;
+  height: 8px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.ad-main .store .progress > i {
+  display:block;
+  height:100%;
+  width: 35%;
+  background: linear-gradient(90deg, rgba(47,108,246,.25), rgba(47,108,246,.75));
+}
+
+/* ---------- 26. CARD STATES --------------------------------------------- */
+
+.ad-main .store .store-card.is-success {
+  border-color: color-mix(in oklab, var(--store-good) 35%, transparent);
+  box-shadow: 0 10px 28px rgba(34,197,94,.2);
+}
+.ad-main .store .store-card.is-warn {
+  border-color: color-mix(in oklab, var(--store-warn) 35%, transparent);
+}
+.ad-main .store .store-card.is-error {
+  border-color: color-mix(in oklab, var(--store-bad) 35%, transparent);
+}
+
+/* ---------- 27. CARD MEDIA (icon slot) ---------------------------------- */
+
+.ad-main .store .card-media {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--store-accent) 16%, transparent);
+  border: 1px solid color-mix(in oklab, var(--store-accent) 40%, transparent);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.15);
+}
+
+/* ---------- 28. GRID BALANCER ------------------------------------------- */
+
+@supports (grid-template-rows: masonry) {
+  /* Reserved for future masonry if needed, remains color-only safe */
+}
+
+/* ---------- 29. Z-INDEX TOKENS (scoped) ---------------------------------- */
+
+.ad-main .store { --z-base: 0; --z-overlay: 10; --z-max: 999; }
+
+/* ---------- 30. FIN ------------------------------------------------------ */
+
+/* End of module */
