@@ -106,9 +106,11 @@
   text-align: center;
 }
 
-/* =========================
+/*
+ =========================
    Sticky Overlay + Restyled Indicator
-   ========================= */
+   =========================
+    */
 
 /* Overlay anchor that sticks to the bottom INSIDE .chat-history */
 .chat-overlay {
@@ -150,3 +152,91 @@
   opacity: .9;
   font-variant-numeric: tabular-nums;
 }
+
+/* --- Two-sided layout -------------------------------------------------- */
+
+/* Each message is a flex column so header+body move together as a "bubble" */
+.chat-message {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;       /* default = left side */
+}
+
+/* Right side for "them" */
+.chat-message.them {
+  align-items: flex-end;
+}
+
+/* Remove any previous side effects of text-align rules */
+.chat-message.me,
+.chat-message.them {
+  text-align: initial;
+}
+
+/* The bubble itself (wrap header + body) */
+.msg-bubble {
+  max-width: min(72%, 46rem);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 12px;
+  padding: 10px 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,.15);
+}
+
+/* Left bubble (me) */
+.chat-message.me .msg-bubble {
+  align-self: flex-start;
+  background: linear-gradient(180deg, rgba(47,108,246,.08), rgba(47,108,246,.04));
+  border-color: rgba(47,108,246,.35);
+}
+
+/* Right bubble (them) */
+.chat-message.them .msg-bubble {
+  align-self: flex-end;
+  background: rgba(21,32,54,.6);
+  border-color: rgba(255,255,255,.12);
+}
+
+/* Header layout: default (me) = sender left, timestamp on the right */
+.msg-header {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.msg-header .sender { font-weight: 600; }
+.msg-header .timestamp {
+  margin-left: auto;            /* push time to the right for "me" */
+  opacity: .75;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Flip row for "them": sender name hugs the right edge, time to its left */
+.chat-message.them .msg-header {
+  flex-direction: row-reverse;
+}
+.chat-message.them .msg-header .timestamp {
+  margin-left: 0;
+  margin-right: auto;           /* push time away from the right edge */
+}
+
+/* Body text wraps nicely in the bubble */
+.msg-body {
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-top: 4px;
+}
+
+/* Optional color accents for names */
+.chat-message.me   .sender { color: #2f6cf6; }
+.chat-message.them .sender { color: #9aa4b5; }
+
+/* Spacing between messages (keeps your existing divider if present) */
+.chat-message { margin: 10px 0; }
+.chat-message + .chat-message { margin-top: 14px; }
+
+/* Responsive: allow a bit wider bubbles on tiny screens */
+@media (max-width: 520px) {
+  .msg-bubble { max-width: 88%; }
+}
+
