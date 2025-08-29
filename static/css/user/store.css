@@ -188,6 +188,10 @@
   padding-left: 0;
 }
 
+.store-empty-pane{
+    padding-top: 1.5rem;
+}
+
 /* Slightly tighter on very small screens */
 @media (max-width: 520px){
   .store-card .store-points{ padding-left: calc(var(--store-btn-pad-x) - 4px); }
