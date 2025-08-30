@@ -45,5 +45,5 @@
 <script src="{{ url_for('static', filename='js/chat/chat-core.js') }}"></script>
 <script src="{{ url_for('static', filename='js/chat/chat-input.js') }}"></script>
 <script src="{{ url_for('static', filename='js/chat/chat-typing.js') }}"></script>
-<script src="{{ url_for('static', filename='js/chat/user_chat.js') }}"></script>
+<script src="{{ url_for('static', filename='js/chat/user_chat.v2.js') }}?v={{  config.get('ASSET_VERSION','dev') }}"></script>
 {% endblock %}

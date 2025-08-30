@@ -130,6 +130,12 @@ def set_request_timezone():
         g.tzname = tz_cookie
 
 
+@app.context_processor
+def inject_asset_version():
+    import os, time
+    return {"config": {"ASSET_VERSION": os.getenv("ASSET_VERSION", str(int(time.time()))) }}
+
+
 # Initialize the database
 with app.app_context():
     db.create_all()
