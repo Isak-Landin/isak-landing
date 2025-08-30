@@ -1,8 +1,7 @@
-// ---- create/share ONE global socket for all chat scripts ----
 // static/js/chat/user_chat.js
+// ---- create/share ONE global socket for all chat scripts ----
 window.socket = window.socket || io({
   path: "/socket.io/",
-  // transports: ["websocket"], // optional
   withCredentials: true
 });
 
@@ -26,20 +25,28 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const scrollToBottom = () => {
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  };
-  scrollToBottom();
+  const atBottom = () =>
+    messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight <= 2;
 
+  const scrollToBottom = (smooth = false) => {
+    messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: smooth ? "smooth" : "auto" });
+  };
+
+  // Ensure the indicator is initialized (chat-core.js will no-op if already bound)
+  try {
+    window.ChatShared?.initNewMessageIndicator?.(messagesContainer, {
+      autoObserve: false // we'll manually notify on append below
+    });
+  } catch (_) {}
+
+  // Join room on connect/reconnect
   const join = () => socket.emit("join_chat", { chat_id: chatId });
 
   socket.off("connect").on("connect", () => {
-    console.log("[chat] connected:", socket.id);
     join();
   });
 
   socket.off("reconnect").on("reconnect", () => {
-    console.log("[chat] reconnected:", socket.id);
     join();
   });
 
@@ -59,47 +66,87 @@ document.addEventListener("DOMContentLoaded", () => {
   const seen = new Set();
   const markSeen = (m) => {
     const key = m?.id ?? `${m?.chat_id}|${m?.timestamp}|${m?.sender}|${m?.message}`;
-    if (!key) return false;
-    if (seen.has(key)) return false;
+    if (!key || seen.has(key)) return false;
     seen.add(key);
-    if (seen.size > 1000) { const it = seen.values(); seen.delete(it.next().value); }
+    if (seen.size > 1000) {
+      const it = seen.values();
+      seen.delete(it.next().value);
+    }
     return true;
   };
 
-  // Receive and render new messages (server emits once with include_self=True)
+  // Build DOM for one message using the same structure as the template
+  function buildMessageNode({ sender, sender_label, message, timestamp, isMine }) {
+    const root = document.createElement("div");
+    root.className = `chat-message ${isMine ? "me" : "them"} ${sender || ""}`.trim();
+
+    const bubble = document.createElement("div");
+    bubble.className = "msg-bubble";
+    root.appendChild(bubble);
+
+    const header = document.createElement("div");
+    header.className = "msg-header";
+    bubble.appendChild(header);
+
+    const senderSpan = document.createElement("span");
+    senderSpan.className = "sender";
+    senderSpan.textContent = sender_label || (isMine ? "You" : "Support");
+    header.appendChild(senderSpan);
+
+    const timeSpan = document.createElement("span");
+    timeSpan.className = "timestamp";
+    timeSpan.textContent = timestamp || "";
+    header.appendChild(timeSpan);
+
+    const body = document.createElement("div");
+    body.className = "msg-body";
+    // Use textContent so user-entered text is treated as text, not HTML.
+    body.textContent = message ?? "";
+    bubble.appendChild(body);
+
+    return root;
+  }
+
+  // Render incoming messages (server emits once with include_self=True)
   socket.off("receive_message").on("receive_message", (data) => {
     if (Number(data.chat_id) !== chatId) return;
     if (!markSeen(data)) return;
 
-    const isMine = data.sender === "user"; // for user-facing chat, 'user' == me
-    const msg = document.createElement("div");
-    msg.className = `chat-message ${isMine ? "me" : "them"} ${data.sender}`;
-    msg.innerHTML = `
-      <strong>${data.sender.charAt(0).toUpperCase() + data.sender.slice(1)}:</strong>
-      ${data.message}
-      <br><small>${data.timestamp}</small>
-    `;
-    messagesContainer.appendChild(msg);
-    scrollToBottom();
+    const isMine = data.sender === "user"; // user view: 'user' == me
+    const node = buildMessageNode({
+      sender: data.sender,
+      sender_label: data.sender_label,            // optional, falls back to You/Support
+      message: data.message,
+      timestamp: data.timestamp,
+      isMine
+    });
 
-    // If you want to notify the indicator explicitly:
-    // window.__chatIndicator?.onNewMessage?.(isMine);
+    const wasAtBottom = atBottom();
+    messagesContainer.appendChild(node);
+
+    // Let the indicator handle autoscroll/new count
+    window.__chatIndicator?.onNewMessage?.(isMine, { smooth: true });
+
+    // Fallback autoscroll (in case indicator was not initialized)
+    if (!window.__chatIndicator && (isMine || wasAtBottom)) {
+      scrollToBottom(true);
+    }
   });
 
-  // IMPORTANT: NO submit handler here.
-  // chat-input.js owns sending (Enter/Shift+Enter, throttling, etc.)
+  // Initial scroll to bottom for pre-rendered messages
+  scrollToBottom(false);
 });
 
+// Keep the start-chat helper (used on the "start chat" page) intact
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("✅ user_chat_start.js loaded");
-  const form = document.getElementById('start-chat-form');
+  const form = document.getElementById("start-chat-form");
   if (!form || form.__startChatBound) return;
   form.__startChatBound = true;
 
-  form.addEventListener('submit', async function (e) {
+  form.addEventListener("submit", async function (e) {
     e.preventDefault();
     try {
-      const response = await fetch(this.action, { method: 'POST' });
+      const response = await fetch(this.action, { method: "POST" });
       const result = await response.json();
       if (result.chat_id) {
         window.location.href = `/chat/view?chat_id=${result.chat_id}`;
