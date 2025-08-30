@@ -1,3 +1,5 @@
+// static/js/chat/chat-core.js
+
 (function () {
   function initNewMessageIndicator(
     chatEl,

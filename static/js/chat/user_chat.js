@@ -1,4 +1,5 @@
 // ---- create/share ONE global socket for all chat scripts ----
+// static/js/chat/user_chat.js
 window.socket = window.socket || io({
   path: "/socket.io/",
   // transports: ["websocket"], // optional
