@@ -1,0 +1,211 @@
+{# templates/admin/vps_detail.html #}
+{% extends "layouts/admin_dashboard_content_base.html" %}
+
+{% block page_title %}VPS #{{ vps.id }}{% endblock %}
+
+{% block extra_css %}{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin/user_detail.css') }}">
+{% endblock %}
+
+{% block hero_back_href %}{{ url_for('admin_blueprint.vps_list') if 'admin_blueprint.vps_list' in current_app.view_functions else url_for('admin_blueprint.dashboard') }}{% endblock %}
+{% block hero_back_label %}&larr; Back to VPS list{% endblock %}
+{% block hero_title %}VPS #{{ vps.id }} — {{ vps.hostname or 'Unnamed' }}{% endblock %}
+{% block hero_meta %}
+  <span class="ud-meta-item"><strong>User:</strong> {{ vps.user.email if vps.user else '—' }}</span>
+  <span class="ud-meta-sep">·</span>
+  <span class="ud-meta-item"><strong>Status:</strong> {{ vps.status|capitalize }} ({{ vps.provisioning_status }})</span>
+  <span class="ud-meta-sep">·</span>
+  <span class="ud-meta-item"><strong>Ready:</strong> {{ 'Yes' if vps.is_ready else 'No' }}</span>
+{% endblock %}
+
+{% block page_content %}
+<div class="ud-grid ud-grid--two">
+  <section class="ud-card">
+    <header class="ud-card-head">
+      <h2 class="ud-card-title">Snapshot</h2>
+    </header>
+    <div class="ud-card-body">
+      <dl class="ud-kv">
+        <div class="ud-kv-row"><dt>ID</dt><dd>{{ vps.id }}</dd></div>
+        <div class="ud-kv-row"><dt>Hostname</dt><dd>{{ vps.hostname or '—' }}</dd></div>
+        <div class="ud-kv-row"><dt>IP Address</dt><dd>{{ vps.ip_address or '—' }}</dd></div>
+        <div class="ud-kv-row"><dt>Location</dt><dd>{{ vps.location or '—' }}</dd></div>
+        <div class="ud-kv-row"><dt>Region</dt><dd>{{ vps.region or '—' }}</dd></div>
+        <div class="ud-kv-row"><dt>OS</dt><dd>{{ vps.os or '—' }}</dd></div>
+        <div class="ud-kv-row"><dt>CPU</dt><dd>{{ vps.cpu_cores or '—' }} cores</dd></div>
+        <div class="ud-kv-row"><dt>RAM</dt><dd>{{ vps.ram_mb or '—' }} MB</dd></div>
+        <div class="ud-kv-row"><dt>Disk</dt><dd>{{ vps.disk_gb or '—' }} GB</dd></div>
+        <div class="ud-kv-row"><dt>Provider</dt><dd>{{ vps.provider or '—' }}</dd></div>
+        <div class="ud-kv-row"><dt>Provider VM ID</dt><dd>{{ vps.provider_vm_id or '—' }}</dd></div>
+        <div class="ud-kv-row"><dt>Provisioning</dt><dd>{{ vps.provisioning_status }}</dd></div>
+        <div class="ud-kv-row"><dt>Status</dt><dd>{{ vps.status }}</dd></div>
+        <div class="ud-kv-row"><dt>Ready</dt><dd>{{ 'Yes' if vps.is_ready else 'No' }}</dd></div>
+        <div class="ud-kv-row"><dt>Updated</dt><dd>{{ vps.updated_at or '—' }}</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="ud-card">
+    <header class="ud-card-head">
+      <h2 class="ud-card-title">Edit & Provision</h2>
+    </header>
+    <div class="ud-card-body">
+      <form class="ud-form" method="post" action="{{ url_for('admin_vps_routes.admin_vps_save', vps_id=vps.id) }}">
+        <fieldset class="ud-fieldset">
+          <legend class="ud-legend">Identity</legend>
+
+          <div class="ud-field-row">
+            <label class="ud-label" for="hostname">Hostname</label>
+            <div class="ud-current">{{ vps.hostname or '—' }}</div>
+            <div class="ud-input"><input type="text" id="hostname" name="hostname" value="{{ vps.hostname or '' }}"></div>
+          </div>
+
+          <div class="ud-field-row">
+            <label class="ud-label" for="ip_address">IP Address</label>
+            <div class="ud-current">{{ vps.ip_address or '—' }}</div>
+            <div class="ud-input"><input type="text" id="ip_address" name="ip_address" value="{{ vps.ip_address or '' }}"></div>
+          </div>
+
+          <div class="ud-field-row">
+            <label class="ud-label" for="location">Location</label>
+            <div class="ud-current">{{ vps.location or '—' }}</div>
+            <div class="ud-input"><input type="text" id="location" name="location" value="{{ vps.location or '' }}"></div>
+          </div>
+
+          <div class="ud-field-row">
+            <label class="ud-label" for="region">Region</label>
+            <div class="ud-current">{{ vps.region or '—' }}</div>
+            <div class="ud-input"><input type="text" id="region" name="region" value="{{ vps.region or '' }}"></div>
+          </div>
+        </fieldset>
+
+        <hr class="ud-divider">
+
+        <fieldset class="ud-fieldset">
+          <legend class="ud-legend">Specs</legend>
+
+          <div class="ud-field-row">
+            <label class="ud-label" for="os">OS</label>
+            <div class="ud-current">{{ vps.os or '—' }}</div>
+            <div class="ud-input"><input type="text" id="os" name="os" value="{{ vps.os or '' }}" placeholder="Ubuntu 24.04"></div>
+          </div>
+
+          <div class="ud-field-row">
+            <label class="ud-label" for="cpu_cores">CPU Cores</label>
+            <div class="ud-current">{{ vps.cpu_cores or '—' }}</div>
+            <div class="ud-input"><input type="text" id="cpu_cores" name="cpu_cores" value="{{ vps.cpu_cores or '' }}"></div>
+          </div>
+
+          <div class="ud-field-row">
+            <label class="ud-label" for="ram_mb">RAM (MB)</label>
+            <div class="ud-current">{{ vps.ram_mb or '—' }}</div>
+            <div class="ud-input"><input type="text" id="ram_mb" name="ram_mb" value="{{ vps.ram_mb or '' }}"></div>
+          </div>
+
+          <div class="ud-field-row">
+            <label class="ud-label" for="disk_gb">Disk (GB)</label>
+            <div class="ud-current">{{ vps.disk_gb or '—' }}</div>
+            <div class="ud-input"><input type="text" id="disk_gb" name="disk_gb" value="{{ vps.disk_gb or '' }}"></div>
+          </div>
+        </fieldset>
+
+        <hr class="ud-divider">
+
+        <fieldset class="ud-fieldset">
+          <legend class="ud-legend">Provider</legend>
+
+          <div class="ud-field-row">
+            <label class="ud-label" for="provider">Provider</label>
+            <div class="ud-current">{{ vps.provider or '—' }}</div>
+            <div class="ud-input">
+              <input type="text" id="provider" name="provider" value="{{ vps.provider or '' }}" placeholder="hostup">
+            </div>
+          </div>
+
+          <div class="ud-field-row">
+            <label class="ud-label" for="provider_vm_id">Provider VM ID</label>
+            <div class="ud-current">{{ vps.provider_vm_id or '—' }}</div>
+            <div class="ud-input"><input type="text" id="provider_vm_id" name="provider_vm_id" value="{{ vps.provider_vm_id or '' }}"></div>
+          </div>
+
+          <div class="ud-field-row">
+            <label class="ud-label" for="provider_order_id">Provider Order ID</label>
+            <div class="ud-current">{{ vps.provider_order_id or '—' }}</div>
+            <div class="ud-input"><input type="text" id="provider_order_id" name="provider_order_id" value="{{ vps.provider_order_id or '' }}"></div>
+          </div>
+
+          <div class="ud-field-row">
+            <label class="ud-label" for="image">Image</label>
+            <div class="ud-current">{{ vps.image or '—' }}</div>
+            <div class="ud-input"><input type="text" id="image" name="image" value="{{ vps.image or '' }}" placeholder="ubuntu-24-04"></div>
+          </div>
+
+          <div class="ud-field-row">
+            <label class="ud-label" for="ssh_key_id">SSH Key ID</label>
+            <div class="ud-current">{{ vps.ssh_key_id or '—' }}</div>
+            <div class="ud-input"><input type="text" id="ssh_key_id" name="ssh_key_id" value="{{ vps.ssh_key_id or '' }}"></div>
+          </div>
+        </fieldset>
+
+        <hr class="ud-divider">
+
+        <fieldset class="ud-fieldset">
+          <legend class="ud-legend">State</legend>
+
+          <div class="ud-field-row">
+            <label class="ud-label" for="status">Status</label>
+            <div class="ud-current">{{ vps.status }}</div>
+            <div class="ud-input">
+              <select name="status" id="status">
+                {% for opt in ['pending','provisioning','active','suspended','terminated','canceled','ended'] %}
+                  <option value="{{ opt }}" {{ 'selected' if vps.status == opt else '' }}>{{ opt }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="ud-field-row">
+            <label class="ud-label" for="provisioning_status">Provisioning</label>
+            <div class="ud-current">{{ vps.provisioning_status }}</div>
+            <div class="ud-input">
+              <select name="provisioning_status" id="provisioning_status">
+                {% for opt in ['pending','provisioning','ready'] %}
+                  <option value="{{ opt }}" {{ 'selected' if vps.provisioning_status == opt else '' }}>{{ opt }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="ud-field-row">
+            <label class="ud-label" for="is_ready">Ready</label>
+            <div class="ud-current">{{ 'Yes' if vps.is_ready else 'No' }}</div>
+            <div class="ud-input">
+              <label class="ud-check">
+                <input type="checkbox" id="is_ready" name="is_ready" {% if vps.is_ready %}checked{% endif %}>
+                Mark as ready
+              </label>
+            </div>
+          </div>
+
+          <div class="ud-field-row ud-field-row--notes">
+            <label class="ud-label" for="notes">Notes</label>
+            <div class="ud-current">{{ vps.notes or '—' }}</div>
+            <div class="ud-input"><textarea id="notes" name="notes" placeholder="Internal notes for this VPS">{{ vps.notes or '' }}</textarea></div>
+          </div>
+        </fieldset>
+
+        <div class="ud-actions">
+          <button class="ud-btn ud-btn--primary" type="submit">💾 Save changes</button>
+
+          {# One-shot: send same form to /provision; that route flips status/ready #}
+          <button class="ud-btn" formaction="{{ url_for('admin_vps_routes.admin_vps_provision', vps_id=vps.id) }}" formmethod="post">
+            ⚙️ Save & Provision
+          </button>
+
+          <a class="ud-btn ud-btn--ghost" href="{{ url_for('admin_vps_routes.admin_vps_detail', vps_id=vps.id) }}">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </section>
+</div>
+{% endblock %}
