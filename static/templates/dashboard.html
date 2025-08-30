@@ -7,13 +7,18 @@
 {% block hero_meta %}
   <div class="hero-text">Fast, secure, and always in your control.</div>
 
+  {% set awaiting_count = (vps_ctx.awaiting_provisioning.count
+                           if vps_ctx is defined and vps_ctx.awaiting_provisioning is defined
+                           else 0) %}
   <div class="trust-strip">
     <span class="trust-pill user-pill">👤 {{ user.email }}</span>
     <span class="trust-pill">💬 Support chat ready</span>
     <span class="trust-pill">🖥️ {{ vps|length }} active server{{ '' if vps|length==1 else 's' }}</span>
+    {% if awaiting_count > 0 %}
+      <span class="trust-pill">⏳ {{ awaiting_count }} awaiting provisioning</span>
+    {% endif %}
   </div>
 {% endblock %}
-
 
 {# BODY #}
 {% block page_content %}
@@ -22,9 +27,15 @@
     <div class="card">🖥️ <strong>{{ vps|length }}</strong> Servers</div>
     <div class="card">⚙️ Active</div>
     <div class="card">💬 Chat Enabled</div>
+    {% if vps_ctx is defined and vps_ctx.summary is defined %}
+      <div class="card">⏳ Awaiting: <strong>{{ vps_ctx.summary.awaiting_count }}</strong></div>
+      <div class="card">🧊 Inactive: <strong>{{ vps_ctx.summary.inactive_count }}</strong></div>
+    {% endif %}
   </div>
 
+  {# 1) ACTIVE VPS — unchanged behavior #}
   {% if vps %}
+    <h2 class="section-title">Active servers</h2>
     <ul class="split-list">
       {% for server in vps %}
         <li>
@@ -42,6 +53,63 @@
       <p class="empty-text">You don’t have any servers yet.</p>
       <a href="{{ url_for('vps_blueprint.vps_list_page') }}" class="button primary">Launch your first VPS</a>
     </div>
+  {% endif %}
+
+  {# 2) AWAITING PROVISIONING — only shows if vps_ctx provided #}
+  {% if vps_ctx is defined and vps_ctx.awaiting_provisioning is defined and vps_ctx.awaiting_provisioning.count > 0 %}
+    <h2 class="section-title">Awaiting provisioning</h2>
+
+    {% set subs_needing = vps_ctx.awaiting_provisioning.subs_needing_vps or [] %}
+    {% set vps_progress = vps_ctx.awaiting_provisioning.vps_in_progress or [] %}
+
+    {% if subs_needing %}
+      <h3 class="subsection-title">Paid subscriptions (VPS not created yet)</h3>
+      <ul class="split-list">
+        {% for s in subs_needing %}
+          <li>
+            <span class="emoji">🧾</span>
+            <span class="text">
+              <strong>Subscription:</strong> {{ s.id }} — {{ s.plan_name or 'VPS plan' }}<br>
+              Status: {{ s.status }}{% if s.current_period_end %} · Renews: {{ s.current_period_end }}{% endif %}
+            </span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% if vps_progress %}
+      <h3 class="subsection-title">Provisioning in progress</h3>
+      <ul class="split-list">
+        {% for s in vps_progress %}
+          <li>
+            <span class="emoji">⏳</span>
+            <span class="text">
+              <strong>{{ s.hostname or 'Assigning hostname…' }}</strong>
+              — {{ s.ip_address or 'Pending IP' }}<br>
+              State: {{ s.provisioning_status|default('pending') }}
+              {% if not s.is_ready %} · not ready{% endif %}
+            </span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endif %}
+
+  {# 3) INACTIVE VPS — only shows if vps_ctx provided #}
+  {% if vps_ctx is defined and vps_ctx.inactive_vps is defined and vps_ctx.inactive_vps|length > 0 %}
+    <h2 class="section-title">Inactive servers</h2>
+    <ul class="split-list">
+      {% for s in vps_ctx.inactive_vps %}
+        <li>
+          <span class="emoji">🧊</span>
+          <span class="text">
+            <strong>{{ s.hostname }}</strong>{% if s.ip_address %} — {{ s.ip_address }}{% endif %}<br>
+            Status: {{ s.status|capitalize }}
+            {% if s.updated_at %} · Updated: {{ s.updated_at }}{% endif %}
+          </span>
+        </li>
+      {% endfor %}
+    </ul>
   {% endif %}
 
 {% endblock %}
