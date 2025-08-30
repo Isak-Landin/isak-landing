@@ -10,7 +10,7 @@ from decorators import admin_required, admin_2fa_required
 from apps.admin.admin import admin_blueprint
 
 
-@admin_blueprint.route("/admin/vps/<int:vps_id>", methods=["GET"])
+@admin_blueprint.route("/vps/<int:vps_id>", methods=["GET"])
 @login_required
 @admin_required
 def admin_vps_detail(vps_id):
@@ -18,7 +18,7 @@ def admin_vps_detail(vps_id):
     return render_template("admin/vps_detail.html", vps=vps)
 
 
-@admin_blueprint.route("/admin/vps/<int:vps_id>/save", methods=["POST"])
+@admin_blueprint.route("/vps/<int:vps_id>/save", methods=["POST"])
 @login_required
 @admin_required
 @admin_2fa_required
@@ -58,7 +58,7 @@ def admin_vps_save(vps_id):
     return redirect(url_for("admin_blueprint.admin_vps_detail", vps_id=vps.id))
 
 
-@admin_blueprint.route("/admin/vps/<int:vps_id>/provision", methods=["POST"])
+@admin_blueprint.route("/vps/<int:vps_id>/provision", methods=["POST"])
 @login_required
 @admin_required
 @admin_2fa_required

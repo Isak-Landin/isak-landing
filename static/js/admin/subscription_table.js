@@ -1,4 +1,4 @@
-// static/js/admin/subscriptions_table.js
+// static/js/admin/subscription_table.js
 (function () {
   const PROVISION = '/admin/api/provision-vps';
 
