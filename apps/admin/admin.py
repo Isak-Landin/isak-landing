@@ -97,7 +97,7 @@ def dashboard():
 @login_required
 @admin_required
 def get_admin_dashboard_data():
-    # Users with VPS count
+    # Users (unchanged) ...
     rows = (
         db.session.query(User.id, User.email, func.count(VPS.id))
         .outerjoin(VPS, VPS.user_id == User.id)
@@ -107,26 +107,38 @@ def get_admin_dashboard_data():
     )
     users = [{"id": _id, "email": email, "vps_count": int(cnt)} for (_id, email, cnt) in rows]
 
-    # VPS list
+    # VPS list — add id + status fields so the table/row-click works
     vps_rows = (
         db.session.query(
-            VPS.hostname, VPS.ip_address, VPS.os, VPS.cpu_cores, VPS.ram_mb,
-            User.email.label("owner_email")
+            VPS.id,
+            VPS.hostname,
+            VPS.ip_address,
+            VPS.os,
+            VPS.cpu_cores,
+            VPS.ram_mb,
+            VPS.status,
+            VPS.provisioning_status,
+            VPS.is_ready,
+            User.email.label("owner_email"),
         )
         .join(User, User.id == VPS.user_id)
         .order_by(VPS.created_at.desc())
         .all()
     )
     vps_list = [{
+        "id": vid,
         "hostname": h or "",
         "ip_address": ip or "",
         "os": os or "",
         "cpu_cores": int(cpu or 0),
         "ram_mb": int(ram or 0),
+        "status": status or "",
+        "provisioning_status": pstat or "",
+        "is_ready": bool(ready),
         "owner_email": owner or "",
-    } for (h, ip, os, cpu, ram, owner) in vps_rows]
+    } for (vid, h, ip, os, cpu, ram, status, pstat, ready, owner) in vps_rows]
 
-    # Subscriptions list (these are your “orders” to provision)
+    # Subscriptions (unchanged) ...
     subs = (
         db.session.query(
             VpsSubscription.id, VpsSubscription.status, VpsSubscription.interval,

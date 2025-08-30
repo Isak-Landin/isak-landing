@@ -17,6 +17,7 @@ def admin_vps_detail(vps_id):
     vps = VPS.query.get_or_404(vps_id)
     return render_template("admin/vps_detail.html", vps=vps)
 
+
 @admin_blueprint.route("/admin/vps/<int:vps_id>/save", methods=["POST"])
 @login_required
 @admin_required
@@ -54,7 +55,8 @@ def admin_vps_save(vps_id):
 
     db.session.commit()
     flash("VPS changes saved.", "success")
-    return redirect(url_for("admin_vps_routes.admin_vps_detail", vps_id=vps.id))
+    return redirect(url_for("admin_blueprint.admin_vps_detail", vps_id=vps.id))
+
 
 @admin_blueprint.route("/admin/vps/<int:vps_id>/provision", methods=["POST"])
 @login_required
@@ -89,4 +91,4 @@ def admin_vps_provision(vps_id):
 
     db.session.commit()
     flash("VPS provisioned and set to active.", "success")
-    return redirect(url_for("admin_vps_routes.admin_vps_detail", vps_id=vps.id))
+    return redirect(url_for("admin_blueprint.admin_vps_detail", vps_id=vps.id))
