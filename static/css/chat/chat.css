@@ -1,58 +1,60 @@
 /* =========================
-   Chat History Container
+   Chat History (force-override .dash-body center)
    ========================= */
-#chat-messages.chat-history {
+
+/* Kill inherited centering from .dash-body */
+.dash-body #chat-messages,
+.dash-body #chat-messages * {
+  text-align: left !important;
+}
+
+/* Container */
+.dash-body #chat-messages.chat-history {
   font-size: 14px;
   line-height: 1.45;
 
-  /* sizing + scrolling */
   max-height: 60vh;
   overflow-y: auto;
-  padding-right: 8px;       /* room for scrollbar */
+  padding-right: 8px;
   box-sizing: border-box;
-
-  /* positioning for the indicator chip */
   position: relative;
 }
 
 /* Optional: nicer scrollbar (WebKit) */
-#chat-messages.chat-history::-webkit-scrollbar { width: 6px; }
-#chat-messages.chat-history::-webkit-scrollbar-track { background: transparent; }
-#chat-messages.chat-history::-webkit-scrollbar-thumb {
+.dash-body #chat-messages.chat-history::-webkit-scrollbar { width: 6px; }
+.dash-body #chat-messages.chat-history::-webkit-scrollbar-track { background: transparent; }
+.dash-body #chat-messages.chat-history::-webkit-scrollbar-thumb {
   background: rgba(0,0,0,0.2);
   border-radius: 3px;
 }
 
 /* =========================
-   Message Blocks + Separation
+   Two-sided message layout
    ========================= */
 
-/* Each message is a flex column so header+body move together as a "bubble". */
-#chat-messages .chat-message {
+.dash-body #chat-messages .chat-message {
   margin: 10px 0;
   display: flex !important;
   flex-direction: column !important;
-  align-items: flex-start !important;   /* default side = left (me) */
-  text-align: initial !important;       /* kill any old text-align */
-  float: none !important;               /* kill any legacy float rules */
+  align-items: flex-start !important;      /* default = left (me) */
+  float: none !important;
   clear: both !important;
 }
 
-/* Right side for "them" */
-#chat-messages .chat-message.them {
-  align-items: flex-end !important;
+.dash-body #chat-messages .chat-message.them {
+  align-items: flex-end !important;        /* right side */
 }
 
-/* Soft hairline between messages */
-#chat-messages .chat-message + .chat-message {
+/* soft separator between messages */
+.dash-body #chat-messages .chat-message + .chat-message {
   margin-top: 14px;
   padding-top: 14px;
   position: relative;
 }
-#chat-messages .chat-message + .chat-message::before {
+.dash-body #chat-messages .chat-message + .chat-message::before {
   content: "";
   position: absolute;
-  inset: 0 0 auto 0;   /* top:0; left/right:0 */
+  inset: 0 0 auto 0;
   height: 1px;
   background: linear-gradient(
     to right,
@@ -64,10 +66,11 @@
 }
 
 /* =========================
-   Message Bubble
+   Bubbles
    ========================= */
-#chat-messages .msg-bubble {
-  display: inline-block;                /* hug content */
+
+.dash-body #chat-messages .msg-bubble {
+  display: inline-block;
   max-width: min(72%, 46rem);
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.10);
@@ -77,15 +80,13 @@
   box-sizing: border-box;
 }
 
-/* Left bubble (me) */
-#chat-messages .chat-message.me .msg-bubble {
+.dash-body #chat-messages .chat-message.me .msg-bubble {
   align-self: flex-start;
   background: linear-gradient(180deg, rgba(47,108,246,.08), rgba(47,108,246,.04));
   border-color: rgba(47,108,246,.35);
 }
 
-/* Right bubble (them) */
-#chat-messages .chat-message.them .msg-bubble {
+.dash-body #chat-messages .chat-message.them .msg-bubble {
   align-self: flex-end;
   background: rgba(21,32,54,.6);
   border-color: rgba(255,255,255,.12);
@@ -94,59 +95,63 @@
 /* =========================
    Header + Body
    ========================= */
-#chat-messages .msg-header {
+
+.dash-body #chat-messages .msg-header {
   display: flex !important;
   gap: 8px;
   align-items: baseline;
-  justify-content: flex-start !important;  /* ensure not centered by old css */
+  justify-content: flex-start !important;  /* defeat any center rules */
   width: 100%;
 }
 
-#chat-messages .msg-header .sender { font-weight: 600; }
+.dash-body #chat-messages .msg-header .sender {
+  font-weight: 600;
+}
 
-#chat-messages .msg-header .timestamp {
-  margin-left: auto;             /* default (me): time on the right */
+.dash-body #chat-messages .msg-header .timestamp {
+  margin-left: auto;                        /* default: time on the right */
   opacity: .75;
   font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
 
-/* Flip header order for them (sender at far right, time to its left) */
-#chat-messages .chat-message.them .msg-header {
+/* Flip order for "them": name at far right, time left of it */
+.dash-body #chat-messages .chat-message.them .msg-header {
   flex-direction: row-reverse !important;
 }
-#chat-messages .chat-message.them .msg-header .timestamp {
+.dash-body #chat-messages .chat-message.them .msg-header .timestamp {
   margin-left: 0;
   margin-right: auto;
 }
 
-#chat-messages .msg-body {
+.dash-body #chat-messages .msg-body {
   white-space: pre-wrap;
   word-break: break-word;
   margin-top: 4px;
 }
 
-/* Optional color accents for names */
-#chat-messages .chat-message.me   .sender { color: #2f6cf6; }
-#chat-messages .chat-message.them .sender { color: #9aa4b5; }
+/* Optional name color accents */
+.dash-body #chat-messages .chat-message.me   .sender { color: #2f6cf6; }
+.dash-body #chat-messages .chat-message.them .sender { color: #9aa4b5; }
 
 /* =========================
    Input Form
    ========================= */
-#chat-messages ~ .chat-form {
+
+.dash-body #chat-messages ~ .chat-form {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-top: 12px;
 }
-#chat-messages ~ .chat-form textarea {
+.dash-body #chat-messages ~ .chat-form textarea {
   width: 100%;
   min-height: 110px;
   padding: 12px;
   resize: vertical;
   box-sizing: border-box;
 }
-#chat-messages ~ .chat-form .button {
+.dash-body #chat-messages ~ .chat-form .button {
   display: inline-block;
   width: 100%;
   padding: 12px 16px;
@@ -156,21 +161,21 @@
 /* =========================
    Sticky Overlay + Indicator
    ========================= */
-#chat-messages .chat-overlay {
+
+.dash-body #chat-messages .chat-overlay {
   position: sticky;
   bottom: 0;
-  height: 0;              /* don't affect layout flow */
+  height: 0;
   z-index: 3;
-  pointer-events: none;   /* let scroll/selection pass through */
+  pointer-events: none;
 }
 
-/* Restyled chip: bottom-center, neutral, square corners */
-#chat-messages .new-messages-indicator {
+.dash-body #chat-messages .new-messages-indicator {
   position: absolute;
   left: 50%;
   bottom: 0;
   transform: translateX(-50%) translateY(-10px);
-  display: none;           /* toggled by .show */
+  display: none;
   pointer-events: auto;
 
   padding: 8px 12px;
@@ -184,12 +189,12 @@
   white-space: nowrap;
   cursor: pointer;
 }
-#chat-messages .new-messages-indicator.show {
+.dash-body #chat-messages .new-messages-indicator.show {
   display: inline-flex;
   gap: 8px;
   align-items: center;
 }
-#chat-messages .new-messages-indicator .count {
+.dash-body #chat-messages .new-messages-indicator .count {
   opacity: .9;
   font-variant-numeric: tabular-nums;
 }
@@ -198,5 +203,5 @@
    Responsive
    ========================= */
 @media (max-width: 520px) {
-  #chat-messages .msg-bubble { max-width: 88%; }
+  .dash-body #chat-messages .msg-bubble { max-width: 88%; }
 }
