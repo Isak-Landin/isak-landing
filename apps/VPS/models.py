@@ -1,4 +1,4 @@
-# VPS/models.py
+# apps/VPS/models.py
 
 from extensions import db
 from datetime import datetime
