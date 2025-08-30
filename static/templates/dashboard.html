@@ -20,7 +20,6 @@
   </div>
 {% endblock %}
 
-{# BODY #}
 {% block page_content %}
 
   <div class="dashboard-summary">
@@ -33,7 +32,7 @@
     {% endif %}
   </div>
 
-  {# 1) ACTIVE VPS — unchanged behavior #}
+  {# ACTIVE — unchanged markup; now gets card look via .split-list styles #}
   {% if vps %}
     <h2 class="section-title">Active servers</h2>
     <ul class="split-list">
@@ -42,8 +41,9 @@
           <span class="emoji">🖥️</span>
           <span class="text">
             <strong>{{ server.hostname }}</strong> – {{ server.ip_address }}<br>
-            OS: {{ server.os }} | CPU: {{ server.cpu_cores }} cores | RAM: {{ server.ram_mb }}MB
+            <span class="sub">OS: {{ server.os }} | CPU: {{ server.cpu_cores }} cores | RAM: {{ server.ram_mb }}MB</span>
           </span>
+          <span class="badge ready" style="margin-left:auto">ready</span>
         </li>
       {% endfor %}
     </ul>
@@ -55,64 +55,82 @@
     </div>
   {% endif %}
 
-  {# 2) AWAITING PROVISIONING — only shows if vps_ctx provided #}
+  {# AWAITING — wrap in a card-panel #}
   {% if vps_ctx is defined and vps_ctx.awaiting_provisioning is defined and vps_ctx.awaiting_provisioning.count > 0 %}
     <h2 class="section-title">Awaiting provisioning</h2>
 
-    {% set subs_needing = vps_ctx.awaiting_provisioning.subs_needing_vps or [] %}
-    {% set vps_progress = vps_ctx.awaiting_provisioning.vps_in_progress or [] %}
+    <div class="card-panel">
+      <div class="card-head">
+        <h3 class="title">Pending items</h3>
+        <div class="meta">{{ vps_ctx.awaiting_provisioning.count }} total</div>
+      </div>
 
-    {% if subs_needing %}
-      <h3 class="subsection-title">Paid subscriptions (VPS not created yet)</h3>
-      <ul class="split-list">
-        {% for s in subs_needing %}
-          <li>
-            <span class="emoji">🧾</span>
-            <span class="text">
-              <strong>Subscription:</strong> {{ s.id }} — {{ s.plan_name or 'VPS plan' }}<br>
-              Status: {{ s.status }}{% if s.current_period_end %} · Renews: {{ s.current_period_end }}{% endif %}
-            </span>
-          </li>
-        {% endfor %}
-      </ul>
-    {% endif %}
+      {% set subs_needing = vps_ctx.awaiting_provisioning.subs_needing_vps or [] %}
+      {% set vps_progress = vps_ctx.awaiting_provisioning.vps_in_progress or [] %}
 
-    {% if vps_progress %}
-      <h3 class="subsection-title">Provisioning in progress</h3>
-      <ul class="split-list">
-        {% for s in vps_progress %}
-          <li>
-            <span class="emoji">⏳</span>
-            <span class="text">
-              <strong>{{ s.hostname or 'Assigning hostname…' }}</strong>
-              — {{ s.ip_address or 'Pending IP' }}<br>
-              State: {{ s.provisioning_status|default('pending') }}
-              {% if not s.is_ready %} · not ready{% endif %}
-            </span>
-          </li>
-        {% endfor %}
-      </ul>
-    {% endif %}
+      {% if subs_needing %}
+        <h3 class="subsection-title">Paid subscriptions (VPS not created yet)</h3>
+        <ul class="card-list">
+          {% for s in subs_needing %}
+            <li class="card-item">
+              <span class="emoji">🧾</span>
+              <span class="text">
+                <strong>Subscription {{ s.id }}</strong> — {{ s.plan_name or 'VPS plan' }}<br>
+                <span class="sub">Status: {{ s.status }}{% if s.current_period_end %} · Renews: {{ s.current_period_end }}{% endif %}</span>
+              </span>
+              <span class="badge pending" style="margin-left:auto">pending</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      {% if vps_progress %}
+        <h3 class="subsection-title" style="margin-top:10px;">Provisioning in progress</h3>
+        <ul class="card-list">
+          {% for s in vps_progress %}
+            <li class="card-item">
+              <span class="emoji">⏳</span>
+              <span class="text">
+                <strong>{{ s.hostname or 'Assigning hostname…' }}</strong>
+                — {{ s.ip_address or 'Pending IP' }}<br>
+                <span class="sub">State: {{ s.provisioning_status|default('pending') }}{% if not s.is_ready %} · not ready{% endif %}</span>
+              </span>
+              <span class="badge provisioning" style="margin-left:auto">
+                {{ s.provisioning_status|default('pending') }}
+              </span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
   {% endif %}
 
-  {# 3) INACTIVE VPS — only shows if vps_ctx provided #}
+  {# INACTIVE — wrap in card-panel #}
   {% if vps_ctx is defined and vps_ctx.inactive_vps is defined and vps_ctx.inactive_vps|length > 0 %}
     <h2 class="section-title">Inactive servers</h2>
-    <ul class="split-list">
-      {% for s in vps_ctx.inactive_vps %}
-        <li>
-          <span class="emoji">🧊</span>
-          <span class="text">
-            <strong>{{ s.hostname }}</strong>{% if s.ip_address %} — {{ s.ip_address }}{% endif %}<br>
-            Status: {{ s.status|capitalize }}
-            {% if s.updated_at %} · Updated: {{ s.updated_at }}{% endif %}
-          </span>
-        </li>
-      {% endfor %}
-    </ul>
+    <div class="card-panel">
+      <div class="card-head">
+        <h3 class="title">History</h3>
+        <div class="meta">{{ vps_ctx.inactive_vps|length }} total</div>
+      </div>
+      <ul class="card-list">
+        {% for s in vps_ctx.inactive_vps %}
+          <li class="card-item">
+            <span class="emoji">🧊</span>
+            <span class="text">
+              <strong>{{ s.hostname }}</strong>{% if s.ip_address %} — {{ s.ip_address }}{% endif %}<br>
+              <span class="sub">Status: {{ s.status|capitalize }}{% if s.updated_at %} · Updated: {{ s.updated_at }}{% endif %}</span>
+            </span>
+            <span class="badge inactive" style="margin-left:auto">inactive</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
   {% endif %}
 
 {% endblock %}
 
-{% block extra_css %}{{ super() }}{% endblock %}
+{% block extra_css %}{{ super() }}
+<script src="url_for('static', filename='css/user/dashboard.css') }}"></script>
+{% endblock %}
 {% block extra_js %}{{ super() }}{% endblock %}

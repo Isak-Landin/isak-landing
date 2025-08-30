@@ -1,0 +1,116 @@
+/* static/css/user/user_dashboard.css
+   User dashboard cards for Active / Awaiting / Inactive sections
+   Relies on the theme tokens set in dashboard_content_base.css
+   (e.g., --ad-panel, --ad-line, --ad-text, --ad-radius, --ad-shadow) */
+
+/* Section headings */
+.section-title{
+  margin: 1.4rem 0 .8rem;
+  font-size: clamp(18px, 2.1vw, 22px);
+  font-weight: 800;
+  letter-spacing: .2px;
+}
+.subsection-title{
+  margin: .8rem 0 .5rem;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ad-text-dim, #b9c2da);
+}
+
+/* Generic panel (card) */
+.card-panel{
+  background: var(--ad-panel, #1b2132);
+  border: 1px solid var(--ad-line, rgba(255,255,255,.08));
+  border-radius: var(--ad-radius, 14px);
+  box-shadow: var(--ad-shadow, 0 6px 18px rgba(0,0,0,.25));
+  padding: 14px;
+  margin: .8rem 0 1.2rem;
+}
+
+/* A small header row inside cards */
+.card-head{
+  display:flex; align-items:center; gap:.6rem;
+  padding: 6px 4px 10px;
+  border-bottom: 1px dashed var(--ad-line, rgba(255,255,255,.08));
+  margin: 0 0 10px;
+}
+.card-head .title{
+  margin:0; font-weight:800; font-size: 16px; color: var(--ad-text, #e8ecf6);
+}
+.card-head .meta{
+  margin-left:auto; font-size: 12px; color: var(--ad-text-mute, #8c97b4);
+}
+
+/* Grid for multiple cards if needed */
+.card-grid{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+  gap: 14px;
+}
+@media (max-width: 800px){
+  .card-grid{ grid-template-columns: 1fr; }
+}
+
+/* List of items inside a card */
+.card-list{
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: 10px;
+}
+.card-item{
+  display:flex; gap: 10px; align-items:flex-start;
+  border: 1px solid var(--ad-line, rgba(255,255,255,.08));
+  border-radius: var(--ad-radius-sm, 10px);
+  padding: 10px 12px;
+  background: rgba(255,255,255,.02);
+}
+.card-item .emoji{
+  flex: 0 0 auto; font-size: 18px; line-height: 1.2;
+  filter: saturate(.9);
+}
+.card-item .text{
+  color: var(--ad-text, #e8ecf6);
+  line-height: 1.6;
+}
+.card-item .sub{
+  color: var(--ad-text-dim, #b9c2da);
+  font-size: 13px;
+}
+
+/* Status chips */
+.badge{
+  display:inline-flex; align-items:center; gap:6px;
+  padding: .2rem .5rem; border-radius: 999px;
+  font-size: 12px; font-weight: 800; letter-spacing:.02em;
+  border: 1px solid var(--ad-line, rgba(255,255,255,.12));
+  color: var(--ad-text, #e8ecf6);
+  background: rgba(255,255,255,.05);
+}
+.badge.pending{ background: rgba(255,179,72,.14); border-color: rgba(255,179,72,.45); }
+.badge.provisioning{ background: rgba(91,140,255,.14); border-color: rgba(91,140,255,.45); }
+.badge.ready{ background: rgba(40,192,138,.14); border-color: rgba(40,192,138,.45); }
+.badge.inactive{ background: rgba(226,90,105,.16); border-color: rgba(226,90,105,.45); }
+
+/* “Split list” compatibility (for your existing active list) */
+.split-list{
+  list-style:none; padding:0; margin:0;
+  display:grid; gap:10px;
+}
+.split-list > li{
+  display:flex; gap:10px; align-items:flex-start;
+  border:1px solid var(--ad-line, rgba(255,255,255,.08));
+  border-radius: var(--ad-radius-sm, 10px);
+  padding:10px 12px;
+  background: rgba(255,255,255,.02);
+}
+
+/* Empty state polish */
+.empty-state{
+  text-align:center;
+  background: var(--ad-panel, #1b2132);
+  border: 1px solid var(--ad-line, rgba(255,255,255,.08));
+  border-radius: var(--ad-radius, 14px);
+  padding: 22px;
+  box-shadow: var(--ad-shadow-soft, 0 3px 10px rgba(0,0,0,.20));
+}
+.empty-state .emoji{ font-size: 28px; margin-bottom: 6px; }
+.empty-state .empty-text{ color: var(--ad-text-dim, #b9c2da); }
