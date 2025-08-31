@@ -7,7 +7,8 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/user_detail.css') }}">
 {% endblock %}
 
-{% block hero_back_href %}{{ url_for('admin_blueprint.vps_list') if 'admin_blueprint.vps_list' in current_app.view_functions else url_for('admin_blueprint.dashboard') }}{% endblock %}
+{# Simple back link to Admin Dashboard #}
+{% block hero_back_href %}{{ url_for('admin_blueprint.dashboard') }}{% endblock %}
 {% block hero_back_label %}&larr; Back to VPS list{% endblock %}
 {% block hero_title %}VPS #{{ vps.id }} — {{ vps.hostname or 'Unnamed' }}{% endblock %}
 {% block hero_meta %}
@@ -50,7 +51,7 @@
       <h2 class="ud-card-title">Edit & Provision</h2>
     </header>
     <div class="ud-card-body">
-      <form class="ud-form" method="post" action="{{ url_for('admin_vps_routes.admin_vps_save', vps_id=vps.id) }}">
+      <form class="ud-form" method="post" action="{{ url_for('admin_blueprint.admin_vps_save', vps_id=vps.id) }}">
         <fieldset class="ud-fieldset">
           <legend class="ud-legend">Identity</legend>
 
@@ -198,11 +199,11 @@
           <button class="ud-btn ud-btn--primary" type="submit">💾 Save changes</button>
 
           {# One-shot: send same form to /provision; that route flips status/ready #}
-          <button class="ud-btn" formaction="{{ url_for('admin_vps_routes.admin_vps_provision', vps_id=vps.id) }}" formmethod="post">
+          <button class="ud-btn" formaction="{{ url_for('admin_blueprint.admin_vps_provision', vps_id=vps.id) }}" formmethod="post">
             ⚙️ Save & Provision
           </button>
 
-          <a class="ud-btn ud-btn--ghost" href="{{ url_for('admin_vps_routes.admin_vps_detail', vps_id=vps.id) }}">Cancel</a>
+          <a class="ud-btn ud-btn--ghost" href="{{ url_for('admin_blueprint.admin_vps_detail', vps_id=vps.id) }}">Cancel</a>
         </div>
       </form>
     </div>
