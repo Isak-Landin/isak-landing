@@ -97,7 +97,7 @@ def dashboard():
 @login_required
 @admin_required
 def get_admin_dashboard_data():
-    # --- Users (unchanged) ---
+    # Users (unchanged) ...
     rows = (
         db.session.query(User.id, User.email, func.count(VPS.id))
         .outerjoin(VPS, VPS.user_id == User.id)
@@ -107,27 +107,19 @@ def get_admin_dashboard_data():
     )
     users = [{"id": _id, "email": email, "vps_count": int(cnt)} for (_id, email, cnt) in rows]
 
-    # --- VPS: switch to OUTER JOIN + add debug counts ---
+    # VPS — absolutely no filters; OUTER JOIN to avoid dropping rows with missing user
     vps_db_count = db.session.query(func.count(VPS.id)).scalar()
 
     vps_rows = (
         db.session.query(
-            VPS.id,
-            VPS.hostname,
-            VPS.ip_address,
-            VPS.os,
-            VPS.cpu_cores,
-            VPS.ram_mb,
-            VPS.status,
-            VPS.provisioning_status,
-            VPS.is_ready,
-            User.email.label("owner_email"),
+            VPS.id, VPS.hostname, VPS.ip_address, VPS.os,
+            VPS.cpu_cores, VPS.ram_mb, VPS.status, VPS.provisioning_status, VPS.is_ready,
+            User.email.label("owner_email")
         )
-        .outerjoin(User, User.id == VPS.user_id)             # <— was .join(), make it .outerjoin()
-        .order_by(VPS.created_at.desc())
+        .outerjoin(User, User.id == VPS.user_id)
+        .order_by(VPS.id.desc())
         .all()
     )
-
     vps_list = [{
         "id": vid,
         "hostname": h or "",
@@ -141,7 +133,7 @@ def get_admin_dashboard_data():
         "owner_email": owner or "",
     } for (vid, h, ip, os, cpu, ram, status, pstat, ready, owner) in vps_rows]
 
-    # --- Subscriptions (unchanged) ---
+    # Subscriptions (unchanged) ...
     subs = (
         db.session.query(
             VpsSubscription.id, VpsSubscription.status, VpsSubscription.interval,
@@ -165,15 +157,11 @@ def get_admin_dashboard_data():
         "stripe_subscription_id": ssub
     } for (sid, status, interval, currency, amount, ssub, owner, plan) in subs]
 
-    # Return a tiny debug block so we can see DB vs. delivered list length
     return jsonify({
         "users": users,
         "vps": vps_list,
         "subscriptions": subscriptions,
-        "debug": {
-            "vps_db_count": int(vps_db_count),
-            "vps_list_len": len(vps_list)
-        }
+        "debug": {"vps_db_count": int(vps_db_count), "vps_list_len": len(vps_list)}
     })
 
 
