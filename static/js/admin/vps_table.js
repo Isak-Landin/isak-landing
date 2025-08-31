@@ -2,20 +2,21 @@
 (function () {
   const TAG = '[admin/vps]';
 
-  // Always log when the script is loaded (helps detect cache / wrong path)
-  console.log(TAG, 'vps_table.js loaded');
+  // SCREAM on load so we know this file actually executed.
+  // Also leave a global flag we can probe immediately after the <script>.
+  console.log(TAG, 'vps_table.js LOADED at', new Date().toISOString());
+  window.__vpsLoadedStamp = Date.now();
 
   function fmt(x) { return (x === null || x === undefined) ? '' : String(x); }
 
   function renderVps(data) {
+    console.groupCollapsed(TAG, 'renderVps()');
     try {
-      console.groupCollapsed(TAG, 'renderVps() called');
       console.log(TAG, 'payload keys:', data ? Object.keys(data) : 'null/undefined');
 
       const tbody = document.getElementById('vps-body');
       if (!tbody) {
-        console.error(TAG, 'Missing #vps-body element. Check admin_dashboard.html IDs.');
-        console.groupEnd();
+        console.error(TAG, 'Missing #vps-body element. Check the template IDs.');
         return;
       }
 
@@ -24,8 +25,6 @@
       if (list.length) console.table(list.slice(0, Math.min(10, list.length)));
 
       tbody.innerHTML = '';
-      const t0 = performance.now();
-
       list.forEach(v => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -39,10 +38,9 @@
         tbody.appendChild(tr);
       });
 
-      const t1 = performance.now();
       const count = document.getElementById('vps-count');
       if (count) count.textContent = list.length;
-      console.log(TAG, `rendered ${list.length} rows in ${(t1 - t0).toFixed(1)}ms`);
+      console.log(TAG, 'render complete.');
     } catch (err) {
       console.error(TAG, 'render error:', err);
     } finally {
@@ -54,7 +52,7 @@
   window.AdminRender = window.AdminRender || {};
   window.AdminRender.vps = renderVps;
 
-  // Handy console helper to test without the API/controller:
+  // Expose a console helper to simulate rows without API/controller
   window.__debugRenderVps = function (n = 3) {
     const sample = {
       vps: Array.from({ length: n }, (_, i) => ({
