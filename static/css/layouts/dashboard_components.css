@@ -85,7 +85,7 @@
   color: var(--ad-text, #e8ecf6);
 }
 .table-container thead th{
-  text-align:left; font-weight:800; font-size:.95rem;
+  text-align: center; font-weight:800; font-size:.95rem;
   color: var(--ad-text-dim, #b9c2da);
   border-bottom: 1px solid var(--ad-line, rgba(255,255,255,.08));
   padding:.75rem .9rem;
