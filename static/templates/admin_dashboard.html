@@ -53,12 +53,15 @@
         <thead>
           <tr>
             <th>Owner</th><th>Plan</th><th>Interval</th>
-            <th>Status</th><th>Price</th><th>Action</th>
+            <th>Status</th><th>Price</th>
+            <th>VPS</th>            <!-- NEW -->
+            <th>Action</th>
           </tr>
         </thead>
-        <tbody id="subs-body">{# filled by JS #}</tbody>
+        <tbody id="subs-body"></tbody>
       </table>
     </div>
+
 
     <div class="table-container hidden" id="vps-table">
       <table>
@@ -95,7 +98,7 @@
 
 {% block extra_js %}{{ super() }}
 <script src="{{ url_for('static', filename='js/admin/users_table.js') }}?v=4"></script>
-<script src="{{ url_for('static', filename='js/admin/subscription_table.js') }}?v=4"></script>
+<script src="{{ url_for('static', filename='js/admin/subscription_table.js') }}?v=8"></script>
 <script src="{{ url_for('static', filename='js/admin/vps_table.js') }}?v=7"></script>
 
 <script>

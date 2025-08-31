@@ -97,7 +97,7 @@ def dashboard():
 @login_required
 @admin_required
 def get_admin_dashboard_data():
-    # Users (unchanged) ...
+    # Users (with VPS count)
     rows = (
         db.session.query(User.id, User.email, func.count(VPS.id))
         .outerjoin(VPS, VPS.user_id == User.id)
@@ -108,13 +108,18 @@ def get_admin_dashboard_data():
     users = [{"id": _id, "email": email, "vps_count": int(cnt)} for (_id, email, cnt) in rows]
 
     # VPS — absolutely no filters; OUTER JOIN to avoid dropping rows with missing user
-    vps_db_count = db.session.query(func.count(VPS.id)).scalar()
-
     vps_rows = (
         db.session.query(
-            VPS.id, VPS.hostname, VPS.ip_address, VPS.os,
-            VPS.cpu_cores, VPS.ram_mb, VPS.status, VPS.provisioning_status, VPS.is_ready,
-            User.email.label("owner_email")
+            VPS.id,
+            VPS.hostname,
+            VPS.ip_address,
+            VPS.os,
+            VPS.cpu_cores,
+            VPS.ram_mb,
+            VPS.status,
+            VPS.provisioning_status,
+            VPS.is_ready,
+            User.email.label("owner_email"),
         )
         .outerjoin(User, User.id == VPS.user_id)
         .order_by(VPS.id.desc())
@@ -129,21 +134,29 @@ def get_admin_dashboard_data():
         "ram_mb": int(ram or 0),
         "status": status or "",
         "provisioning_status": pstat or "",
-        "is_ready": bool(ready),
+        "is_ready": bool(ready) if ready is not None else None,
         "owner_email": owner or "",
     } for (vid, h, ip, os, cpu, ram, status, pstat, ready, owner) in vps_rows]
 
-    # Subscriptions (unchanged) ...
+    # Subscriptions + VPS (LEFT OUTER JOIN so admins see everything)
     subs = (
         db.session.query(
-            VpsSubscription.id, VpsSubscription.status, VpsSubscription.interval,
-            VpsSubscription.currency, VpsSubscription.unit_amount,
+            VpsSubscription.id,
+            VpsSubscription.status,
+            VpsSubscription.interval,
+            VpsSubscription.currency,
+            VpsSubscription.unit_amount,
             VpsSubscription.stripe_subscription_id,
             User.email.label("owner_email"),
             VPSPlan.name.label("plan_name"),
+            VPS.id.label("vps_id"),
+            VPS.status.label("vps_status"),
+            VPS.provisioning_status.label("vps_provisioning_status"),
+            VPS.is_ready.label("vps_is_ready"),
         )
         .join(User, User.id == VpsSubscription.user_id)
         .join(VPSPlan, VPSPlan.id == VpsSubscription.plan_id)
+        .outerjoin(VPS, VPS.subscription_id == VpsSubscription.id)
         .order_by(VpsSubscription.created_at.desc())
         .all()
     )
@@ -154,14 +167,19 @@ def get_admin_dashboard_data():
         "interval": interval,
         "status": status,
         "price": f"{(amount or 0):.2f} {currency.upper()}",
-        "stripe_subscription_id": ssub
-    } for (sid, status, interval, currency, amount, ssub, owner, plan) in subs]
+        "stripe_subscription_id": ssub,
+        # NEW: fields used by the “VPS status” column in the Subscriptions table
+        "vps_id": vps_id,
+        "vps_status": vps_status,
+        "vps_provisioning_status": vps_prov,
+        "vps_is_ready": bool(vps_ready) if vps_ready is not None else None,
+    } for (sid, status, interval, currency, amount, ssub, owner, plan,
+            vps_id, vps_status, vps_prov, vps_ready) in subs]
 
     return jsonify({
         "users": users,
         "vps": vps_list,
         "subscriptions": subscriptions,
-        "debug": {"vps_db_count": int(vps_db_count), "vps_list_len": len(vps_list)}
     })
 
 
