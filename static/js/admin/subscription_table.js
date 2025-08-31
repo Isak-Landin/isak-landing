@@ -1,36 +1,38 @@
 // static/js/admin/subscription_table.js
 (function () {
   const TAG = '[admin/subs]';
-
-  // Simple helpers
-  const qs  = (s, r = document) => r.querySelector(s);
-  const qsa = (s, r = document) => Array.from(r.querySelectorAll(s));
   const fmt = x => (x === null || x === undefined) ? '' : String(x);
 
-  async function provision(subId, hostname, os) {
+  async function provisionAndOpen(subId) {
     const res = await fetch('/admin/api/provision-vps', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
+      credentials: 'same-origin',
       body: JSON.stringify({
         subscription_id: Number(subId),
-        hostname: hostname || `vps-${subId}`,
-        os: os || 'Ubuntu 24.04'
-      }),
-      credentials: 'same-origin'
+        hostname: `vps-${subId}`,     // default; backend requires a hostname
+        os: 'Ubuntu 24.04'
+      })
     });
+
     let json;
-    try { json = await res.json(); } catch (_) {}
+    try { json = await res.json(); } catch { json = null; }
     if (!res.ok || !json || json.ok === false) {
-      const msg = (json && (json.error || json.message)) || `HTTP ${res.status}`;
-      throw new Error(msg);
+      throw new Error((json && (json.error || json.message)) || `HTTP ${res.status}`);
     }
-    return json; // { ok: true, vps_id, idempotent? }
+
+    // Both fresh + idempotent responses include vps_id in your API
+    const vpsId = json.vps_id;
+    if (!vpsId) throw new Error('No vps_id returned from provision API');
+
+    // Go to the admin VPS detail page you created
+    window.location.href = `/admin/vps/${vpsId}`;
   }
 
   function renderSubs(data) {
     const tbody = document.getElementById('subs-body');
     if (!tbody) {
-      console.error(TAG, 'Missing #subs-body');
+      console.error(TAG, 'Missing #subs-body element');
       return;
     }
 
@@ -39,8 +41,6 @@
 
     list.forEach(s => {
       const tr = document.createElement('tr');
-      // Action cell: hostname input + button
-      const defaultHost = `vps-${s.id}`;
       tr.innerHTML = `
         <td>${fmt(s.owner_email)}</td>
         <td>${fmt(s.plan)}</td>
@@ -48,49 +48,39 @@
         <td>${fmt(s.status)}</td>
         <td>${fmt(s.price)}</td>
         <td>
-          <div class="inline-provision">
-            <input class="prov-host" type="text" value="${defaultHost}" aria-label="Hostname">
-            <button class="prov-btn" data-sub="${s.id}" type="button">Provision</button>
-          </div>
+          <button class="provision-open-btn" data-sub="${s.id}" type="button">
+            Provision & Open
+          </button>
         </td>
       `;
       tbody.appendChild(tr);
     });
 
-    // Delegate click events for the table
+    // ONE delegated handler; prevents other legacy listeners from hijacking the click
     tbody.addEventListener('click', async (ev) => {
-      const btn = ev.target.closest('.prov-btn');
+      const btn = ev.target.closest('.provision-open-btn');
       if (!btn) return;
 
-      const subId = btn.getAttribute('data-sub');
-      const tr = btn.closest('tr');
-      const hostInput = tr.querySelector('.prov-host');
-      const hostname = (hostInput?.value || '').trim();
+      ev.preventDefault();
+      ev.stopPropagation();
 
+      const subId = btn.getAttribute('data-sub');
+      const old = btn.textContent;
       btn.disabled = true;
-      const oldTxt = btn.textContent;
       btn.textContent = 'Provisioning…';
 
       try {
-        const result = await provision(subId, hostname, 'Ubuntu 24.04');
-        console.log(TAG, 'Provisioned', result);
-
-        // Refresh dataset (simulate pressing your existing refresh button)
-        document.getElementById('admin-refresh')?.click();
-
-        // Flip to VPS tab so you immediately see the new row
-        document.getElementById('tab-vps')?.click();
+        await provisionAndOpen(subId);
       } catch (err) {
         console.error(TAG, 'Provision failed:', err);
         alert(`Provision failed: ${err.message || err}`);
-      } finally {
         btn.disabled = false;
-        btn.textContent = oldTxt;
+        btn.textContent = old;
       }
-    });
+    }, { once: true }); // attach once per render; the handler handles all row clicks
   }
 
-  // Expose renderer
+  // Register renderer for the tabs controller
   window.AdminRender = window.AdminRender || {};
   window.AdminRender.subs = renderSubs;
 })();
