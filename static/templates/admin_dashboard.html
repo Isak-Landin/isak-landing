@@ -94,13 +94,18 @@
 {% endblock %}
 
 {% block extra_js %}{{ super() }}
-<script src="{{ url_for('static', filename='js/admin/users_table.js') }}"></script>
-<script src="{{ url_for('static', filename='js/admin/subscription_table.js') }}"></script>
-<script src="{{ url_for('static', filename='js/admin/vps_table.js') }}"></script>
+<script src="{{ url_for('static', filename='js/admin/users_table.js') }}?v=4"></script>
+<script src="{{ url_for('static', filename='js/admin/subscription_table.js') }}?v=4"></script>
+<script src="{{ url_for('static', filename='js/admin/vps_table.js') }}?v=4"></script>
+
+<script>
+  console.log('[admin/vps]', 'after include: window.__vpsLoadedStamp =', window.__vpsLoadedStamp);
+</script>
 
 {# NEW: renderer for the Billing (Subs) tab #}
-<script src="{{ url_for('static', filename='js/admin/billing_subs_table.js') }}"></script>
+<script src="{{ url_for('static', filename='js/admin/billing_subs_table.js') }}?v=4"></script>
 
 {# tabs controller last #}
-<script src="{{ url_for('static', filename='js/admin/tabs_controller.js') }}"></script>
+<script src="{{ url_for('static', filename='js/admin/tabs_controller.js') }}?v=4"></script>
 {% endblock %}
+
