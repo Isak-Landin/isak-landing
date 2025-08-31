@@ -79,6 +79,7 @@
   overflow: auto;
   box-shadow: var(--ad-shadow-soft, 0 3px 10px rgba(0,0,0,.20));
   margin-bottom: 1rem;
+  text-align: center;
 }
 .table-container table{
   width:100%; border-collapse:separate; border-spacing:0;
