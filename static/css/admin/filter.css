@@ -1,5 +1,32 @@
-.admin-filter-bar { display:flex; gap:12px; align-items:center; margin:8px 0 12px; flex-wrap:wrap; }
-.admin-filter-bar .filter-row { display:flex; gap:8px; flex-wrap:wrap; }
-.admin-filter-bar input[type="search"] { min-width: 220px; }
-.admin-filter-bar input[type="date"] { min-width: 140px; }
-.admin-filter-bar select { min-width: 150px; }
+/* Replace your existing filter styles with this */
+
+.admin-filter-bar {
+  margin: 8px 0 12px;
+}
+
+/* Grid: equal-width controls that fill the row, wrap as needed */
+.admin-filter-bar .filter-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  align-items: center;
+}
+
+/* Make controls fill their grid cell */
+.admin-filter-bar .filter-row > * {
+  width: 100%;
+  min-width: 0; /* prevent intrinsic min-width from fighting the grid */
+}
+
+/* Keep buttons natural size and align the last button to the right */
+.admin-filter-bar .filter-row button {
+  width: auto;
+  justify-self: end; /* remove if you don't want it right-aligned */
+}
+
+/* (Optional) If you still have old rules elsewhere, neutralize them here */
+.admin-filter-bar input[type="search"],
+.admin-filter-bar input[type="date"],
+.admin-filter-bar select {
+  min-width: 0;
+}
