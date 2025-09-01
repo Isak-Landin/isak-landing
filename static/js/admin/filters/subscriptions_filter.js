@@ -90,4 +90,42 @@
       const has = s.vps_id != null;
       if (has !== c.has_vps) return false;
     }
-    if
+    if (c.vps_ready !== null) {
+      const ready = !!s.vps_is_ready || String(s.vps_provisioning_status || '').toLowerCase() === 'ready';
+      if (ready !== c.vps_ready) return false;
+    }
+    return true;
+    }
+
+  function filterData(data) {
+    const crit = criteriaFromUI();
+    const src = Array.isArray(data?.subscriptions) ? data.subscriptions : [];
+    const filtered = src.filter(s => matches(s, crit));
+    return Object.assign({}, data, { subscriptions: filtered });
+  }
+
+  function requestRender() {
+    const base = window.__AdminBaseRender?.[NS];
+    const allData = DataCache.get();
+    if (typeof base === 'function' && allData) base(filterData(allData));
+  }
+
+  function wrapRenderer() {
+    window.__AdminBaseRender = window.__AdminBaseRender || {};
+    const tryWrap = () => {
+      const base = window.AdminRender && window.AdminRender[NS];
+      if (typeof base === 'function') {
+        window.__AdminBaseRender[NS] = base;
+        window.AdminRender[NS] = (data) => {
+          DataCache.set(data);
+          buildToolbar();
+          base(filterData(data));
+        };
+      } else setTimeout(tryWrap, 50);
+    };
+    tryWrap();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wrapRenderer);
+  else wrapRenderer();
+})();
