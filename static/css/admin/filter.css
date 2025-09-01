@@ -1,32 +1,128 @@
-/* Replace your existing filter styles with this */
+/* ===========================
+   Admin Filter Bar — Full Replace
+   =========================== */
 
 .admin-filter-bar {
-  margin: 8px 0 12px;
+  --af-bg: #0f1422;
+  --af-surface: #131a2c;
+  --af-border: #263145;
+  --af-input-bg: #0c1220;
+  --af-input-border: #2a3a55;
+  --af-text: #e7eefc;
+  --af-muted: #98a6c7;
+  --af-accent: #69a7ff;
+  --af-accent-weak: rgba(105, 167, 255, 0.25);
+
+  background: var(--af-bg);
+  border: 1px solid var(--af-border);
+  border-radius: 12px;
+  padding: 12px;
+  margin: 12px 0 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  color: var(--af-text);
 }
 
 /* Grid: equal-width controls that fill the row, wrap as needed */
 .admin-filter-bar .filter-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 12px;
   align-items: center;
 }
 
-/* Make controls fill their grid cell */
+/* Controls fill their grid cell */
 .admin-filter-bar .filter-row > * {
   width: 100%;
   min-width: 0; /* prevent intrinsic min-width from fighting the grid */
 }
 
-/* Keep buttons natural size and align the last button to the right */
-.admin-filter-bar .filter-row button {
-  width: auto;
-  justify-self: end; /* remove if you don't want it right-aligned */
+/* Inputs & selects — unified look */
+.admin-filter-bar input,
+.admin-filter-bar select,
+.admin-filter-bar button {
+  font: inherit;
+  color: var(--af-text);
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--af-input-border);
+  background: var(--af-input-bg);
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
 }
 
-/* (Optional) If you still have old rules elsewhere, neutralize them here */
-.admin-filter-bar input[type="search"],
-.admin-filter-bar input[type="date"],
+/* Placeholder / muted text */
+.admin-filter-bar ::placeholder { color: var(--af-muted); opacity: 1; }
+.admin-filter-bar :-ms-input-placeholder { color: var(--af-muted); }      /* IE */
+.admin-filter-bar ::-ms-input-placeholder { color: var(--af-muted); }     /* Edge Legacy */
+
+/* Focus ring */
+.admin-filter-bar input:focus,
+.admin-filter-bar select:focus {
+  border-color: var(--af-accent);
+  box-shadow: 0 0 0 2px var(--af-accent-weak);
+}
+
+/* Hover */
+.admin-filter-bar input:hover,
+.admin-filter-bar select:hover {
+  border-color: #3a4e72;
+}
+
+/* Select arrow (custom) */
 .admin-filter-bar select {
-  min-width: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 36px;
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2398a6c7' viewBox='0 0 16 16'><path d='M4 6l4 4 4-4'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+/* Date inputs in dark mode */
+.admin-filter-bar input[type="date"] {
+  color-scheme: dark;
+}
+.admin-filter-bar input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.8);
+  opacity: 0.9;
+}
+
+/* Number input — remove spin buttons for a cleaner look (optional) */
+.admin-filter-bar input[type="number"]::-webkit-outer-spin-button,
+.admin-filter-bar input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.admin-filter-bar input[type="number"] { -moz-appearance: textfield; }
+
+/* Clear button: ghost style, sits at the far right of the grid row */
+.admin-filter-bar .filter-row button {
+  background: transparent;
+  border-color: var(--af-border);
+  color: var(--af-text);
+  width: auto;                 /* don’t stretch like inputs */
+  justify-self: end;           /* push to the right edge */
+  padding: 8px 14px;
+  cursor: pointer;
+}
+.admin-filter-bar .filter-row button:hover {
+  background: var(--af-surface);
+  border-color: #3a4e72;
+}
+.admin-filter-bar .filter-row button:focus {
+  border-color: var(--af-accent);
+  box-shadow: 0 0 0 2px var(--af-accent-weak);
+}
+
+/* Compact tweaks for narrow screens */
+@media (max-width: 560px) {
+  .admin-filter-bar .filter-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .admin-filter-bar .filter-row button {
+    grid-column: 2 / 3;        /* keep on the right in 2-col layout */
+  }
 }
