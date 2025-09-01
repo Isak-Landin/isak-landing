@@ -97,17 +97,45 @@ def dashboard():
 @login_required
 @admin_required
 def get_admin_dashboard_data():
-    # Users (with VPS count)
-    rows = (
-        db.session.query(User.id, User.email, func.count(VPS.id))
+    # USERS — include profile + lifecycle fields and VPS count
+    user_rows = (
+        db.session.query(
+            User.id,
+            User.email,
+            User.first_name,
+            User.last_name,
+            User.phone,
+            User.is_active,
+            User.created_at,
+            User.last_login_at,
+            func.count(VPS.id).label("vps_count"),
+        )
         .outerjoin(VPS, VPS.user_id == User.id)
-        .group_by(User.id, User.email)
-        .order_by(User.email.asc())
+        .group_by(
+            User.id, User.email, User.first_name, User.last_name,
+            User.phone, User.is_active, User.created_at, User.last_login_at
+        )
+        .order_by(User.created_at.desc())
         .all()
     )
-    users = [{"id": _id, "email": email, "vps_count": int(cnt)} for (_id, email, cnt) in rows]
 
-    # VPS — absolutely no filters; OUTER JOIN to avoid dropping rows with missing user
+    def dtiso(x):
+        return x.isoformat() if x is not None else None
+
+    users = [{
+        "id": uid,
+        "email": email or "",
+        "first_name": fn or "",
+        "last_name": ln or "",
+        "full_name": (" ".join([p for p in [(fn or "").strip(), (ln or "").strip()] if p]) or "").strip(),
+        "phone": phone or "",
+        "is_active": bool(active),
+        "created_at": dtiso(created),
+        "last_login_at": dtiso(last_login),
+        "vps_count": int(vcnt or 0),
+    } for (uid, email, fn, ln, phone, active, created, last_login, vcnt) in user_rows]
+
+    # VPS — unchanged (admins see everything)
     vps_rows = (
         db.session.query(
             VPS.id,
@@ -138,7 +166,7 @@ def get_admin_dashboard_data():
         "owner_email": owner or "",
     } for (vid, h, ip, os, cpu, ram, status, pstat, ready, owner) in vps_rows]
 
-    # Subscriptions + VPS (LEFT OUTER JOIN so admins see everything)
+    # SUBSCRIPTIONS + VPS (for "VPS status" column)
     subs = (
         db.session.query(
             VpsSubscription.id,
@@ -168,7 +196,6 @@ def get_admin_dashboard_data():
         "status": status,
         "price": f"{(amount or 0):.2f} {currency.upper()}",
         "stripe_subscription_id": ssub,
-        # NEW: fields used by the “VPS status” column in the Subscriptions table
         "vps_id": vps_id,
         "vps_status": vps_status,
         "vps_provisioning_status": vps_prov,
