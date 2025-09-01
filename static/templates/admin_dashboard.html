@@ -6,6 +6,11 @@
 {% block hero_back_href %}{{ url_for('admin_blueprint.dashboard') }}{% endblock %}
 {% block hero_back_label %}&larr; Admin Panel Home{% endblock %}
 {% block hero_title %}Admin Overview{% endblock %}
+
+{% block extra_css %} {{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin/filter.css') }}">
+{% endblock %}
+
 {% block hero_actions %}{% endblock %}
 {% block hero_meta %}
   <span class="avatar-emoji" aria-hidden="true">🛡️</span>

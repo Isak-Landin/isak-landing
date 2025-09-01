@@ -1,0 +1,5 @@
+.admin-filter-bar { display:flex; gap:12px; align-items:center; margin:8px 0 12px; flex-wrap:wrap; }
+.admin-filter-bar .filter-row { display:flex; gap:8px; flex-wrap:wrap; }
+.admin-filter-bar input[type="search"] { min-width: 220px; }
+.admin-filter-bar input[type="date"] { min-width: 140px; }
+.admin-filter-bar select { min-width: 150px; }
