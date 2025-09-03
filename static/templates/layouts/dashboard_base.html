@@ -52,7 +52,7 @@
             >
               🛒 Store</a></li>
           <li>
-            <a href="{{ url_for('vps_blueprint.orders_page', mode='all') }}">Purchases</a>
+            <a href="{{ url_for('vps_blueprint.orders_page', mode='all') }}"
               class="{% if request.endpoint == 'users_blueprint.order_history' %}is-active{% endif %}"
             >
               📦 Purchases
