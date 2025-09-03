@@ -37,7 +37,6 @@ def checkout():
 
 
 @store_blueprint.route('/order-history', methods=['GET'])
-def order_history():
-    # Here you would typically fetch the user's order history from a database
-    # For demonstration, we'll just return a placeholder template
-    return render_template('order_history.html')
+def order_history_redirect():
+    # Permanent redirect to canonical page with a safe default
+    return redirect(url_for('vps_blueprint.orders_page', mode='all'), code=308)

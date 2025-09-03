@@ -52,7 +52,7 @@
             >
               🛒 Store</a></li>
           <li>
-            <a href="{{ url_for('store_blueprint.order_history') }}"
+            <a href="{{ url_for('vps_blueprint.orders_page', mode='all') }}">Purchases</a>
               class="{% if request.endpoint == 'users_blueprint.order_history' %}is-active{% endif %}"
             >
               📦 Purchases
@@ -82,7 +82,7 @@
       <div class="dash-container">
         <nav class="dash-footer-links" aria-label="User quick links">
           <a href="{{ url_for('users_blueprint.dashboard') }}">Home</a>
-          <a href="{{ url_for('store_blueprint.order_history') }}">Orders</a>
+          <a href="{{ url_for('vps_blueprint.orders_page', mode='all') }}">Orders</a>
           <a href="{{ url_for('chat_blueprint.chat_redirect') }}">Support</a>
           <a href="{{ url_for('store_blueprint.store') }}">Store</a>
         </nav>
