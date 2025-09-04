@@ -236,7 +236,7 @@
   box-shadow: 0 10px 20px rgba(0,0,0,.3);
 }
 .card-item .emoji { font-size: 1.1rem; margin-top: 2px; }
-.card-item .text { display: flex; flex-direction: column; gap: 6px; }
+.card-item .text { display: flex; flex-direction: column; gap: 6px; text-align: left; }
 .card-item .text .title { font-size: .95rem; color: var(--text); }
 .card-item .text .sub { font-size: .85rem; color: var(--text-sub); }
 .card-item .spacer { margin-left: auto; }
