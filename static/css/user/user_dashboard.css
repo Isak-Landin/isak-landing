@@ -62,8 +62,6 @@
   border-radius: var(--ad-radius-sm, 10px);
   padding: 10px 12px;
   background: rgba(255,255,255,.02);
-
-  text-align: left;
 }
 .card-item .emoji{
   flex: 0 0 auto; font-size: 18px; line-height: 1.2;
@@ -72,6 +70,7 @@
 .card-item .text{
   color: var(--ad-text, #e8ecf6);
   line-height: 1.6;
+  text-align: left;
 }
 .card-item .sub{
   color: var(--ad-text-dim, #b9c2da);
