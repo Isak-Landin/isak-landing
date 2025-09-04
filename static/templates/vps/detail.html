@@ -1,0 +1,76 @@
+{# templates/vps/detail.html #}
+{% extends "layouts/dashboard_content_base.html" %}
+
+{% block page_title %}VPS {{ vps.hostname or ('#' ~ vps.id) }}{% endblock %}
+
+{% block hero_title %}{{ vps.hostname or 'Your VPS' }}{% endblock %}
+{% block hero_actions %}{% endblock %}
+{% block hero_meta %}
+  <div class="hero-text">
+    {{ vps.ip_address or 'Pending IP' }} ·
+    {{ vps.os or 'OS TBA' }} ·
+    Status: {{ vps.status|capitalize }} ({{ vps.provisioning_status }})
+    {% if vps.is_ready %} · ✅ Ready{% endif %}
+  </div>
+{% endblock %}
+
+{% block page_content %}
+  <div class="dashboard-summary">
+    <div class="card">🖥️ <strong>{{ vps.hostname or ('vps-' ~ vps.id) }}</strong></div>
+    <div class="card">📍 {{ vps.location or vps.region or '—' }}</div>
+    <div class="card">⚙️ {{ vps.cpu_cores or '—' }} cores • {{ vps.ram_mb or '—' }} MB • {{ vps.disk_gb or '—' }} GB</div>
+  </div>
+
+  <div class="card-panel">
+    <div class="card-head">
+      <h3 class="title">Instance details</h3>
+      <div class="meta">ID: {{ vps.id }}</div>
+    </div>
+
+    <ul class="card-list">
+      <li class="card-item">
+        <span class="emoji">🔗</span>
+        <span class="text"><strong>IP Address</strong><br><span class="sub">{{ vps.ip_address or 'Pending' }}</span></span>
+        <span class="badge {{ 'ready' if vps.is_ready else 'pending' }}" style="margin-left:auto">
+          {{ 'ready' if vps.is_ready else vps.provisioning_status }}
+        </span>
+      </li>
+
+      <li class="card-item">
+        <span class="emoji">🧰</span>
+        <span class="text"><strong>Operating system</strong><br><span class="sub">{{ vps.os or '—' }}</span></span>
+      </li>
+
+      <li class="card-item">
+        <span class="emoji">🧮</span>
+        <span class="text"><strong>Resources</strong><br>
+          <span class="sub">CPU: {{ vps.cpu_cores or '—' }} • RAM: {{ vps.ram_mb or '—' }}MB • Disk: {{ vps.disk_gb or '—' }}GB</span>
+        </span>
+      </li>
+
+      <li class="card-item">
+        <span class="emoji">🏷️</span>
+        <span class="text"><strong>Provider</strong><br><span class="sub">{{ vps.provider or '—' }}</span></span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card-panel">
+    <div class="card-head">
+      <h3 class="title">Controls</h3>
+      <div class="meta">coming soon</div>
+    </div>
+
+    <div class="actions-row">
+      <button class="button" disabled title="Coming soon">Restart</button>
+      <button class="button" disabled title="Coming soon">Shut down</button>
+      <button class="button danger" disabled title="Coming soon">Reset</button>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_css %}{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user/user_dashboard.css') }}">
+{% endblock %}
+
+{% block extra_js %}{{ super() }}{% endblock %}

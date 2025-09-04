@@ -46,10 +46,26 @@
               'Ready' if is_ready
               else (server.provisioning_status|capitalize if server.provisioning_status else 'Pending') %}
 
-        <li class="card-row">
+        {# User detail URL (string literal path so we don't depend on endpoint names) #}
+        {% set detail_url = '/vps/instance/' ~ server.id %}
+
+        <li
+          class="card-row"
+          data-href="{{ detail_url }}"
+          role="link"
+          tabindex="0"
+          aria-label="Open {{ server.hostname }} details"
+        >
           <span class="emoji" aria-hidden="true">🖥️</span>
           <span class="text">
-            <span class="title"><strong>{{ server.hostname }}</strong> — {{ server.ip_address }}</span>
+            <span class="title">
+              <strong>
+                <a class="card-link" href="{{ detail_url }}">
+                  {{ server.hostname }}
+                </a>
+              </strong>
+              — {{ server.ip_address }}
+            </span>
             <span class="sub">OS: {{ server.os }} · CPU: {{ server.cpu_cores }} cores · RAM: {{ server.ram_mb }}MB</span>
           </span>
           <span class="spacer"></span>

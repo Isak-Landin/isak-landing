@@ -5,3 +5,4 @@ from . import cancel          # noqa: F401
 from . import billing_portal  # noqa: F401
 from . import webhook         # noqa: F401
 from . import orders
+from . import detail
