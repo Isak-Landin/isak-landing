@@ -86,27 +86,6 @@
   box-shadow: 0 12px 24px rgba(0,0,0,.35);
 }
 
-/* Make full card behave like a link when we add role="link" + tabindex */
-.vps-list .card-row[role="link"] { cursor: pointer; }
-.vps-list .card-row[role="link"]:focus-visible {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(111,177,255,.25), var(--card-shadow);
-  transform: translateY(-1px);
-}
-
-/* Link inside the card (hostname) */
-.split-list .card-row .card-link {
-  color: inherit;
-  text-decoration: none;
-}
-.split-list .card-row .card-link:hover,
-.split-list .card-row:hover .card-link,
-.split-list .card-row .card-link:focus-visible {
-  text-decoration: underline;
-  outline: none;
-}
-
 .split-list .emoji {
   font-size: 1.25rem;
   line-height: 1;
@@ -229,8 +208,6 @@
   padding: 12px 14px;
   color: var(--text);
   transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-
-  text-align: left;
 }
 .card-item:hover {
   transform: translateY(-1px);
@@ -242,14 +219,6 @@
 .card-item .text .title { font-size: .95rem; color: var(--text); }
 .card-item .text .sub { font-size: .85rem; color: var(--text-sub); }
 .card-item .spacer { margin-left: auto; }
-
-/* Motion preferences */
-@media (prefers-reduced-motion: reduce) {
-  .split-list .card-row,
-  .card-item {
-    transition: none;
-  }
-}
 
 /* Small responsiveness tweak */
 @media (max-width: 480px) {

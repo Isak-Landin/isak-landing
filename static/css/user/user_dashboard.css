@@ -62,6 +62,8 @@
   border-radius: var(--ad-radius-sm, 10px);
   padding: 10px 12px;
   background: rgba(255,255,255,.02);
+
+  text-align: left;
 }
 .card-item .emoji{
   flex: 0 0 auto; font-size: 18px; line-height: 1.2;
