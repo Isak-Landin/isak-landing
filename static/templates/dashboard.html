@@ -163,4 +163,31 @@
 {% block extra_css %}{{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}?v=2">
 {% endblock %}
-{% block extra_js %}{{ super() }}{% endblock %}
+{% block extra_js %}{{ super() }}
+<script>
+  (function () {
+    const list = document.querySelector('.vps-list');
+    if (!list) return;
+
+    // Click on the card (but let normal links work)
+    list.addEventListener('click', function (e) {
+      const li = e.target.closest('.card-row');
+      if (!li) return;
+      if (e.target.closest('a')) return; // allow native link clicks
+      const href = li.getAttribute('data-href');
+      if (href) window.location.href = href;
+    });
+
+    // Keyboard accessibility: Enter or Space on the row
+    list.addEventListener('keydown', function (e) {
+      const li = e.target.closest('.card-row[tabindex]');
+      if (!li) return;
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        const href = li.getAttribute('data-href');
+        if (href) window.location.href = href;
+      }
+    });
+  })();
+</script>
+{% endblock %}
