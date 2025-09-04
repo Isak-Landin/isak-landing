@@ -70,7 +70,7 @@
 .card-item .text{
   color: var(--ad-text, #e8ecf6);
   line-height: 1.6;
-  text-align: left;
+  text-align: left !important;
 }
 .card-item .sub{
   color: var(--ad-text-dim, #b9c2da);
