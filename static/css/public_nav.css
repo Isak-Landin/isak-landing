@@ -190,7 +190,7 @@
 .nav-actions-mobile .btn{ width:100%; justify-content:center; }
 
 @media (max-width: 860px){
-  .nav-row{ grid-template-columns:auto auto auto; min-height:64px; }
+  .nav-row{ grid-template-columns:auto auto auto; min-height:64px; display: flex; }
   .nav-toggle{ display:block; margin-left:auto; }
   .nav-actions{ display:none; } /* desktop actions hidden */
   .nav-links{
