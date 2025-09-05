@@ -7,6 +7,15 @@
       content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>{% block title %}Your Dashboard{% endblock %}</title>
 
+    {# Favicons (match public_base.html) #}
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon_io/favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/favicon_io/apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='images/favicon_io/site.webmanifest') }}">
+    <link rel="mask-icon" href="{{ url_for('static', filename='images/favicon_io/safari-pinned-tab.svg') }}" color="#3c8cff">
+    <meta name="theme-color" content="#0b0f19">
+    <meta name="msapplication-TileColor" content="#0b0f19">
+    <meta name="msapplication-TileImage" content="{{ url_for('static', filename='images/favicon_io/android-chrome-192x192.png') }}">
+
     {# Shared dark shell + components (same files as admin) #}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_shell.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_components.css') }}">
@@ -41,27 +50,25 @@
         <ul class="nav-links">
           <li>
             <a href="{{ url_for('users_blueprint.dashboard') }}"
-               class="{% if request.endpoint == 'users_blueprint.dashboard' %}is-active{% endif %}"
-            >
+               class="{% if request.endpoint == 'users_blueprint.dashboard' %}is-active{% endif %}">
                🖥️ My Servers
             </a>
           </li>
           <li>
             <a href="{{ url_for('store_blueprint.store') }}"
-              class="{% if request.endpoint == 'users_blueprint.store' %}is-active{% endif %}"
-            >
-              🛒 Store</a></li>
+               class="{% if request.endpoint == 'users_blueprint.store' %}is-active{% endif %}">
+              🛒 Store
+            </a>
+          </li>
           <li>
             <a href="{{ url_for('vps_blueprint.orders_page', mode='all') }}"
-              class="{% if request.endpoint == 'users_blueprint.order_history' %}is-active{% endif %}"
-            >
+               class="{% if request.endpoint == 'users_blueprint.order_history' %}is-active{% endif %}">
               📦 Purchases
             </a>
           </li>
           <li>
             <a href="{{ url_for('chat_blueprint.chat_redirect') }}"
-              class="{% if request.endpoint == 'users_blueprint.chat_redirect' %}is-active{% endif %}"
-            >
+               class="{% if request.endpoint == 'users_blueprint.chat_redirect' %}is-active{% endif %}">
               💬 Chat
             </a>
           </li>
