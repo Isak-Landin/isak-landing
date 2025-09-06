@@ -15,7 +15,6 @@
       credentials: 'same-origin',
       body: JSON.stringify({
         subscription_id: Number(subId),
-        hostname: `vps-${subId}`,
         os: 'Ubuntu 24.04'
       })
     });

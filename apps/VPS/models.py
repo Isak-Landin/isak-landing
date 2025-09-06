@@ -4,6 +4,8 @@ from extensions import db
 from datetime import datetime
 from sqlalchemy.dialects.postgresql import JSONB  # if not on Postgres, use db.JSON instead
 
+import re, random, secrets
+
 
 class BillingRecord(db.Model):
     __tablename__ = 'billing_records'
@@ -91,6 +93,64 @@ class VPS(db.Model):
     # Relationships
     user = db.relationship('User', backref=db.backref('vps_list', lazy=True))
     subscription = db.relationship('VpsSubscription', backref=db.backref('vps', uselist=False))
+
+    # -------- Friendly auto-hostname generator --------
+    _HNX_ADJ = [
+        "swift", "nova", "orbit", "steady", "brisk",
+        "aurora", "ember", "granite", "lumen", "vivid"
+    ]
+    _HNX_NOUN = [
+        "atlas", "phoenix", "comet", "lynx", "vertex",
+        "nebula", "falcon", "quartz", "drift", "echo"
+    ]
+
+    @classmethod
+    def _slugify(cls, s: str) -> str:
+        s = (s or "").lower().strip().replace("_", "-").replace(" ", "-")
+        return re.sub(r"[^a-z0-9-]", "", s)
+
+    @classmethod
+    def generate_hostname(
+        cls,
+        user=None,
+        region: str | None = None,
+        plan_name: str | None = None,
+        prefix: str = "hnx"
+    ) -> str:
+        """
+        Example: hnx-eu-nova-lynx-7f3a  (<= ~24 chars)
+        Ensures uniqueness by DB check; tries a few variants if needed.
+        """
+        reg = cls._slugify((region or "")[:5])  # short region code if present
+        plan = cls._slugify((plan_name or "")[:8])
+
+        # Compose a readable base
+        def base():
+            a = random.choice(cls._HNX_ADJ)
+            n = random.choice(cls._HNX_NOUN)
+            parts = [prefix]
+            if reg:
+                parts.append(reg)
+            parts.extend([a, n])
+            return "-".join(p for p in parts if p)
+
+        # Try up to N variants with a short token
+        for _ in range(24):
+            token = secrets.token_hex(2)  # 4-hex suffix
+            candidate = f"{base()}-{token}"
+
+            # Soft cap on length; trim if someone uses a long prefix/region/plan
+            if len(candidate) > 32:
+                candidate = candidate[:32].rstrip("-")
+
+            # Ensure unique in DB
+            exists = cls.query.filter_by(hostname=candidate).first()
+            if not exists:
+                return candidate
+
+        # Fallback (extremely unlikely to happen)
+        return f"{prefix}-{secrets.token_hex(3)}"
+
 
 
 class VPSPlan(db.Model):

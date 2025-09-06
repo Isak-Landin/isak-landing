@@ -18,6 +18,8 @@ from apps.VPS.models import VPS, VpsSubscription, VPSPlan
 # --- NEW: Billing subscriptions API ---
 from apps.VPS.models import BillingRecord
 
+from datetime import datetime
+
 admin_blueprint = Blueprint("admin_blueprint", __name__, url_prefix="/admin")
 
 
@@ -215,19 +217,22 @@ def get_admin_dashboard_data():
 @admin_required
 @admin_2fa_required
 def provision_vps_from_subscription():
+    from sqlalchemy import exists
+    from apps.VPS.models import VPS, VpsSubscription, VPSPlan
+
     data = request.get_json(silent=True) or {}
     sub_id = data.get("subscription_id")
-    hostname = data.get("hostname") or ""
-    os_choice = data.get("os") or "Ubuntu 24.04"
+    hostname = (data.get("hostname") or "").strip()  # OPTIONAL now
+    os_choice = (data.get("os") or "Ubuntu 24.04").strip()
 
-    if not sub_id or not hostname:
-        return jsonify({"ok": False, "error": "subscription_id and hostname are required"}), 400
+    if not sub_id:
+        return jsonify({"ok": False, "error": "subscription_id is required"}), 400
 
     sub = VpsSubscription.query.filter_by(id=sub_id).first()
     if not sub:
         return jsonify({"ok": False, "error": "Subscription not found"}), 404
 
-    # Idempotency: one VPS per subscription (your model has unique=True on subscription_id)
+    # Idempotency: one VPS per subscription (subscription_id is unique in your model)
     if sub.vps:
         return jsonify({"ok": True, "idempotent": True, "vps_id": sub.vps.id})
 
@@ -239,6 +244,58 @@ def provision_vps_from_subscription():
     user = sub.user
     if not plan or not user:
         return jsonify({"ok": False, "error": "Subscription missing user/plan link"}), 409
+
+    # ---- hostname generation (if blank) + uniqueness guard -------------------
+    def _slug(s: str) -> str:
+        import re
+        s = (s or "").lower().strip()
+        s = re.sub(r"[^a-z0-9\-]+", "-", s)
+        s = re.sub(r"-{2,}", "-", s).strip("-")
+        return s or "vps"
+
+    def _suggest_base():
+        # try to use your model’s generator if you added one, otherwise build a simple base
+        gen = getattr(VPS, "generate_hostname", None) or getattr(VPS, "suggest_hostname", None)
+        if callable(gen):
+            try:
+                return _slug(gen(user=user, plan=plan, session=db.session))
+            except TypeError:
+                # fall back if signature differs
+                try:
+                    return _slug(gen(user=user, plan=plan))
+                except Exception:
+                    pass
+        email_local = (user.email or "user").split("@", 1)[0]
+        plan_part = (getattr(plan, "name", None) or "vps")
+        return _slug(f"{email_local}-{plan_part}")
+
+    def _ensure_unique(name_base: str) -> str:
+        """Try base, then base-2..-9, then base-<4hex> to guarantee uniqueness."""
+        base = name_base[:50]  # keep some margin for suffix (<63 chars total)
+        # 1) try exact base
+        if not db.session.query(exists().where(VPS.hostname == base)).scalar():
+            return base
+        # 2) try short numeric suffixes
+        for i in range(2, 10):
+            cand = f"{base}-{i}"
+            if not db.session.query(exists().where(VPS.hostname == cand)).scalar():
+                return cand
+        # 3) random short hex
+        import secrets
+        for _ in range(10):
+            cand = f"{base}-{secrets.token_hex(2)}"
+            if not db.session.query(exists().where(VPS.hostname == cand)).scalar():
+                return cand
+        # extremely unlikely fallback
+        return f"{base}-{int(datetime.utcnow().timestamp())}"
+
+    if not hostname:
+        hostname = _ensure_unique(_suggest_base())
+    else:
+        # if client passed a hostname, still ensure uniqueness (be kind to admins)
+        hostname = _ensure_unique(_slug(hostname))
+
+    # -------------------------------------------------------------------------
 
     vps = VPS(
         user_id=user.id,

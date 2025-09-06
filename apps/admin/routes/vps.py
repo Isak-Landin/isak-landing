@@ -58,14 +58,16 @@ def admin_vps_save(vps_id):
     return redirect(url_for("admin_blueprint.admin_vps_detail", vps_id=vps.id))
 
 
+# apps/admin/routes/vps.py  (only the route below is a replacement)
 @admin_blueprint.route("/vps/<int:vps_id>/provision", methods=["POST"])
 @login_required
 @admin_required
 @admin_2fa_required
 def admin_vps_provision(vps_id):
+    from sqlalchemy import exists
     vps = VPS.query.get_or_404(vps_id)
 
-    # Optional: accept same fields as /save for one-click “Save & Provision”
+    # Accept same editable fields (optional)
     for key, val in request.form.items():
         if key in {
             "hostname", "ip_address", "location", "region", "os",
@@ -83,6 +85,43 @@ def admin_vps_provision(vps_id):
     if "ram_mb"    in request.form: vps.ram_mb    = to_int(request.form.get("ram_mb"))
     if "disk_gb"   in request.form: vps.disk_gb   = to_int(request.form.get("disk_gb"))
 
+    # ---- ensure hostname exists + unique ------------------------------------
+    import re, secrets
+    def _slug(s: str) -> str:
+        s = (s or "").lower().strip()
+        s = re.sub(r"[^a-z0-9\-]+", "-", s)
+        s = re.sub(r"-{2,}", "-", s).strip("-")
+        return s or "vps"
+
+    def _ensure_unique(name_base: str) -> str:
+        base = name_base[:50]
+        if not db.session.query(exists().where(VPS.hostname == base)).scalar():
+            return base
+        for i in range(2, 10):
+            cand = f"{base}-{i}"
+            if not db.session.query(exists().where(VPS.hostname == cand)).scalar():
+                return cand
+        for _ in range(10):
+            cand = f"{base}-{secrets.token_hex(2)}"
+            if not db.session.query(exists().where(VPS.hostname == cand)).scalar():
+                return cand
+        return f"{base}-{int(datetime.utcnow().timestamp())}"
+
+    if not (vps.hostname or "").strip():
+        gen = getattr(VPS, "generate_hostname", None) or getattr(VPS, "suggest_hostname", None)
+        if callable(gen):
+            try:
+                base = gen(user=vps.user, plan=getattr(vps, "plan", None), session=db.session)
+            except TypeError:
+                base = gen(user=vps.user, plan=getattr(vps, "plan", None))
+        else:
+            email_local = (vps.user.email if vps.user and vps.user.email else "user").split("@", 1)[0]
+            base = f"{email_local}-vps"
+        vps.hostname = _ensure_unique(_slug(base))
+    else:
+        vps.hostname = _ensure_unique(_slug(vps.hostname))
+    # -------------------------------------------------------------------------
+
     # Flip to active/ready
     vps.status = "active"
     vps.provisioning_status = "ready"
@@ -92,3 +131,4 @@ def admin_vps_provision(vps_id):
     db.session.commit()
     flash("VPS provisioned and set to active.", "success")
     return redirect(url_for("admin_blueprint.admin_vps_detail", vps_id=vps.id))
+
