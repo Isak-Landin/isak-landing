@@ -79,11 +79,11 @@ def admin_vps_save(vps_id):
     if errors:
         for e in errors:
             flash(e, "error")
-        return redirect(url_for("admin_vps_detail", vps_id=vps.id))
+        return redirect(url_for("admin_blueprint.admin_vps_detail", vps_id=vps.id))
 
     db.session.commit()
     flash("VPS changes saved.", "success")
-    return redirect(url_for("admin_vps_detail", vps_id=vps.id))
+    return redirect(url_for("admin_blueprint.admin_vps_detail", vps_id=vps.id))
 
 
 @admin_blueprint.route("/vps/<int:vps_id>/provision", methods=["POST"])
@@ -120,7 +120,7 @@ def admin_vps_provision(vps_id):
     if errors:
         for e in errors:
             flash(e, "error")
-        return redirect(url_for("admin_vps_detail", vps_id=vps.id))
+        return redirect(url_for("admin_blueprint.admin_vps_detail", vps_id=vps.id))
 
     # Flip to active/ready
     vps.status = "active"
@@ -130,4 +130,4 @@ def admin_vps_provision(vps_id):
 
     db.session.commit()
     flash("VPS provisioned and set to active.", "success")
-    return redirect(url_for("admin_vps_detail", vps_id=vps.id))
+    return redirect(url_for("admin_blueprint.admin_vps_detail", vps_id=vps.id))

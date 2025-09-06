@@ -207,10 +207,10 @@
 
         <div class="ud-actions">
           <button class="ud-btn ud-btn--primary" type="submit">💾 Save changes</button>
-          <button class="ud-btn" formaction="{{ url_for('admin_vps_provision', vps_id=vps.id) }}" formmethod="post">
+          <button class="ud-btn" formaction="{{ url_for('admin_blueprint.admin_vps_provision', vps_id=vps.id) }}" formmethod="post">
             ⚙️ Save & Provision
           </button>
-          <a class="ud-btn ud-btn--ghost" href="{{ url_for('admin_vps_detail', vps_id=vps.id) }}">Cancel</a>
+          <a class="ud-btn ud-btn--ghost" href="{{ url_for('admin_blueprint.admin_vps_detail', vps_id=vps.id) }}">Cancel</a>
         </div>
       </form>
     </div>
