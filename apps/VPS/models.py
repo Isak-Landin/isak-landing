@@ -133,6 +133,10 @@ class VPS(db.Model):
     provisioning_status = db.Column(db.String(20), nullable=False, default="pending")
     notes = db.Column(db.String(1000))
 
+    # NEW: app-enforced required fields for access (kept nullable in DB for migration safety)
+    default_username = db.Column(db.String(64))
+    default_password = db.Column(db.String(128))
+
     # Relationships
     user = db.relationship("User", backref=db.backref("vps_list", lazy=True))
     subscription = db.relationship("VpsSubscription", backref=db.backref("vps", uselist=False))
