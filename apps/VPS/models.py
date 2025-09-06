@@ -1,5 +1,6 @@
 # apps/VPS/models.py
-
+# Secure for python -3.9
+from __future__ import annotations
 from extensions import db
 from datetime import datetime
 from sqlalchemy.dialects.postgresql import JSONB  # if not on Postgres, use db.JSON instead
