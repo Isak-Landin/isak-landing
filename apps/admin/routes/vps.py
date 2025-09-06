@@ -1,3 +1,5 @@
+# Secure for python -3.9
+from __future__ import annotations
 # apps/admin/routes/vps.py
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
