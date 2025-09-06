@@ -199,6 +199,7 @@
   gap: 10px;
 }
 .card-item {
+    text-align: left;
   display: flex;
   align-items: flex-start;
   gap: 12px;
