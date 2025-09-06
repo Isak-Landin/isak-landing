@@ -1,76 +1,194 @@
 {# templates/vps/detail.html #}
 {% extends "layouts/dashboard_content_base.html" %}
 
-{% block page_title %}VPS {{ vps.hostname or ('#' ~ vps.id) }}{% endblock %}
+{% block page_title %}VPS — {{ vps.hostname }}{% endblock %}
 
-{% block hero_title %}{{ vps.hostname or 'Your VPS' }}{% endblock %}
+{% block hero_title %}{{ vps.hostname }}{% endblock %}
 {% block hero_actions %}{% endblock %}
 {% block hero_meta %}
-  <div class="hero-text">
-    {{ vps.ip_address or 'Pending IP' }} ·
-    {{ vps.os or 'OS TBA' }} ·
-    Status: {{ vps.status|capitalize }} ({{ vps.provisioning_status }})
-    {% if vps.is_ready %} · ✅ Ready{% endif %}
+  <div class="trust-strip">
+    <span class="trust-pill">🆔 #{{ vps.id }}</span>
+    {% if vps.ip_address %}
+      <span class="trust-pill">📡 {{ vps.ip_address }}</span>
+    {% endif %}
+    <span class="trust-pill">⚙️ {{ vps.os or 'OS: —' }}</span>
+    <span class="trust-pill">🔌 Status: {{ (vps.status or '—')|capitalize }}</span>
+    {% if vps.is_ready %}
+      <span class="trust-pill">✅ Ready</span>
+    {% else %}
+      <span class="trust-pill">⏳ {{ vps.provisioning_status or 'pending' }}</span>
+    {% endif %}
   </div>
 {% endblock %}
 
 {% block page_content %}
-  <div class="dashboard-summary">
-    <div class="card">🖥️ <strong>{{ vps.hostname or ('vps-' ~ vps.id) }}</strong></div>
-    <div class="card">📍 {{ vps.location or vps.region or '—' }}</div>
-    <div class="card">⚙️ {{ vps.cpu_cores or '—' }} cores • {{ vps.ram_mb or '—' }} MB • {{ vps.disk_gb or '—' }} GB</div>
-  </div>
+<div class="dashboard-page">
 
-  <div class="card-panel">
-    <div class="card-head">
-      <h3 class="title">Instance details</h3>
-      <div class="meta">ID: {{ vps.id }}</div>
-    </div>
+  <h2 class="section-title">Overview</h2>
+  <section class="card-panel" aria-labelledby="vps-overview">
+    <header class="card-head">
+      <h3 id="vps-overview" class="title">Snapshot</h3>
+    </header>
 
-    <ul class="card-list">
+    <ul class="card-list" role="list">
       <li class="card-item">
-        <span class="emoji">🔗</span>
-        <span class="text"><strong>IP Address</strong><br><span class="sub">{{ vps.ip_address or 'Pending' }}</span></span>
-        <span class="badge {{ 'ready' if vps.is_ready else 'pending' }}" style="margin-left:auto">
-          {{ 'ready' if vps.is_ready else vps.provisioning_status }}
+        <span class="emoji" aria-hidden="true">🖥️</span>
+        <span class="text">
+          <span class="title"><strong>Hostname</strong></span>
+          <span class="sub">{{ vps.hostname }}</span>
         </span>
       </li>
 
+      {% if vps.ip_address %}
       <li class="card-item">
-        <span class="emoji">🧰</span>
-        <span class="text"><strong>Operating system</strong><br><span class="sub">{{ vps.os or '—' }}</span></span>
+        <span class="emoji" aria-hidden="true">📡</span>
+        <span class="text">
+          <span class="title"><strong>IP Address</strong></span>
+          <span class="sub">{{ vps.ip_address }}</span>
+        </span>
       </li>
+      {% endif %}
 
       <li class="card-item">
-        <span class="emoji">🧮</span>
-        <span class="text"><strong>Resources</strong><br>
-          <span class="sub">CPU: {{ vps.cpu_cores or '—' }} • RAM: {{ vps.ram_mb or '—' }}MB • Disk: {{ vps.disk_gb or '—' }}GB</span>
+        <span class="emoji" aria-hidden="true">💿</span>
+        <span class="text">
+          <span class="title"><strong>System</strong></span>
+          <span class="sub">
+            {{ vps.os or '—' }}
+            {% if vps.cpu_cores %} · CPU: {{ vps.cpu_cores }} cores{% endif %}
+            {% if vps.ram_mb %} · RAM: {{ vps.ram_mb }} MB{% endif %}
+            {% if vps.disk_gb %} · Disk: {{ vps.disk_gb }} GB{% endif %}
+          </span>
         </span>
       </li>
 
+      {% if vps.location or vps.region %}
       <li class="card-item">
-        <span class="emoji">🏷️</span>
-        <span class="text"><strong>Provider</strong><br><span class="sub">{{ vps.provider or '—' }}</span></span>
+        <span class="emoji" aria-hidden="true">🌍</span>
+        <span class="text">
+          <span class="title"><strong>Location</strong></span>
+          <span class="sub">
+            {{ vps.location or '—' }}
+            {% if vps.region %} · Region: {{ vps.region }}{% endif %}
+          </span>
+        </span>
+      </li>
+      {% endif %}
+
+      <li class="card-item">
+        <span class="emoji" aria-hidden="true">📈</span>
+        <span class="text">
+          <span class="title"><strong>Status</strong></span>
+          <span class="sub">
+            {{ (vps.status or '—')|capitalize }}
+            {% if vps.provisioning_status %} · {{ vps.provisioning_status }}{% endif %}
+            {% if vps.is_ready %} · ready{% endif %}
+          </span>
+        </span>
       </li>
     </ul>
-  </div>
+  </section>
 
-  <div class="card-panel">
-    <div class="card-head">
-      <h3 class="title">Controls</h3>
-      <div class="meta">coming soon</div>
-    </div>
+  <h2 class="section-title" style="margin-top:18px;">Access credentials</h2>
+  <section class="card-panel" aria-labelledby="vps-credentials">
+    <header class="card-head">
+      <h3 id="vps-credentials" class="title">Default login</h3>
+      <div class="meta">Change these after first login.</div>
+    </header>
 
-    <div class="actions-row">
-      <button class="button" disabled title="Coming soon">Restart</button>
-      <button class="button" disabled title="Coming soon">Shut down</button>
-      <button class="button danger" disabled title="Coming soon">Reset</button>
-    </div>
-  </div>
+    <ul class="card-list" role="list">
+      <li class="card-item">
+        <span class="emoji" aria-hidden="true">👤</span>
+        <span class="text">
+          <span class="title"><strong>Username</strong></span>
+          <span class="sub" id="cred-username">
+            {{ vps.default_username or 'Not set yet' }}
+          </span>
+        </span>
+        {% if vps.default_username %}
+          <span class="spacer"></span>
+          <button class="button ghost" type="button"
+                  data-copy="#cred-username" aria-label="Copy username">
+            Copy
+          </button>
+        {% endif %}
+      </li>
+
+      <li class="card-item">
+        <span class="emoji" aria-hidden="true">🔒</span>
+        <span class="text">
+          <span class="title"><strong>Password</strong></span>
+          <span class="sub">
+            {% if vps.default_password %}
+              <span id="cred-password" data-secret="{{ vps.default_password }}" data-masked="true">••••••••</span>
+            {% else %}
+              Not set yet
+            {% endif %}
+          </span>
+        </span>
+
+        {% if vps.default_password %}
+          <span class="spacer"></span>
+          <div class="btn-group" style="display:flex; gap:8px;">
+            <button class="button ghost" type="button" id="reveal-pass" aria-pressed="false" aria-controls="cred-password">
+              Reveal
+            </button>
+            <button class="button ghost" type="button" data-copy="#cred-password" aria-label="Copy password">
+              Copy
+            </button>
+          </div>
+        {% endif %}
+      </li>
+    </ul>
+
+    <p class="sub" style="margin:10px 2px 0; opacity:.9;">
+      Tip: use SSH or your provider’s console. Be sure to update the password and
+      keep it safe. We only show the initial password here.
+    </p>
+  </section>
+
+</div>
 {% endblock %}
 
 {% block extra_css %}{{ super() }}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/user/user_dashboard.css') }}?v=2">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
 {% endblock %}
 
-{% block extra_js %}{{ super() }}{% endblock %}
+{% block extra_js %}{{ super() }}
+<script>
+  // Simple copy + reveal logic, no external JS required.
+  function copyFrom(selector) {
+    const el = document.querySelector(selector);
+    if (!el) return;
+    const text = el.dataset && el.dataset.secret ? el.dataset.secret : el.textContent;
+    navigator.clipboard.writeText(text.trim()).catch(()=>{});
+  }
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-copy]');
+    if (btn) {
+      e.preventDefault();
+      copyFrom(btn.getAttribute('data-copy'));
+    }
+  });
+
+  const revealBtn = document.getElementById('reveal-pass');
+  const passEl = document.getElementById('cred-password');
+  if (revealBtn && passEl) {
+    revealBtn.addEventListener('click', () => {
+      const masked = passEl.getAttribute('data-masked') === 'true';
+      if (masked) {
+        passEl.textContent = passEl.getAttribute('data-secret') || '';
+        passEl.setAttribute('data-masked', 'false');
+        revealBtn.textContent = 'Hide';
+        revealBtn.setAttribute('aria-pressed', 'true');
+      } else {
+        passEl.textContent = '••••••••';
+        passEl.setAttribute('data-masked', 'true');
+        revealBtn.textContent = 'Reveal';
+        revealBtn.setAttribute('aria-pressed', 'false');
+      }
+    });
+  }
+</script>
+{% endblock %}
