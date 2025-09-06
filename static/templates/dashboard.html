@@ -51,7 +51,7 @@
 
         <li
           class="card-row"
-          data-href="{{ detail_url }}"
+          data-href="{{ url_for('vps_blueprint.vps_detail', vps_id=server.id) }}"
           role="link"
           tabindex="0"
           aria-label="Open {{ server.hostname }} details"
@@ -60,7 +60,7 @@
           <span class="text">
             <span class="title">
               <strong>
-                <a class="card-link" href="{{ detail_url }}">
+                <a class="card-link" href="{{ url_for('vps_blueprint.vps_detail', vps_id=server.id) }}">
                   {{ server.hostname }}
                 </a>
               </strong>
