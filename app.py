@@ -31,6 +31,8 @@ from apps.VPS.seed import seed_vps_plans
 from apps.VPS.vps_catalog import VPS_PLANS
 from apps.VPS.models import VPSPlan
 
+from flask_migrate import Migrate
+
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth_blueprint.login'
@@ -135,6 +137,8 @@ def inject_asset_version():
     import os, time
     return {"config": {"ASSET_VERSION": os.getenv("ASSET_VERSION", str(int(time.time()))) }}
 
+
+migrate = Migrate(app, db)
 
 # Initialize the database
 with app.app_context():
