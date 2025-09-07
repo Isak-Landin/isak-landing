@@ -1,24 +1,36 @@
-{# templates/legal/legal.html #}
+{# templates/legal/detail.html #}
 {% extends "layouts/public_base.html" %}
 
-{% block title %}Legal & Policies — HostNodex{% endblock %}
+{% block title %}{{ doc.title }} — HostNodex{% endblock %}
 
 {% block content %}
-<section class="container" style="max-width: 920px; margin: 2rem auto;">
-  <h1>Legal & Policies</h1>
-  <p class="text-mute">All current HostNodex legal documents. Each page includes a direct link to the signed PDF.</p>
+<section class="container" style="max-width: 980px; margin: 2rem auto;">
+  <nav style="margin-bottom:1rem;">
+    <a href="{{ url_for('legal_blueprint.legal_index') }}">← All legal documents</a>
+  </nav>
 
-  {% for category, items in groups.items() %}
-    <h2 style="margin-top:2rem;">{{ category }}</h2>
-    <ul class="doc-list">
-      {% for d in items %}
-        <li style="margin: .75rem 0; line-height:1.4;">
-          <a href="{{ url_for('legal_blueprint.legal_detail', slug=d.slug) }}"><strong>{{ d.title }}</strong></a>
-          <span class="text-mute"> — v{{ d.version }}, effective {{ d.effective.strftime('%Y-%m-%d') }}</span>
-          <div class="text-mute" style="font-size:.95rem;">{{ d.summary }}</div>
-        </li>
-      {% endfor %}
-    </ul>
-  {% endfor %}
+  <header style="margin-bottom:1rem;">
+    <h1>{{ doc.title }}</h1>
+    <div class="text-mute">
+      Version {{ doc.version }} · Effective {{ doc.effective.strftime('%Y-%m-%d') }} · Category: {{ doc.category }}
+    </div>
+    <p style="margin-top:.5rem;">{{ doc.summary }}</p>
+    <p>
+      <a class="btn" href="{{ pdf_url }}" target="_blank" rel="noopener">Open PDF</a>
+      <a class="btn" href="{{ pdf_url }}" download>Download PDF</a>
+    </p>
+  </header>
+
+  <div style="border:1px solid #e5e7eb; border-radius:8px; overflow:hidden;">
+    <iframe
+      src="{{ pdf_url }}#view=FitH"
+      title="{{ doc.title }} PDF"
+      style="width:100%; height:80vh; border:0;"
+    ></iframe>
+  </div>
 </section>
+{% endblock %}
+
+{% block page_content %}
+  {{ self.content() }}
 {% endblock %}
