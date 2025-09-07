@@ -4,8 +4,6 @@ from flask import Blueprint
 legal_blueprint = Blueprint(
     "legal_blueprint",
     __name__,
-    template_folder="../../templates/legal",
-    static_folder=None,
     url_prefix="/legal",
 )
 
