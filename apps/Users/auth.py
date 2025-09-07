@@ -81,6 +81,10 @@ def register():
         password = request.form.get('password', '').strip()
         confirm = request.form.get('confirm_password', '').strip()
 
+        accepted = bool(request.form.get("accept_legal"))
+        if not accepted:
+            return jsonify(success=False, error="You must agree to the Terms, Privacy Policy, and AUP."), 400
+
         if not email or not password or not confirm:
             return jsonify(success=False, error="All fields are required."), 400
 
