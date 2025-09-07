@@ -18,7 +18,7 @@
         <p>It only takes a minute.</p>
       </div>
 
-      <form method="POST" id="register-form" class="auth-form">
+      <form method="POST" id="register-form" class="auth-form" novalidate>
         {% if csrf_token %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endif %}
 
         <div class="form-row">
@@ -28,24 +28,35 @@
 
         <div class="form-row">
           <label for="password">Password</label>
-          <input id="password" name="password" type="password" placeholder="Create a password" required>
+          <input id="password" name="password" type="password" placeholder="Create a password" required minlength="8">
         </div>
 
         <div class="form-row">
           <label for="confirm_password">Confirm password</label>
-          <input id="confirm_password" name="confirm_password" type="password" placeholder="Repeat your password" required>
+          <input id="confirm_password" name="confirm_password" type="password" placeholder="Repeat your password" required minlength="8">
+        </div>
+
+        <div class="form-row" style="margin-top:.75rem;">
+          <label class="checkbox">
+            <input id="accept_legal" name="accept_legal" type="checkbox" required>
+            <span>
+              I agree to the
+              <a href="{{ url_for('legal_blueprint.legal_detail', slug='terms') }}" target="_blank" rel="noopener">Terms of Service</a>,
+              <a href="{{ url_for('legal_blueprint.legal_detail', slug='privacy') }}" target="_blank" rel="noopener">Privacy Policy</a>,
+              and <a href="{{ url_for('legal_blueprint.legal_detail', slug='aup') }}" target="_blank" rel="noopener">Acceptable Use Policy</a>.
+            </span>
+          </label>
         </div>
 
         <div id="password-error" class="auth-error" style="display:none;"></div>
         <div id="register-error" class="auth-error" style="display:none;"></div>
 
         <div class="auth-actions">
-          <button type="submit" class="button primary auth-primary">Create account</button>
+          <button id="register-submit" type="submit" class="button primary auth-primary">Create account</button>
           <a class="button ghost auth-secondary" href="{{ url_for('auth_blueprint.login') }}">Have an account?</a>
         </div>
 
         <div class="auth-meta">
-          <span>By continuing you agree to our terms.</span>
           <a href="{{ url_for('vps_blueprint.vps_list_page') }}">Browse VPS plans</a>
         </div>
       </form>
