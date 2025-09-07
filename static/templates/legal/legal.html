@@ -1,10 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{# templates/legal/legal.html #}
+{% extends "layouts/public_base.html" %}
 
-</body>
-</html>
+{% block title %}Legal & Policies — HostNodex{% endblock %}
+
+{% block content %}
+<section class="container" style="max-width: 920px; margin: 2rem auto;">
+  <h1>Legal & Policies</h1>
+  <p class="text-mute">All current HostNodex legal documents. Each page includes a direct link to the signed PDF.</p>
+
+  {% for category, items in groups.items() %}
+    <h2 style="margin-top:2rem;">{{ category }}</h2>
+    <ul class="doc-list">
+      {% for d in items %}
+        <li style="margin: .75rem 0; line-height:1.4;">
+          <a href="{{ url_for('legal_blueprint.legal_detail', slug=d.slug) }}"><strong>{{ d.title }}</strong></a>
+          <span class="text-mute"> — v{{ d.version }}, effective {{ d.effective.strftime('%Y-%m-%d') }}</span>
+          <div class="text-mute" style="font-size:.95rem;">{{ d.summary }}</div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+</section>
+{% endblock %}

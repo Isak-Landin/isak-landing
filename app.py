@@ -19,6 +19,7 @@ from apps.Users.users import blueprint as users_bp
 from apps.store.store import store_blueprint
 from apps.chat.chat import chat_blueprint
 from apps.VPS.vps import vps_blueprint
+from apps.legal.legal import legal_blueprint
 
 from apps.admin.admin import admin_blueprint
 
@@ -108,6 +109,7 @@ def create_app():
     _app.register_blueprint(users_bp)
     _app.register_blueprint(store_blueprint)
     _app.register_blueprint(admin_blueprint)
+    _app.register_blueprint(legal_blueprint)
 
     _app.register_blueprint(chat_blueprint)
 
