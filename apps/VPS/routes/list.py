@@ -1,7 +1,7 @@
 from flask import jsonify, render_template
 from apps.VPS.models import VPSPlan
 from apps.VPS.vps import vps_blueprint
-
+from apps.VPS.vps_catalog import get_plan_by_code  # ← NEW
 
 @vps_blueprint.route("/", methods=["GET"])
 def vps_list_page():
@@ -13,6 +13,7 @@ def vps_list_page():
     )
     view_plans = []
     for p in plans:
+        cat = get_plan_by_code(p.plan_code) or {}
         view_plans.append({
             "plan_code": p.plan_code,
             "name": p.name,
@@ -23,6 +24,10 @@ def vps_list_page():
             "bandwidth_tb": p.bandwidth_tb,
             "lookup_monthly": p.stripe_lookup_key_monthly,
             "lookup_yearly": p.stripe_lookup_key_yearly,
+            # NEW price meta from catalog (no DB change)
+            "price_month": cat.get("monthly_price"),
+            "price_year":  cat.get("yearly_price"),
+            "currency":    (cat.get("currency") or "EUR").upper(),
         })
     return render_template("vps/list.html", plans=view_plans)
 
@@ -36,6 +41,7 @@ def vps_list_plans():
     )
     out = []
     for p in plans:
+        cat = get_plan_by_code(p.plan_code) or {}
         out.append({
             "plan_code": p.plan_code,
             "name": p.name,
@@ -54,6 +60,12 @@ def vps_list_plans():
                 "name": p.provider,
                 "plan_code": p.provider_plan_code,
                 "default_region": p.default_region,
+            },
+            # Optional: include prices in JSON too
+            "pricing": {
+                "month": cat.get("monthly_price"),
+                "year":  cat.get("yearly_price"),
+                "currency": (cat.get("currency") or "EUR").upper(),
             },
         })
     return jsonify({"ok": True, "plans": out})

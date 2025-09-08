@@ -13,7 +13,11 @@
       ssd: btn.getAttribute('data-ssd') || '',
       bw: btn.getAttribute('data-bandwidth') || '',
       interval: btn.getAttribute('data-interval') || 'month',
+      priceMonth: btn.getAttribute('data-price-month'),
+      priceYear:  btn.getAttribute('data-price-year'),
+      currency:   btn.getAttribute('data-currency') || 'EUR',
     };
+
 
     document.dispatchEvent(new CustomEvent('vps:open-cart', { detail: plan }));
   }

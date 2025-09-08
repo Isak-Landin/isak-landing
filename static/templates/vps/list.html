@@ -64,9 +64,13 @@
                       data-vcpu="{{ p.vcpu }}"
                       data-ram="{{ p.ram_gb }}"
                       data-ssd="{{ p.ssd_gb }}"
-                      data-bandwidth="{{ p.bandwidth_tb }}">
+                      data-bandwidth="{{ p.bandwidth_tb }}"
+                      data-price-month="{{ p.price_month }}"
+                      data-price-year="{{ p.price_year }}"
+                      data-currency="{{ p.currency }}">
                 Get
               </button>
+
 
             </div>
           {% else %}
@@ -100,6 +104,12 @@
           <li><strong id="vps-cart-ssd">—</strong> GB NVMe</li>
           <li><strong id="vps-cart-bw">—</strong> TB bandwidth</li>
         </ul>
+      </div>
+
+      <div class="vps-cart-price">
+        <span id="vps-cart-price-amount">—</span>
+        <span id="vps-cart-price-currency"></span>
+        <span id="vps-cart-price-interval" class="muted">/ month</span>
       </div>
 
       <form id="vps-mini-cart-form">

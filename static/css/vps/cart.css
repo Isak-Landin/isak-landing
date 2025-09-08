@@ -1,10 +1,9 @@
-/* Page lock when cart is open */
+/* Lock scroll when cart is open */
 body.vps-cart-open { overflow: hidden; }
 
-/* Backdrop overlay */
+/* Backdrop */
 .vps-cart-backdrop {
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background: rgba(0,0,0,0.55);
   z-index: 1000;
   opacity: 0;
@@ -13,19 +12,18 @@ body.vps-cart-open { overflow: hidden; }
 .vps-cart-backdrop[hidden] { display: block; opacity: 0; pointer-events: none; }
 body.vps-cart-open #vps-mini-cart-backdrop { opacity: 1; }
 
-/* Drawer panel */
+/* Drawer */
 .vps-cart-drawer {
   position: fixed;
   top: 0; right: 0;
   height: 100vh; width: min(420px, 100%);
-  background: #fff;
-  color: #222;
+  background: #fff; color: #222;
   box-shadow: -12px 0 32px rgba(0,0,0,.2);
   transform: translateX(100%);
   transition: transform .25s ease;
   z-index: 1001;
   display: flex; flex-direction: column;
-  font-family: system-ui, sans-serif;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
 }
 body.vps-cart-open .vps-cart-drawer { transform: translateX(0); }
 
@@ -36,91 +34,42 @@ body.vps-cart-open .vps-cart-drawer { transform: translateX(0); }
   border-bottom: 1px solid rgba(0,0,0,.08);
   background: #f9f9fb;
 }
-.vps-cart-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 0;
-}
+.vps-cart-title { font-size: 1.1rem; font-weight: 600; margin: 0; }
 .vps-cart-close {
-  font-size: 22px;
-  line-height: 1;
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  color: #666;
+  font-size: 22px; line-height: 1;
+  background: transparent; border: 0; cursor: pointer; color: #666;
 }
 .vps-cart-close:hover { color: #111; }
 
 /* Body */
-.vps-cart-body {
-  padding: 20px;
-  overflow-y: auto;
-  flex: 1;
-}
-.vps-cart-summary { display: grid; gap: 20px; }
+.vps-cart-body { padding: 20px; overflow-y: auto; flex: 1; text-align: left; }
+.vps-cart-summary { display: grid; gap: 18px; }
 
-/* Plan info */
-.vps-cart-plan-name {
-  font-weight: 700;
-  font-size: 1.05rem;
-  margin-bottom: 8px;
-}
-.vps-cart-specs {
-  margin: 0;
-  padding: 0 0 0 18px;
-  list-style: disc;
-  font-size: .95rem;
-  color: #444;
-}
-.vps-cart-specs li { margin: 2px 0; }
+/* Plan block */
+.vps-cart-plan-name { font-weight: 700; font-size: 1.05rem; margin-bottom: 8px; }
+.vps-cart-specs { margin: 0; padding: 0; list-style: none; font-size: .95rem; color: #444; }
+.vps-cart-specs li { margin: 4px 0; }
+
+/* Price row */
+.vps-cart-price { margin-top: 8px; font-weight: 600; font-size: 1rem; }
+.vps-cart-price .muted { opacity: .8; font-weight: 500; }
 
 /* Form */
 .vps-cart-row { margin: 14px 0; }
 .vps-cart-label { display: block; font-weight: 600; margin-bottom: 6px; }
 .vps-cart-interval label { margin-right: 16px; font-size: .95rem; }
 
-.vps-cart-legal {
-  display: flex; gap: 6px; font-size: .9rem;
-  line-height: 1.4;
-}
-.vps-cart-legal a {
-  text-decoration: underline;
-  color: #007BFF;
-}
+.vps-cart-legal { display: flex; gap: 6px; font-size: .9rem; line-height: 1.4; }
+.vps-cart-legal a { text-decoration: underline; color: #007BFF; }
 .vps-cart-legal a:hover { color: #0056b3; }
 
 /* Error */
-#vps-cart-error {
-  color: #b00020;
-  margin-top: 6px;
-  font-size: .9rem;
-  display: none;
-}
+#vps-cart-error { color: #b00020; margin-top: 6px; font-size: .9rem; display: none; }
 
 /* Actions */
-.vps-cart-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 16px;
-}
-.vps-cart-actions .button {
-  flex: 1;
-  padding: 10px 14px;
-  font-size: .95rem;
-}
-.vps-cart-actions .button.primary {
-  background: #007BFF;
-  color: #fff;
-  border: none;
-}
-.vps-cart-actions .button.primary:hover {
-  background: #0056b3;
-}
-.vps-cart-actions .button.ghost {
-  background: #f2f2f2;
-  border: 1px solid #ddd;
-  color: #333;
-}
-.vps-cart-actions .button.ghost:hover {
-  background: #e9e9e9;
-}
+.vps-cart-actions { display: flex; gap: 8px; margin-top: 16px; }
+.vps-cart-actions .button { flex: 1; padding: 10px 14px; font-size: .95rem; }
+.vps-cart-actions .button.primary { background: #007BFF; color: #fff; border: none; }
+.vps-cart-actions .button.primary:hover { background: #0056b3; }
+.vps-cart-actions .button.ghost { background: #f2f2f2; border: 1px solid #ddd; color: #333; }
+.vps-cart-actions .button.ghost:hover { background: #e9e9e9; }
