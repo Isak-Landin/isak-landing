@@ -23,6 +23,10 @@ def vps_checkout():
     data = request.get_json(silent=True) or {}
     plan_code = data.get("plan_code")
     interval = (data.get("interval") or "").lower()
+    accept_legal = bool(data.get("accept_legal"))  # NEW
+
+    if not accept_legal:
+        return jsonify({"ok": False, "error": "Please accept the Terms, Privacy Policy, and AUP before continuing."}), 400
 
     if not plan_code or interval not in ("month", "year"):
         return jsonify({"ok": False, "error": "Missing or invalid plan_code/interval"}), 400

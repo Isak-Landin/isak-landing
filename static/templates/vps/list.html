@@ -3,6 +3,7 @@
 
 {% block extra_css %}{{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_vps.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/vps/cart.css') }}">
 {% endblock %}
 
 {# ---- Content-base hero slots ---- #}
@@ -57,9 +58,16 @@
           {% if current_user.is_authenticated %}
             <div class="plan-actions">
               <button class="plan-btn plan-btn--ghost"
-                      data-plan="{{ p.plan_code }}" data-interval="month">
+                      data-plan="{{ p.plan_code }}"
+                      data-interval="month"
+                      data-name="{{ p.name }}"
+                      data-vcpu="{{ p.vcpu }}"
+                      data-ram="{{ p.ram_gb }}"
+                      data-ssd="{{ p.ssd_gb }}"
+                      data-bandwidth="{{ p.bandwidth_tb }}">
                 Get
               </button>
+
             </div>
           {% else %}
             <a class="plan-btn plan-btn--ghost"
@@ -73,6 +81,67 @@
     </div>
   </section>
 
+<!-- Mini Cart Drawer -->
+<div id="vps-mini-cart-backdrop" class="vps-cart-backdrop" hidden></div>
+
+<aside id="vps-mini-cart" class="vps-cart-drawer" aria-hidden="true">
+  <header class="vps-cart-head">
+    <h3 class="vps-cart-title">Review & continue</h3>
+    <button type="button" class="vps-cart-close" aria-label="Close">×</button>
+  </header>
+
+  <div class="vps-cart-body">
+    <div class="vps-cart-summary">
+      <div class="vps-cart-plan">
+        <div class="vps-cart-plan-name" id="vps-cart-name">—</div>
+        <ul class="vps-cart-specs">
+          <li><strong id="vps-cart-vcpu">—</strong> vCPU</li>
+          <li><strong id="vps-cart-ram">—</strong> GB RAM</li>
+          <li><strong id="vps-cart-ssd">—</strong> GB NVMe</li>
+          <li><strong id="vps-cart-bw">—</strong> TB bandwidth</li>
+        </ul>
+      </div>
+
+      <form id="vps-mini-cart-form">
+        <input type="hidden" name="plan_code" id="vps-cart-plan-code" value="">
+
+        <div class="vps-cart-row">
+          <label class="vps-cart-label">Billing interval</label>
+          <div class="vps-cart-interval">
+            <label>
+              <input type="radio" name="interval" value="month" checked> Monthly
+            </label>
+            <label>
+              <input type="radio" name="interval" value="year"> Yearly
+            </label>
+          </div>
+        </div>
+
+        <div class="vps-cart-row">
+          <label class="vps-cart-legal">
+            <input type="checkbox" id="vps-cart-accept-legal" required>
+            <span>
+              I agree to the
+              <a href="{{ url_for('legal_blueprint.legal_detail', slug='terms') }}" target="_blank" rel="noopener">Terms</a>,
+              <a href="{{ url_for('legal_blueprint.legal_detail', slug='privacy') }}" target="_blank" rel="noopener">Privacy</a>,
+              and
+              <a href="{{ url_for('legal_blueprint.legal_detail', slug='aup') }}" target="_blank" rel="noopener">AUP</a>.
+            </span>
+          </label>
+        </div>
+
+        <div id="vps-cart-error" class="auth-error" style="display:none;"></div>
+
+        <div class="vps-cart-actions">
+          <button id="vps-cart-submit" type="submit" class="button primary">Proceed to payment</button>
+          <button type="button" class="button ghost vps-cart-close">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</aside>
+
+
 {% endblock %}
 
 {% block extra_js %}{{ super() }}
@@ -81,6 +150,7 @@
     // Default interval = month
     window.VPS_CHECKOUT_URL = "{{ url_for('vps_blueprint.vps_checkout') }}";
   </script>
+  <script src="{{ url_for('static', filename='js/vps/cart.js') }}"></script>
   <script src="{{ url_for('static', filename='js/vps/list.js') }}"></script>
 {% endif %}
 {% endblock %}

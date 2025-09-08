@@ -1,10 +1,88 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "layouts/public_base.html" %}
 
-</body>
-</html>
+{% block page_title %}Review your order — HostNodex{% endblock %}
+{% block hero_title %}Review your order{% endblock %}
+{% block hero_text %}Confirm your plan and proceed to secure payment.{% endblock %}
+
+{% block page_content %}
+<section class="checkout-review" style="max-width: 960px; margin: 0 auto;">
+  <div class="box" style="padding: 1.25rem;">
+    <h2 style="margin-top:0;">{{ plan.name }}</h2>
+
+    <div class="plan-summary" style="display:flex; gap:24px; flex-wrap:wrap;">
+      <div style="flex:1 1 320px;">
+        <ul style="margin:.5rem 0 1rem 1rem;">
+          <li>{{ plan.vcpu }} vCPU</li>
+          <li>{{ plan.ram_gb }} GB RAM</li>
+          <li>{{ plan.storage_gb }} GB NVMe</li>
+          <li>{{ plan.bandwidth_tb }} TB bandwidth</li>
+        </ul>
+      </div>
+
+      <div style="min-width:260px;">
+        <div style="font-size:1.25rem; font-weight:600;">
+          {{ "%.2f"|format(display_amount) }} {{ currency }} / {{ "month" if interval == "month" else "year" }}
+        </div>
+        <div style="opacity:.75; font-size:.9rem; margin-top:.25rem;">VAT calculated at checkout.</div>
+
+        <form id="vps-checkout-form" method="POST" action="{{ url_for('vps_blueprint.vps_checkout_create_session') }}" style="margin-top:1rem;">
+          {% if csrf_token %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endif %}
+          <input type="hidden" name="plan_code" value="{{ plan.plan_code }}">
+
+          <div class="form-row" style="margin-bottom:.75rem;">
+            <label style="display:block; font-weight:600;">Billing interval</label>
+            <label style="margin-right:12px;">
+              <input type="radio" name="interval" value="month" {% if interval == 'month' %}checked{% endif %}> Monthly
+            </label>
+            <label>
+              <input type="radio" name="interval" value="year" {% if interval == 'year' %}checked{% endif %}> Yearly
+            </label>
+          </div>
+
+          <div class="form-row">
+            <label class="checkbox">
+              <input id="accept_legal" name="accept_legal" type="checkbox" required>
+              <span class="legal-links">
+                I agree to the
+                <a href="{{ url_for('legal_blueprint.legal_detail', slug='terms') }}" target="_blank" rel="noopener">Terms of Service</a>,
+                <a href="{{ url_for('legal_blueprint.legal_detail', slug='privacy') }}" target="_blank" rel="noopener">Privacy Policy</a>,
+                and <a href="{{ url_for('legal_blueprint.legal_detail', slug='aup') }}" target="_blank" rel="noopener">Acceptable Use Policy</a>.
+              </span>
+            </label>
+            {% if tos and privacy and aup %}
+              <div style="opacity:.7; font-size:.85rem; margin-top:.25rem;">
+                Current versions: ToS v{{ tos.version }}, Privacy v{{ privacy.version }}, AUP v{{ aup.version }}
+              </div>
+            {% endif %}
+          </div>
+
+          <div id="checkout-error" class="auth-error" style="display:none; margin-top:8px;"></div>
+
+          <div class="actions" style="margin-top:1rem; display:flex; gap:.5rem;">
+            <button id="checkout-submit" type="submit" class="button primary">Proceed to payment</button>
+            <a class="button ghost" href="{{ url_for('vps_blueprint.vps_list_page') }}">Back to plans</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+  {{ super() }}
+  <style>
+    .legal-links a,
+    .legal-links a:visited,
+    .legal-links a:hover,
+    .legal-links a:active {
+      color: #007BFF;
+      text-decoration: underline;
+    }
+  </style>
+{% endblock %}
+
+{% block extra_js %}
+  {{ super() }}
+  <script src="{{ url_for('static', filename='js/vps_checkout.js') }}"></script>
+{% endblock %}
