@@ -1,3 +1,5 @@
+# apps/VPS/routes/list.py
+
 from flask import jsonify, render_template
 from apps.VPS.models import VPSPlan
 from apps.VPS.vps import vps_blueprint
