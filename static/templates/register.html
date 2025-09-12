@@ -41,9 +41,9 @@
             <input id="accept_legal" name="accept_legal" type="checkbox" required>
             <span>
               I agree to the
-              <a href="{{ url_for('legal_blueprint.legal_detail', slug='terms') }}" target="_blank" rel="noopener">Terms of Service</a>,
-              <a href="{{ url_for('legal_blueprint.legal_detail', slug='privacy') }}" target="_blank" rel="noopener">Privacy Policy</a>,
-              and <a href="{{ url_for('legal_blueprint.legal_detail', slug='aup') }}" target="_blank" rel="noopener">Acceptable Use Policy</a>.
+              <a class="policy-link-text" href="{{ url_for('legal_blueprint.legal_detail', slug='terms') }}" target="_blank" rel="noopener">Terms of Service</a>,
+              <a class="policy-link-text" href="{{ url_for('legal_blueprint.legal_detail', slug='privacy') }}" target="_blank" rel="noopener">Privacy Policy</a>,
+              and <a class="policy-link-text" href="{{ url_for('legal_blueprint.legal_detail', slug='aup') }}" target="_blank" rel="noopener">Acceptable Use Policy</a>.
             </span>
           </label>
         </div>
@@ -67,7 +67,7 @@
 {% block extra_css %}
   {{ super() }}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/public.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}?v=2">
 {% endblock %}
 
 {% block extra_js %}

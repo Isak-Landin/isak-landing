@@ -328,3 +328,9 @@ input:focus {
     background: linear-gradient(90deg, #5b8cff, #3ac7ff);
     color: #fff
 }
+
+.policy-link-text {
+    color: #e6e9f3;
+    text-decoration: underline;
+    opacity: .9;
+}
