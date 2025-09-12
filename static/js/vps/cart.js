@@ -1,10 +1,8 @@
-// static/js/vps/cart.js — Expanded Mini Cart (Plan + OS + optional SSH key) → POST /vps/checkout
 (function () {
   'use strict';
 
   const CHECKOUT_URL = window.VPS_CHECKOUT_URL || '/vps/checkout';
 
-  // --- Elements (match your template) ---
   const els = {
     drawer:   document.getElementById('vps-mini-cart'),
     backdrop: document.getElementById('vps-mini-cart-backdrop'),
@@ -12,7 +10,6 @@
     submit:   document.getElementById('vps-cart-submit'),
     error:    document.getElementById('vps-cart-error'),
 
-    // Specs (+ hidden plan code)
     planCodeInput: document.getElementById('vps-cart-plan-code'),
     name:     document.getElementById('vps-cart-name'),
     vcpu:     document.getElementById('vps-cart-vcpu'),
@@ -20,53 +17,42 @@
     ssd:      document.getElementById('vps-cart-ssd'),
     bw:       document.getElementById('vps-cart-bw'),
 
-    // Price display
     priceAmount:   document.getElementById('vps-cart-price-amount'),
     priceCurrency: document.getElementById('vps-cart-price-currency'),
     priceInterval: document.getElementById('vps-cart-price-interval'),
 
-    // Config controls
     planSelect: document.getElementById('vps-cart-plan-select'),
     osSelect:   document.getElementById('vps-cart-os'),
     sshKey:     document.getElementById('vps-cart-ssh'),
 
-    // Interval & legal
     intervalRadios: document.querySelectorAll('input[name="interval"]'),
     acceptLegal:    document.getElementById('vps-cart-accept-legal'),
 
-    // Open/close & triggers
     closeBtns:  document.querySelectorAll('.vps-cart-close'),
     getButtons: document.querySelectorAll('.plan-btn[data-plan]'),
 
-    // Catalog (inline JSON)
     catalogTag: document.getElementById('vps-catalog'),
   };
 
-  // Normalized plan cache: code → { code,name,vcpu,ram,ssd,bw,priceMonth,priceYear,currency,osOptions:[{key,label}] }
   const catalog = new Map();
 
-  // ---------- Utils ----------
   function showDrawer() {
     document.body.classList.add('vps-cart-open');
     if (els.backdrop) els.backdrop.hidden = false;
     if (els.drawer)   els.drawer.setAttribute('aria-hidden', 'false');
   }
-
   function hideDrawer() {
     document.body.classList.remove('vps-cart-open');
     if (els.backdrop) els.backdrop.hidden = true;
     if (els.drawer)   els.drawer.setAttribute('aria-hidden', 'true');
     clearError();
   }
-
   function setError(msg) {
     if (!els.error) return;
     els.error.textContent = msg || '';
     els.error.style.display = msg ? 'block' : 'none';
   }
-
   function clearError() { setError(''); }
-
   function enableSubmit(enabled) {
     if (els.submit) {
       els.submit.disabled = !enabled;
@@ -75,14 +61,13 @@
     }
   }
 
+  // IMPORTANT: return 'monthly' | 'yearly' to match backend lookup keys
   function getSelectedInterval() {
     const r = document.querySelector('input[name="interval"]:checked');
-    // page uses "month|year"
-    return r ? (r.value === 'year' ? 'year' : 'month') : 'month';
+    return r && r.value === 'year' ? 'yearly' : 'monthly';
   }
 
   function parseOsOptions(list) {
-    // input can be ["ubuntu-24.04:Ubuntu 24.04", ...] or ["ubuntu-24.04", ...]
     if (!Array.isArray(list)) return [];
     return list.map(item => {
       if (typeof item !== 'string') return null;
@@ -122,12 +107,12 @@
 
   function renderPrice(p) {
     if (!p) return;
-    const interval = getSelectedInterval(); // 'month' | 'year'
-    const amount = interval === 'year' ? p.priceYear : p.priceMonth;
+    const interval = getSelectedInterval(); // 'monthly' | 'yearly'
+    const amount = interval === 'yearly' ? p.priceYear : p.priceMonth;
     const currency = (p.currency || '').toUpperCase();
     if (els.priceAmount)   els.priceAmount.textContent = (amount != null ? amount : '—');
     if (els.priceCurrency) els.priceCurrency.textContent = currency ? ` ${currency}` : '';
-    if (els.priceInterval) els.priceInterval.textContent = interval === 'year' ? ' / year' : ' / month';
+    if (els.priceInterval) els.priceInterval.textContent = interval === 'yearly' ? ' / year' : ' / month';
   }
 
   function renderPlan(p) {
@@ -144,7 +129,7 @@
   }
 
   function sshLooksLikePublicKey(s) {
-    if (!s) return true; // optional
+    if (!s) return true;
     const line = s.trim().split(/\s+/).slice(0, 2).join(' ');
     return /^(ssh-ed25519|ssh-rsa|ecdsa-sha2-nistp(256|384|521))\s+[A-Za-z0-9+/=]+$/.test(line);
   }
@@ -170,6 +155,26 @@
     return catalog.get(code);
   }
 
+  // Robust redirect handler: JSON {url|redirect_url} OR Location header OR 3xx.
+  async function handleRedirect(res) {
+    const loc = res.headers.get('Location') || res.headers.get('location');
+    if (loc) {
+      window.location.assign(loc);
+      return true;
+    }
+    // Try JSON body (Stripe session URL)
+    let data = {};
+    try { data = await res.clone().json(); } catch (_) { /* ignore */ }
+    const redirect = data.redirect_url || data.url;
+    if (redirect) {
+      window.location.assign(redirect);
+      return true;
+    }
+    // If backend returns 204/empty but set Location earlier, we would have caught it.
+    // Nothing found → return false
+    return false;
+  }
+
   async function submitCart(evt) {
     evt.preventDefault();
     validateForm();
@@ -180,7 +185,7 @@
 
     const payload = {
       plan_code: plan.code,
-      interval:  getSelectedInterval(),       // 'month' | 'year'
+      interval:  getSelectedInterval(),       // 'monthly' | 'yearly' (FIXED)
       os_key:    els.osSelect ? els.osSelect.value.trim() : '',
       ssh_key:   els.sshKey ? els.sshKey.value.trim() : '',
       accept_legal: els.acceptLegal ? !!els.acceptLegal.checked : true
@@ -200,10 +205,16 @@
         throw new Error(text || `Checkout failed (${res.status})`);
       }
 
-      const data = await res.json().catch(() => ({}));
-      const redirect = data.redirect_url || data.url;
-      if (redirect) window.location.assign(redirect);
-      else hideDrawer();
+      if (!(await handleRedirect(res))) {
+        // As a last resort, try to read plain text for a URL
+        const txt = await res.text();
+        if (txt && /^https?:\/\//i.test(txt.trim())) {
+          window.location.assign(txt.trim());
+        } else {
+          setError('Checkout started, but no redirect URL was provided by the server.');
+          enableSubmit(true);
+        }
+      }
     } catch (err) {
       setError(err.message || 'Something went wrong while starting checkout.');
       enableSubmit(true);
@@ -244,16 +255,13 @@
         };
         if (p.code) catalog.set(p.code, p);
       });
-    } catch (e) {
-      // ignore parse errors; buttons can still populate on click
-    }
+    } catch (_) { /* ignore */ }
   }
 
   function openWithPlanCode(code) {
     const plan = catalog.get(code);
     if (plan) {
       renderPlan(plan);
-      // reset inputs
       if (els.osSelect) els.osSelect.value = '';
       if (els.sshKey) els.sshKey.value = '';
       if (els.acceptLegal) els.acceptLegal.checked = false;
@@ -266,11 +274,9 @@
   }
 
   function wireEvents() {
-    // Open/close
     els.closeBtns.forEach(b => b.addEventListener('click', hideDrawer));
     els.backdrop?.addEventListener('click', hideDrawer);
 
-    // Form
     if (els.form) els.form.addEventListener('submit', submitCart);
     if (els.planSelect) els.planSelect.addEventListener('change', handlePlanSelectChange);
     if (els.osSelect)   els.osSelect.addEventListener('change', validateForm);
@@ -280,15 +286,11 @@
       els.intervalRadios.forEach(r => r.addEventListener('change', handleIntervalChange));
     }
 
-    // Bind "Get" buttons on list page
     els.getButtons.forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         const code = (btn.getAttribute('data-plan') || '').trim();
-
-        // Prefer catalog (from inline JSON). If missing, fall back to data-* on the button.
         if (!openWithPlanCode(code)) {
-          // Build from button attrs as a fallback (without OS options)
           const fallback = {
             code,
             name: (btn.getAttribute('data-name') || '').trim(),
@@ -299,11 +301,10 @@
             priceMonth: (btn.getAttribute('data-price-month') || '').trim(),
             priceYear:  (btn.getAttribute('data-price-year')  || '').trim(),
             currency:   (btn.getAttribute('data-currency')    || '').trim(),
-            osOptions:  [] // no OS in button; user must pick after we populate from catalog later if available
+            osOptions:  []
           };
           if (fallback.code) catalog.set(fallback.code, fallback);
           renderPlan(fallback);
-          // inputs reset
           if (els.osSelect) els.osSelect.value = '';
           if (els.sshKey) els.sshKey.value = '';
           if (els.acceptLegal) els.acceptLegal.checked = false;
@@ -315,7 +316,6 @@
     });
   }
 
-  // Boot
   document.addEventListener('DOMContentLoaded', () => {
     primeCatalogFromInlineJSON();
     if (els.planSelect) populatePlanSelect();
