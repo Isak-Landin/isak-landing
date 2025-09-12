@@ -3,7 +3,7 @@
 from flask import jsonify, render_template
 from apps.VPS.models import VPSPlan
 from apps.VPS.vps import vps_blueprint
-from apps.VPS.vps_catalog import get_plan_by_code  # ← NEW
+from apps.VPS.vps_catalog import get_plan_by_code, DEFAULT_OS_OPTIONS  # ← NEW
 
 @vps_blueprint.route("/", methods=["GET"])
 def vps_list_page():
@@ -30,8 +30,10 @@ def vps_list_page():
             "price_month": cat.get("monthly_price"),
             "price_year":  cat.get("yearly_price"),
             "currency":    (cat.get("currency") or "EUR").upper(),
+            "os_options": cat.get("os_options") or DEFAULT_OS_OPTIONS,
         })
     return render_template("vps/list.html", plans=view_plans)
+
 
 @vps_blueprint.route("/plans.json", methods=["GET"])
 def vps_list_plans():
@@ -63,11 +65,13 @@ def vps_list_plans():
                 "plan_code": p.provider_plan_code,
                 "default_region": p.default_region,
             },
-            # Optional: include prices in JSON too
             "pricing": {
-                "month": cat.get("monthly_price"),
-                "year":  cat.get("yearly_price"),
+                "month":   cat.get("monthly_price"),
+                "year":    cat.get("yearly_price"),
                 "currency": (cat.get("currency") or "EUR").upper(),
             },
+            # NEW: Linux-only OS choices (Windows excluded in the catalog)
+            # Format: ["ubuntu-24.04:Ubuntu 24.04", "debian-12:Debian 12", ...]
+            "os_options": cat.get("os_options") or DEFAULT_OS_OPTIONS,
         })
     return jsonify({"ok": True, "plans": out})
