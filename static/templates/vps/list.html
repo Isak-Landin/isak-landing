@@ -127,6 +127,34 @@
           </div>
         </div>
 
+        <!-- OPTIONAL: Allow switching plan inside the cart -->
+        <div class="vps-cart-row">
+          <label class="vps-cart-label" for="vps-cart-plan-select">Plan</label>
+          <select id="vps-cart-plan-select" class="vps-cart-select">
+            <!-- Will be populated by JS. Keep if you plan to allow switching plan here. -->
+          </select>
+        </div>
+
+        <!-- OS selection -->
+        <div class="vps-cart-row">
+          <label class="vps-cart-label" for="vps-cart-os">Operating System</label>
+          <select id="vps-cart-os" class="vps-cart-select" required>
+            <option value="">Select OS…</option>
+            <!-- JS will inject options from data-os-options on the clicked plan button -->
+          </select>
+        </div>
+
+        <!-- SSH public key (optional) -->
+        <div class="vps-cart-row">
+          <label class="vps-cart-label" for="vps-cart-ssh">SSH Public Key (optional)</label>
+          <textarea id="vps-cart-ssh" class="vps-cart-textarea" placeholder='e.g. ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... you@device'></textarea>
+          <div class="vps-cart-help">
+            Paste your <strong>public</strong> key only: starts with <code>ssh-ed25519</code>, <code>ssh-rsa</code>, or <code>ecdsa-sha2-nistp…</code>.
+            You can add/change keys later in your dashboard.
+          </div>
+        </div>
+
+
         <div class="vps-cart-row">
           <label class="vps-cart-legal">
             <input type="checkbox" id="vps-cart-accept-legal" required>
