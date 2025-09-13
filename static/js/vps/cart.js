@@ -35,6 +35,23 @@
     catalogTag: document.getElementById('vps-catalog'),
   };
 
+  // Add near top-level in cart.js after els{}:
+    window._VPS_setInterval = function(value){
+      const v = (value === 'year') ? 'year' : 'month';
+      const radio = document.querySelector(`input[name="interval"][value="${v}"]`);
+      if (radio) {
+        radio.checked = true;
+        const evt = new Event('change', { bubbles: true });
+        radio.dispatchEvent(evt);
+      }
+    };
+
+    // In DOMContentLoaded boot (end of cart.js init), add:
+    if (window.VPS_PREF_INTERVAL) {
+      window._VPS_setInterval(window.VPS_PREF_INTERVAL);
+    }
+
+
   const catalog = new Map();
 
   // ---------- UI helpers ----------
