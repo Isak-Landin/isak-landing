@@ -50,19 +50,25 @@
 
 /* -----------------------------
    Sticky Footer CTA bar
-   - Sticks to bottom of viewport while page scrolls
-   - Rests above footer naturally (since it's in content flow)
+   (Never overlaps footer thanks to JS that sets --cta-offset)
 ------------------------------*/
 .plans-cta{
   position: sticky;
-  /* ⬇ use a variable we’ll control from JS */
   bottom: var(--cta-offset, max(16px, env(safe-area-inset-bottom)));
   z-index: 40;
 
   margin-top: 16px;
 
+  /* Parent grid with areas:
+     summary | interval
+     button  | button
+  */
   display: grid;
   grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "summary interval"
+    "button  button";
   gap: 12px;
   align-items: center;
 
@@ -72,7 +78,6 @@
   box-shadow: var(--ad-shadow-soft, 0 6px 18px rgba(0,0,0,.22));
   padding: 12px;
 
-  /* subtle “floating” feel while stuck */
   transform: translateZ(0);
 }
 @supports (backdrop-filter: blur(8px)){
@@ -82,15 +87,32 @@
   }
 }
 
+/* Make the inner wrapper transparent to let its children (select+button)
+   participate directly in the parent grid (no HTML change needed). */
+.plans-cta-controls{
+  display: contents;
+}
+
 .plans-cta-summary{
+  grid-area: summary;
   display:grid; gap:4px; text-align:left;
 }
 .plans-cta-title{ font-weight:900; letter-spacing:.02em; }
 .plans-cta-title #cta-plan-name{ font-size:1.05rem; }
 .plans-cta-meta{ color: var(--ad-text-mute, #8c97b4); font-size:.95rem; }
 
-.plans-cta-controls{
-  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+/* Interval dropdown goes top-right */
+#cta-interval{
+  grid-area: interval;
+  justify-self: end;
+  align-self: center;
+}
+
+/* Order button gets its own full row, centered, wide */
+#cta-order{
+  grid-area: button;
+  justify-self: center;
+  width: min(720px, 100%);
 }
 
 /* -----------------------------
@@ -109,8 +131,6 @@
   cursor: pointer;
   transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
   line-height: 1.2;
-
-  /* Custom chevron (on the control itself) */
   background-image:
     url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23cbd5e1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
   background-repeat: no-repeat;
@@ -125,7 +145,7 @@
   box-shadow: var(--ad-focus, 0 0 0 3px rgba(47,108,246,.35));
 }
 
-/* Dropdown list colors (where supported) */
+/* Dropdown list colors (browser support varies) */
 .plans-cta-select option{
   background: var(--ad-panel, #1b2132);
   color: var(--ad-text, #e8ecf6);
@@ -133,7 +153,7 @@
 .plans-cta-select option:hover,
 .plans-cta-select option:focus{
   background: var(--ad-accent, #2f6cf6);
-  color: #fff; /* ensure contrast on hover */
+  color: #fff;
 }
 .plans-cta-select option:checked{
   background: color-mix(in srgb, var(--ad-accent, #2f6cf6) 72%, #000 28%);
@@ -141,7 +161,7 @@
 }
 
 /* -----------------------------
-   CTA button
+   CTA button (visual)
 ------------------------------*/
 .plans-cta-btn{
   background: linear-gradient(180deg,
@@ -150,7 +170,7 @@
   color:#fff;
   border: 1px solid color-mix(in srgb, var(--ad-accent, #2f6cf6) 86%, #000 14%);
   border-radius: 12px;
-  padding: 12px 20px;
+  padding: 14px 22px;
   font-weight: 900;
   cursor: pointer;
   box-shadow: 0 8px 20px color-mix(in srgb, var(--ad-accent, #2f6cf6) 30%, transparent);
@@ -166,14 +186,20 @@
 /* -----------------------------
    Responsive
 ------------------------------*/
-@media (max-width: 720px){
+@media (max-width: 900px){
+  /* On medium/smaller screens, stack everything:
+     summary
+     interval
+     button
+  */
   .plans-cta{
     grid-template-columns: 1fr;
+    grid-template-areas:
+      "summary"
+      "interval"
+      "button";
     gap: 10px;
   }
-  .plans-cta-controls{
-    justify-content: space-between;
-    width: 100%;
-  }
-  .plans-cta-btn{ flex: 1 1 auto; }
+  #cta-interval{ justify-self: stretch; }
+  #cta-order{ width: 100%; }
 }
