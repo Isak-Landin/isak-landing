@@ -47,10 +47,6 @@
 
 /* Canvas with subtle ambient (sits inside your dashboard content area) */
 .status-wrap{
-  background:
-    radial-gradient(800px 400px at 10% -10%, var(--co-ambient-a), transparent 60%),
-    radial-gradient(700px 350px at 105% 10%, var(--co-ambient-b), transparent 60%),
-    var(--co-bg);
   padding: 34px 0 70px;
 }
 
