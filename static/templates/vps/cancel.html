@@ -1,24 +1,37 @@
-{% extends "layouts/dashboard_base.html" %}
+{% extends "layouts/dashboard_content_base.html" %}
 {% block title %}Payment Canceled{% endblock %}
 
+{% block page_title %}Payment canceled{% endblock %}
+{% block hero_title %}No worries — nothing was charged.{% endblock %}
+{% block hero_actions %}{% endblock %}
+
 {% block extra_css %}{{ super() }}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/vps/successful_payment.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/vps/checkout_status.css') }}?v=1">
 {% endblock %}
 
-{% block dashboard_content %}
-<section class="success-container">
-  <div class="success-card">
-    <div class="success-icon">❌</div>
-    <h2>Payment Canceled</h2>
-    <p>No charge was made. You can choose another plan anytime.</p>
+{% block page_content %}
+<section class="status-wrap">
+  <div class="status-card">
+    <header class="status-header">
+      <div class="status-icon cancel" aria-hidden="true">✖️</div>
+      <div>
+        <h2 class="status-title">Payment canceled</h2>
+        <p class="status-subtitle">You can pick another plan or try again any time.</p>
+      </div>
+    </header>
 
-    {% if session_id %}
-      <p class="reference">Reference: {{ session_id }}</p>
-    {% endif %}
+    <div class="status-body">
+      <p>No charge was made. If this was a mistake, you can restart checkout below.</p>
 
-    <a href="{{ url_for('vps_blueprint.vps_list_page') }}" class="success-btn">
-      Back to Plans
-    </a>
+      <div class="status-kv">
+        {% if session_id %}<div class="k">Session</div><div class="v"><code>{{ session_id }}</code></div>{% endif %}
+      </div>
+
+      <div class="status-actions">
+        <a href="{{ url_for('vps_blueprint.vps_list_page') }}" class="btn btn-primary">Back to plans</a>
+        <a href="{{ url_for('users_blueprint.dashboard') }}" class="btn btn-ghost">Go to dashboard</a>
+      </div>
+    </div>
   </div>
 </section>
 {% endblock %}
