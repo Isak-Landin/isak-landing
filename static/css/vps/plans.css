@@ -1,9 +1,11 @@
 /* static/css/vps/plans.css
-   Selectable plan cards + footer CTA bar
-   Uses your existing tokens (--ad-*) to stay on-theme.
+   Selectable plan cards + sticky footer CTA bar
+   Theme-aware via your --ad-* tokens.
 */
 
-/* Cards */
+/* -----------------------------
+   Plan cards
+------------------------------*/
 .plan-card{
   background: var(--ad-panel, #1b2132);
   border: 1px solid var(--ad-line, rgba(255,255,255,.08));
@@ -24,21 +26,17 @@
   box-shadow: var(--ad-focus, 0 0 0 3px rgba(47,108,246,.35));
 }
 
-/* Selected state — stronger background & inverted emphasis */
+/* Selected state */
 .plan-card.is-selected{
   background: linear-gradient(180deg, rgba(47,108,246,.18), rgba(47,108,246,.08)), var(--ad-panel-soft, #161b2a);
   border-color: color-mix(in srgb, var(--ad-accent, #2f6cf6) 55%, var(--ad-line-strong) 45%);
   box-shadow: 0 10px 28px rgba(47,108,246,.22);
 }
-.plan-card.is-selected .plan-title{
-  color: #fff;
-}
+.plan-card.is-selected .plan-title{ color:#fff; }
+
 .plan-card .plan-head{ margin-bottom:.5rem; }
 .plan-card .plan-title{
-  margin: 0;
-  font-weight: 800;
-  letter-spacing: .01em;
-  font-size: 1.15rem;
+  margin:0; font-weight:800; letter-spacing:.01em; font-size:1.15rem;
   color: var(--ad-text, #e8ecf6);
 }
 .plan-card .specs{
@@ -47,14 +45,20 @@
 }
 .plan-card .specs li{ margin:.28rem 0; }
 
-/* Hide old per-card CTA (we trigger it programmatically) */
+/* Hide legacy per-card CTA (we trigger it programmatically) */
 .plan-actions{ display:none !important; }
 
-/* =========================
-   Footer CTA bar
-   ========================= */
+/* -----------------------------
+   Sticky Footer CTA bar
+   - Sticks to bottom of viewport while page scrolls
+   - Rests above footer naturally (since it's in content flow)
+------------------------------*/
 .plans-cta{
+  position: sticky;
+  bottom: max(16px, env(safe-area-inset-bottom)); /* stay above bottom + safe area */
+  z-index: 40; /* above cards */
   margin-top: 16px;
+
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 12px;
@@ -63,37 +67,80 @@
   background: var(--ad-panel, #1b2132);
   border: 1px solid var(--ad-line, rgba(255,255,255,.08));
   border-radius: var(--ad-radius, 14px);
-  box-shadow: var(--ad-shadow-soft, 0 3px 10px rgba(0,0,0,.20));
+  box-shadow: var(--ad-shadow-soft, 0 6px 18px rgba(0,0,0,.22));
   padding: 12px;
+
+  /* subtle “floating” feel while stuck */
+  transform: translateZ(0);
 }
+@supports (backdrop-filter: blur(8px)){
+  .plans-cta{
+    background: color-mix(in srgb, var(--ad-panel, #1b2132) 78%, transparent);
+    backdrop-filter: blur(8px) saturate(110%);
+  }
+}
+
 .plans-cta-summary{
-  display: grid; gap: 4px;
-  text-align: left;
+  display:grid; gap:4px; text-align:left;
 }
-.plans-cta-title{
-  font-weight: 900;
-  letter-spacing: .02em;
-}
-.plans-cta-title #cta-plan-name{
-  font-size: 1.05rem;
-}
-.plans-cta-meta{
-  color: var(--ad-text-mute, #8c97b4);
-  font-size: .95rem;
-}
+.plans-cta-title{ font-weight:900; letter-spacing:.02em; }
+.plans-cta-title #cta-plan-name{ font-size:1.05rem; }
+.plans-cta-meta{ color: var(--ad-text-mute, #8c97b4); font-size:.95rem; }
+
 .plans-cta-controls{
-  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
 }
+
+/* -----------------------------
+   Interval dropdown (clearer as a dropdown)
+------------------------------*/
 .plans-cta-select{
   appearance: none;
   -webkit-appearance: none;
-  background: rgba(255,255,255,.05);
+  position: relative;
+  background: rgba(255,255,255,.06);
   color: var(--ad-text, #e8ecf6);
-  border: 1px solid var(--ad-line, rgba(255,255,255,.08));
+  border: 1px solid var(--ad-line, rgba(255,255,255,.1));
   border-radius: 10px;
-  padding: 8px 12px;
-  font-weight: 700;
+  padding: 10px 36px 10px 12px;   /* extra right space for chevron */
+  font-weight: 800;
+  cursor: pointer;
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+  line-height: 1.2;
+
+  /* Custom chevron (on the control itself) */
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23cbd5e1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
 }
+.plans-cta-select:hover{
+  background: rgba(255,255,255,.12);
+  border-color: var(--ad-line-strong, rgba(255,255,255,.18));
+}
+.plans-cta-select:focus{
+  outline: none;
+  box-shadow: var(--ad-focus, 0 0 0 3px rgba(47,108,246,.35));
+}
+
+/* Dropdown list colors (where supported) */
+.plans-cta-select option{
+  background: var(--ad-panel, #1b2132);
+  color: var(--ad-text, #e8ecf6);
+}
+.plans-cta-select option:hover,
+.plans-cta-select option:focus{
+  background: var(--ad-accent, #2f6cf6);
+  color: #fff; /* ensure contrast on hover */
+}
+.plans-cta-select option:checked{
+  background: color-mix(in srgb, var(--ad-accent, #2f6cf6) 72%, #000 28%);
+  color: #fff;
+}
+
+/* -----------------------------
+   CTA button
+------------------------------*/
 .plans-cta-btn{
   background: linear-gradient(180deg,
               color-mix(in srgb, var(--ad-accent, #2f6cf6) 92%, #fff 8%),
@@ -101,18 +148,22 @@
   color:#fff;
   border: 1px solid color-mix(in srgb, var(--ad-accent, #2f6cf6) 86%, #000 14%);
   border-radius: 12px;
-  padding: 10px 18px;
-  font-weight: 800;
+  padding: 12px 20px;
+  font-weight: 900;
   cursor: pointer;
   box-shadow: 0 8px 20px color-mix(in srgb, var(--ad-accent, #2f6cf6) 30%, transparent);
+  transition: transform .08s ease, background-color .15s ease, box-shadow .15s ease;
 }
 .plans-cta-btn:hover{
   background: linear-gradient(180deg,
               color-mix(in srgb, var(--ad-accent, #2f6cf6) 100%, #fff 0%),
               var(--ad-accent, #2f6cf6));
 }
+.plans-cta-btn:active{ transform: translateY(1px); }
 
-/* Responsive */
+/* -----------------------------
+   Responsive
+------------------------------*/
 @media (max-width: 720px){
   .plans-cta{
     grid-template-columns: 1fr;
@@ -120,5 +171,7 @@
   }
   .plans-cta-controls{
     justify-content: space-between;
+    width: 100%;
   }
+  .plans-cta-btn{ flex: 1 1 auto; }
 }
