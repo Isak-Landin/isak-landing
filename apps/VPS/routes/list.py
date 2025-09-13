@@ -5,6 +5,7 @@ from apps.VPS.models import VPSPlan
 from apps.VPS.vps import vps_blueprint
 from apps.VPS.vps_catalog import get_plan_by_code, DEFAULT_OS_OPTIONS  # ← NEW
 
+
 @vps_blueprint.route("/", methods=["GET"])
 def vps_list_page():
     plans = (
