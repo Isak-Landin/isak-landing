@@ -55,8 +55,10 @@
 ------------------------------*/
 .plans-cta{
   position: sticky;
-  bottom: max(16px, env(safe-area-inset-bottom)); /* stay above bottom + safe area */
-  z-index: 40; /* above cards */
+  /* ⬇ use a variable we’ll control from JS */
+  bottom: var(--cta-offset, max(16px, env(safe-area-inset-bottom)));
+  z-index: 40;
+
   margin-top: 16px;
 
   display: grid;
