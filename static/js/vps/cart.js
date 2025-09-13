@@ -1,3 +1,4 @@
+// static/js/vps/cart.js — Mini Cart (Plan + OS + optional SSH key) → POST /vps/checkout
 (function () {
   'use strict';
 
@@ -36,6 +37,7 @@
 
   const catalog = new Map();
 
+  // ---------- UI helpers ----------
   function showDrawer() {
     document.body.classList.add('vps-cart-open');
     if (els.backdrop) els.backdrop.hidden = false;
@@ -54,17 +56,16 @@
   }
   function clearError() { setError(''); }
   function enableSubmit(enabled) {
-    if (els.submit) {
-      els.submit.disabled = !enabled;
-      els.submit.setAttribute('aria-disabled', String(!enabled));
-      els.submit.classList.toggle('loading', !enabled);
-    }
+    if (!els.submit) return;
+    els.submit.disabled = !enabled;
+    els.submit.setAttribute('aria-disabled', String(!enabled));
+    els.submit.classList.toggle('loading', !enabled);
   }
 
-  // IMPORTANT: return 'monthly' | 'yearly' to match backend lookup keys
+  // IMPORTANT: must be 'month' | 'year' to match the Flask route
   function getSelectedInterval() {
     const r = document.querySelector('input[name="interval"]:checked');
-    return r && r.value === 'year' ? 'yearly' : 'monthly';
+    return r && r.value === 'year' ? 'year' : 'month';
   }
 
   function parseOsOptions(list) {
@@ -107,17 +108,17 @@
 
   function renderPrice(p) {
     if (!p) return;
-    const interval = getSelectedInterval(); // 'monthly' | 'yearly'
-    const amount = interval === 'yearly' ? p.priceYear : p.priceMonth;
+    const interval = getSelectedInterval(); // 'month' | 'year'
+    const amount = interval === 'year' ? p.priceYear : p.priceMonth;
     const currency = (p.currency || '').toUpperCase();
     if (els.priceAmount)   els.priceAmount.textContent = (amount != null ? amount : '—');
     if (els.priceCurrency) els.priceCurrency.textContent = currency ? ` ${currency}` : '';
-    if (els.priceInterval) els.priceInterval.textContent = interval === 'yearly' ? ' / year' : ' / month';
+    if (els.priceInterval) els.priceInterval.textContent = interval === 'year' ? ' / year' : ' / month';
   }
 
   function renderPlan(p) {
     if (!p) return;
-    if (els.planCodeInput) els.planCodeInput.value = p.code;
+    if (els.planCodeInput) els.planCodeInput.value = p.code;  // critical for backend
     if (els.name) els.name.textContent = p.name || '—';
     if (els.vcpu) els.vcpu.textContent = p.vcpu ?? '—';
     if (els.ram)  els.ram.textContent  = p.ram  ?? '—';
@@ -129,7 +130,7 @@
   }
 
   function sshLooksLikePublicKey(s) {
-    if (!s) return true;
+    if (!s) return true; // optional
     const line = s.trim().split(/\s+/).slice(0, 2).join(' ');
     return /^(ssh-ed25519|ssh-rsa|ecdsa-sha2-nistp(256|384|521))\s+[A-Za-z0-9+/=]+$/.test(line);
   }
@@ -151,27 +152,23 @@
   }
 
   function currentPlan() {
-    const code = els.planCodeInput ? els.planCodeInput.value.trim() : '';
-    return catalog.get(code);
+    // prefer hidden input; fallback to selected option
+    let code = els.planCodeInput ? els.planCodeInput.value.trim() : '';
+    if (!code && els.planSelect) code = (els.planSelect.value || '').trim();
+    if (!code) return null;
+    return catalog.get(code) || null;
   }
 
-  // Robust redirect handler: JSON {url|redirect_url} OR Location header OR 3xx.
+  // Parse redirect; accept {checkout_url} from backend (primary)
   async function handleRedirect(res) {
-    const loc = res.headers.get('Location') || res.headers.get('location');
-    if (loc) {
-      window.location.assign(loc);
-      return true;
-    }
-    // Try JSON body (Stripe session URL)
+    // JSON field
     let data = {};
     try { data = await res.clone().json(); } catch (_) { /* ignore */ }
-    const redirect = data.redirect_url || data.url;
-    if (redirect) {
-      window.location.assign(redirect);
-      return true;
-    }
-    // If backend returns 204/empty but set Location earlier, we would have caught it.
-    // Nothing found → return false
+    const redirect = data.checkout_url || data.redirect_url || data.url;
+    if (redirect) { window.location.assign(redirect); return true; }
+    // Location header fallback
+    const loc = res.headers.get('Location') || res.headers.get('location');
+    if (loc) { window.location.assign(loc); return true; }
     return false;
   }
 
@@ -180,12 +177,17 @@
     validateForm();
     if (els.submit?.disabled) return;
 
-    const plan = currentPlan();
-    if (!plan) return setError('Missing plan information. Please re-open the cart from a plan.');
+    // Ensure we have a plan
+    let plan = currentPlan();
+    if (!plan && catalog.size === 1) {
+      plan = [...catalog.values()][0];
+      renderPlan(plan);
+    }
+    if (!plan) return setError('Missing plan information. Please open the cart from a plan.');
 
     const payload = {
       plan_code: plan.code,
-      interval:  getSelectedInterval(),       // 'monthly' | 'yearly' (FIXED)
+      interval:  getSelectedInterval(),       // 'month' | 'year'
       os_key:    els.osSelect ? els.osSelect.value.trim() : '',
       ssh_key:   els.sshKey ? els.sshKey.value.trim() : '',
       accept_legal: els.acceptLegal ? !!els.acceptLegal.checked : true
@@ -206,7 +208,6 @@
       }
 
       if (!(await handleRedirect(res))) {
-        // As a last resort, try to read plain text for a URL
         const txt = await res.text();
         if (txt && /^https?:\/\//i.test(txt.trim())) {
           window.location.assign(txt.trim());
@@ -255,7 +256,7 @@
         };
         if (p.code) catalog.set(p.code, p);
       });
-    } catch (_) { /* ignore */ }
+    } catch (_) { /* ignore parse errors */ }
   }
 
   function openWithPlanCode(code) {
