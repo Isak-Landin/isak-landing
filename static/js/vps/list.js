@@ -1,6 +1,7 @@
-// static/js/vps/list.js  (v6)
+// static/js/vps/list.js  (v7)
 // Selectable plan cards + sticky CTA w/ interval selector → open mini-cart
 // + Footer-overlap guard (keeps CTA above footer at any viewport size)
+// + Price view highlight across cards (monthly/yearly)
 
 (function () {
   'use strict';
@@ -33,9 +34,16 @@
         currency: (p.currency || 'EUR').toUpperCase()
       });
     });
-  } catch (_) {/* ignore */}
+  } catch (_) {/* ignore */ }
 
   let selected = null; // plan_code
+
+  // ---- Price pills view helper (drives .show-month / .show-year on grid) ----
+  function applyPriceView() {
+    if (!grid || !ctaInterval) return;
+    grid.classList.remove('show-month', 'show-year');
+    grid.classList.add(ctaInterval.value === 'year' ? 'show-year' : 'show-month');
+  }
 
   function formatPrice(plan, intervalValue) {
     const isYear = intervalValue === 'year';
@@ -55,6 +63,7 @@
     ctaName.textContent = plan.name || '—';
     ctaMeta.textContent = describe(plan, ctaInterval.value);
     cta.hidden = false;
+    applyPriceView(); // keep card price pills in sync with CTA interval
   }
 
   function clearSelection() {
@@ -110,7 +119,10 @@
 
   function wireCTA() {
     if (!cta) return;
-    ctaInterval.addEventListener('change', updateCTA);
+    ctaInterval.addEventListener('change', () => {
+      applyPriceView();
+      updateCTA();
+    });
     ctaOrder.addEventListener('click', openCartForSelected);
   }
 
@@ -156,5 +168,6 @@
     initSelection();
     wireCTA();
     initCtaFooterGuard();
+    applyPriceView(); // set initial pill highlight (defaults to monthly)
   });
 })();

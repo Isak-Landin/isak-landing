@@ -216,3 +216,58 @@
   border: 0;
 }
 
+/* ==============================
+   Price pills inside each card
+   ============================== */
+.plan-price{
+  display:flex; gap:10px; align-items:center;
+  margin:.35rem 0 .4rem;
+}
+
+.price-pill{
+  --pill-bg: rgba(255,255,255,.06);
+  --pill-border: rgba(255,255,255,.10);
+  --pill-text: var(--ad-text, #e8ecf6);
+
+  display:inline-flex; align-items:baseline; gap:6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--pill-bg);
+  border: 1px solid var(--pill-border);
+  color: var(--pill-text);
+  font-weight: 900;
+  letter-spacing: .01em;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+  transition: background .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease, transform .08s ease;
+}
+.price-pill small{ font-weight:700; opacity:.85; }
+
+/* Highlight the currently selected interval (controlled by a class on the grid) */
+.plans-grid.show-month .price--monthly,
+.plans-grid.show-year  .price--yearly{
+  --pill-bg: linear-gradient(180deg,
+               color-mix(in srgb, var(--ad-accent, #2f6cf6) 22%, #fff 0%),
+               rgba(47,108,246,.16));
+  --pill-border: color-mix(in srgb, var(--ad-accent, #2f6cf6) 30%, #000 70%);
+  --pill-text: #ffffff;
+  box-shadow: 0 6px 16px rgba(47,108,246,.20);
+}
+
+/* Non-active pill stays subtle */
+.plans-grid.show-month .price--yearly,
+.plans-grid.show-year  .price--monthly{
+  opacity:.72;
+}
+
+/* When the card is selected, give both pills a bit more punch;
+   the active interval remains strongest via the rules above */
+.plan-card.is-selected .price-pill{
+  --pill-bg: rgba(255,255,255,.10);
+  --pill-border: rgba(255,255,255,.18);
+  --pill-text: #fff;
+}
+
+/* Hover affordance for pills (optional) */
+.price-pill:hover{ transform: translateY(-1px); }
+
+

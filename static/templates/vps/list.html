@@ -52,6 +52,16 @@
             <h3 class="plan-title">{{ p.name }}</h3>
           </header>
 
+          <div class="plan-price">
+            <span class="price-pill price--monthly">
+              {{ p.price_month }} {{ p.currency }}<small>/mo</small>
+            </span>
+            <span class="price-pill price--yearly">
+              {{ p.price_year }} {{ p.currency }}<small>/yr</small>
+            </span>
+          </div>
+
+
           <ul class="specs">
             <li><strong>{{ p.vcpu }}</strong> vCPU</li>
             <li><strong>{{ p.ram_gb }}</strong> GB RAM</li>
@@ -200,6 +210,6 @@
     window.VPS_CHECKOUT_URL = "{{ url_for('vps_blueprint.vps_checkout') }}";
   </script>
   <script src="{{ url_for('static', filename='js/vps/cart.js') }}?v=7"></script>
-  <script src="{{ url_for('static', filename='js/vps/list.js') }}?v=7"></script> {# NEW VERSION #}
+  <script src="{{ url_for('static', filename='js/vps/list.js') }}?v=8"></script> {# NEW VERSION #}
 {% endif %}
 {% endblock %}
