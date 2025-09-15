@@ -219,7 +219,7 @@
 /* ==============================
    Price component — two-variant design
    - Primary vs Alt look (not selected vs unselected)
-   - Shadow reverses on selected cards so it never looks odd
+   - Darker shadows on selected cards to avoid halo
    ============================== */
 
 .plan-price{
@@ -268,8 +268,8 @@
 
 /* -------------------------------------------
    VARIANTS
-   We treat one interval as "primary" (filled) and the other as "alt" (outlined)
-   No dimming — both look intentional.
+   One interval is "primary" (filled) and the other is "alt" (outlined/striped).
+   No opacity dimming — both look intentional.
    ------------------------------------------- */
 
 /* Primary (filled) — driven by grid's show-month/show-year */
@@ -284,7 +284,7 @@
                  inset 0 1px 0 rgba(255,255,255,.08);
 }
 
-/* Alt (outlined) — a different treatment, not "disabled" */
+/* Alt (outlined) — distinct treatment */
 .plans-grid.show-month .price--yearly,
 .plans-grid.show-year  .price--monthly{
   --pill-bg:
@@ -296,7 +296,7 @@
   overflow: hidden;
 }
 
-/* Subtle diagonal micro-stripes for the alt pill to telegraph "different plan" */
+/* Subtle diagonal micro-stripes for the alt pill */
 .plans-grid.show-month .price--yearly::after,
 .plans-grid.show-year  .price--monthly::after{
   content: "";
@@ -313,48 +313,48 @@
   border-radius: inherit;
 }
 
-/* Optional labels via pseudo-elements (so no HTML change) */
+/* Optional labels via pseudo-elements (disabled by default) */
 .price--monthly::before,
 .price--yearly::before{
   content: attr(data-label);
-  display: none; /* set to inline-block if you later want a chip label */
+  display: none;
 }
 
 /* -------------------------------------------
-   SELECTED CARD — reverse/adapt shadow to the elevated bg
-   Keeps primary vs alt contrast; no "both look the same" effect.
+   SELECTED CARD — darker, grounded shadows so pills sit naturally
+   on the brighter selected background. Preserves "primary vs alt".
    ------------------------------------------- */
 .plan-card.is-selected .price-pill{
-  /* Reverse-ish shadow: blend with the brighter, accented card panel */
-  --pill-shadow:
-      0 10px 22px color-mix(in srgb, var(--ad-panel-soft, #161b2a) 54%, transparent),
-      inset 0 1px 0 rgba(255,255,255,.10);
-  --pill-border: rgba(255,255,255,.26);
   --pill-fg: #f3f7ff;
+  /* darker, grounded shadow (no halo against bright bg) */
+  --pill-shadow:
+      0 10px 22px rgba(0,0,0,.36),
+      inset 0 1px 0 rgba(255,255,255,.10);
+  --pill-border: rgba(0,0,0,.28);
 }
 
-/* On selected cards, keep the primary pill clearly stronger */
+/* Primary pill on selected card: still bold, but with darker ambient shadow */
 .plans-grid.show-month .plan-card.is-selected .price--monthly,
 .plans-grid.show-year  .plan-card.is-selected .price--yearly{
   --pill-bg: linear-gradient(180deg,
                color-mix(in srgb, var(--ad-accent, #2f6cf6) 34%, #fff 0%),
                color-mix(in srgb, var(--ad-accent, #2f6cf6) 22%, transparent));
-  --pill-border: color-mix(in srgb, var(--ad-accent, #2f6cf6) 50%, #000 50%);
-  --pill-fg: #fff;
+  --pill-fg: #ffffff;
+  --pill-border: rgba(0,0,0,.32);
   --pill-shadow:
-      0 14px 28px color-mix(in srgb, var(--ad-accent, #2f6cf6) 30%, transparent),
-      inset 0 1px 0 rgba(255,255,255,.14);
+      0 14px 28px rgba(0,0,0,.42),
+      inset 0 1px 0 rgba(255,255,255,.12);
 }
 
-/* And keep the alt pill clearly “different”, but not disabled */
+/* Alt pill on selected card: outlined/striped with darker depth */
 .plans-grid.show-month .plan-card.is-selected .price--yearly,
 .plans-grid.show-year  .plan-card.is-selected .price--monthly{
   --pill-bg:
       linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
-  --pill-border: rgba(255,255,255,.28);
-  --pill-fg: #f0f4ff;
+  --pill-fg: #eef3ff;
+  --pill-border: rgba(0,0,0,.24);
   --pill-shadow:
-      0 10px 22px color-mix(in srgb, var(--ad-panel-soft, #161b2a) 50%, transparent),
+      0 10px 20px rgba(0,0,0,.34),
       inset 0 1px 0 rgba(255,255,255,.10);
 }
 
