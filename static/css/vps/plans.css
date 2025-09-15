@@ -217,57 +217,90 @@
 }
 
 /* ==============================
-   Price pills inside each card
+   Price component – contrasty, theme-aware
    ============================== */
+
 .plan-price{
   display:flex; gap:10px; align-items:center;
-  margin:.35rem 0 .4rem;
+  margin:.5rem 0 .55rem;
 }
 
+/* Base pill (subtle) */
 .price-pill{
   --pill-bg: rgba(255,255,255,.06);
   --pill-border: rgba(255,255,255,.10);
   --pill-text: var(--ad-text, #e8ecf6);
 
-  display:inline-flex; align-items:baseline; gap:6px;
-  padding: 6px 12px;
+  display:inline-flex; align-items:baseline; gap:8px;
+  padding: 8px 14px;
   border-radius: 999px;
   background: var(--pill-bg);
   border: 1px solid var(--pill-border);
   color: var(--pill-text);
-  font-weight: 900;
   letter-spacing: .01em;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
-  transition: background .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease, transform .08s ease;
+  transition: background .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease, transform .08s ease;
 }
-.price-pill small{ font-weight:700; opacity:.85; }
 
-/* Highlight the currently selected interval (controlled by a class on the grid) */
+/* Stronger typographic hierarchy inside the pill */
+.price-pill .price-amount{
+  font-size: 1.15rem;
+  font-weight: 900;
+  line-height: 1;
+}
+.price-pill .price-currency{
+  font-size: .85rem;
+  font-weight: 800;
+  opacity: .9;
+  text-transform: uppercase;
+}
+.price-pill .price-interval{
+  font-size: .85rem;
+  font-weight: 700;
+  opacity: .85;
+}
+
+/* Hover affordance */
+.price-pill:hover{ transform: translateY(-1px); }
+
+/* Active interval highlighting
+   (list.js sets .show-month / .show-year on #plans-grid) */
 .plans-grid.show-month .price--monthly,
 .plans-grid.show-year  .price--yearly{
   --pill-bg: linear-gradient(180deg,
-               color-mix(in srgb, var(--ad-accent, #2f6cf6) 22%, #fff 0%),
-               rgba(47,108,246,.16));
-  --pill-border: color-mix(in srgb, var(--ad-accent, #2f6cf6) 30%, #000 70%);
+               color-mix(in srgb, var(--ad-accent, #2f6cf6) 25%, #fff 0%),
+               color-mix(in srgb, var(--ad-accent, #2f6cf6) 12%, transparent));
+  --pill-border: color-mix(in srgb, var(--ad-accent, #2f6cf6) 38%, #000 62%);
   --pill-text: #ffffff;
-  box-shadow: 0 6px 16px rgba(47,108,246,.20);
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--ad-accent, #2f6cf6) 24%, transparent);
 }
 
-/* Non-active pill stays subtle */
+/* Non-active pill stays subordinate */
 .plans-grid.show-month .price--yearly,
 .plans-grid.show-year  .price--monthly{
-  opacity:.72;
+  opacity:.78;
 }
 
-/* When the card is selected, give both pills a bit more punch;
-   the active interval remains strongest via the rules above */
+/* When a card is selected, both pills step up a bit
+   (the active interval remains the strongest thanks to rules above) */
 .plan-card.is-selected .price-pill{
-  --pill-bg: rgba(255,255,255,.10);
-  --pill-border: rgba(255,255,255,.18);
+  --pill-bg: rgba(255,255,255,.12);
+  --pill-border: rgba(255,255,255,.22);
   --pill-text: #fff;
 }
 
-/* Hover affordance for pills (optional) */
-.price-pill:hover{ transform: translateY(-1px); }
+/* High-contrast variant for selected + active interval combined */
+.plan-card.is-selected .plans-grid.show-month .price--monthly,
+.plan-card.is-selected .plans-grid.show-year  .price--yearly{
+  /* keep the vibrant active style; the .is-selected effect still applies through variables above */
+}
+
+/* Tiny screens: allow pills to wrap without looking cramped */
+@media (max-width: 420px){
+  .plan-price{ flex-wrap: wrap; gap:8px; }
+  .price-pill{ padding:7px 12px; }
+  .price-pill .price-amount{ font-size: 1.05rem; }
+}
+
 
 

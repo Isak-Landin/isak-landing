@@ -53,13 +53,21 @@
           </header>
 
           <div class="plan-price">
-            <span class="price-pill price--monthly">
-              {{ p.price_month }} {{ p.currency }}<small>/mo</small>
+            <!-- Monthly pill -->
+            <span class="price-pill price--monthly" aria-label="Monthly price">
+              <span class="price-amount">{{ p.price_month }}</span>
+              <span class="price-currency">{{ p.currency }}</span>
+              <span class="price-interval">/mo</span>
             </span>
-            <span class="price-pill price--yearly">
-              {{ p.price_year }} {{ p.currency }}<small>/yr</small>
+
+            <!-- Yearly pill -->
+            <span class="price-pill price--yearly" aria-label="Yearly price">
+              <span class="price-amount">{{ p.price_year }}</span>
+              <span class="price-currency">{{ p.currency }}</span>
+              <span class="price-interval">/yr</span>
             </span>
           </div>
+
 
 
           <ul class="specs">
