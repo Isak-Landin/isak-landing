@@ -217,115 +217,149 @@
 }
 
 /* ==============================
-   Price component – contrasty, responsive, selection-safe
+   Price component — two-variant design
+   - Primary vs Alt look (not selected vs unselected)
+   - Shadow reverses on selected cards so it never looks odd
    ============================== */
 
 .plan-price{
   display:flex; gap:10px; align-items:stretch;
-  margin:.5rem 0 .55rem;
-  flex-wrap: wrap;              /* allow pills to wrap on narrow cards */
+  margin:.55rem 0 .65rem;
+  flex-wrap: wrap;
 }
 
-/* Base pill (subtle) */
+/* Base pill */
 .price-pill{
+  /* Neutral base tokens */
+  --pill-fg: var(--ad-text, #e8ecf6);
   --pill-bg: rgba(255,255,255,.06);
-  --pill-border: rgba(255,255,255,.10);
-  --pill-text: var(--ad-text, #e8ecf6);
+  --pill-border: rgba(255,255,255,.12);
+  --pill-shadow: 0 6px 16px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.05);
 
   display:inline-flex; align-items:baseline; gap:8px;
   padding: 10px 14px;
   border-radius: 999px;
   background: var(--pill-bg);
   border: 1px solid var(--pill-border);
-  color: var(--pill-text);
+  color: var(--pill-fg);
   letter-spacing: .01em;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
-  transition: background .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease, transform .08s ease;
+  box-shadow: var(--pill-shadow);
+  transition: background .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease, transform .08s ease;
 
-  /* Let each pill grow but never overflow the card */
-  flex: 1 1 230px;              /* two per row on wide cards, stack on narrow */
+  flex: 1 1 240px;  /* two pills per row on wide, stack on narrow */
   min-width: 180px;
   max-width: 100%;
 }
 
-/* Typography inside the pill */
+/* Typesetting inside */
 .price-pill .price-amount{
-  /* clamp keeps long numbers from blowing out layout */
-  font-size: clamp(1rem, 2.1vw, 1.25rem);
-  font-weight: 900;
-  line-height: 1;
+  font-size: clamp(1rem, 2.1vw, 1.26rem);
+  font-weight: 900; line-height: 1;
 }
 .price-pill .price-currency{
-  font-size: .85rem;
-  font-weight: 800;
-  opacity: .9;
-  text-transform: uppercase;
-  white-space: nowrap;
+  font-size: .85rem; font-weight: 800; opacity: .95; text-transform: uppercase; white-space: nowrap;
 }
 .price-pill .price-interval{
-  font-size: .85rem;
-  font-weight: 700;
-  opacity: .85;
-  white-space: nowrap;
+  font-size: .85rem; font-weight: 700; opacity: .85; white-space: nowrap;
 }
 
-/* Hover affordance */
+/* Hover hint */
 .price-pill:hover{ transform: translateY(-1px); }
 
-/* ------------------------------
-   Active interval highlighting
-   (list.js adds .show-month / .show-year to #plans-grid)
-   ------------------------------ */
+/* -------------------------------------------
+   VARIANTS
+   We treat one interval as "primary" (filled) and the other as "alt" (outlined)
+   No dimming — both look intentional.
+   ------------------------------------------- */
 
-/* Active pill: strong, high-contrast */
+/* Primary (filled) — driven by grid's show-month/show-year */
 .plans-grid.show-month .price--monthly,
 .plans-grid.show-year  .price--yearly{
   --pill-bg: linear-gradient(180deg,
                color-mix(in srgb, var(--ad-accent, #2f6cf6) 28%, #fff 0%),
-               color-mix(in srgb, var(--ad-accent, #2f6cf6) 16%, transparent));
-  --pill-border: color-mix(in srgb, var(--ad-accent, #2f6cf6) 42%, #000 58%);
-  --pill-text: #ffffff;
-  box-shadow: 0 10px 26px color-mix(in srgb, var(--ad-accent, #2f6cf6) 24%, transparent);
+               color-mix(in srgb, var(--ad-accent, #2f6cf6) 14%, transparent));
+  --pill-border: color-mix(in srgb, var(--ad-accent, #2f6cf6) 40%, #000 60%);
+  --pill-fg: #fff;
+  --pill-shadow: 0 12px 26px color-mix(in srgb, var(--ad-accent, #2f6cf6) 26%, transparent),
+                 inset 0 1px 0 rgba(255,255,255,.08);
 }
 
-/* Inactive pill: clearly subordinate */
+/* Alt (outlined) — a different treatment, not "disabled" */
 .plans-grid.show-month .price--yearly,
 .plans-grid.show-year  .price--monthly{
-  opacity:.78;
-}
-
-/* ------------------------------
-   Selected card refinement
-   ------------------------------ */
-
-/* When a card is selected, give BOTH pills a slight lift,
-   but DO NOT destroy active/inactive contrast. */
-.plans-grid .plan-card.is-selected .price-pill{
-  --pill-bg: rgba(255,255,255,.10);
+  --pill-bg:
+      linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
   --pill-border: rgba(255,255,255,.20);
-  --pill-text: #f3f6ff;
+  --pill-fg: var(--ad-text, #e8ecf6);
+  --pill-shadow: 0 6px 16px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.04);
+  position: relative;
+  overflow: hidden;
 }
 
-/* Keep the active pill the strongest even on a selected card */
+/* Subtle diagonal micro-stripes for the alt pill to telegraph "different plan" */
+.plans-grid.show-month .price--yearly::after,
+.plans-grid.show-year  .price--monthly::after{
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(255,255,255,.06) 0px,
+    rgba(255,255,255,.06) 6px,
+    transparent 6px,
+    transparent 12px
+  );
+  opacity: .22;
+  border-radius: inherit;
+}
+
+/* Optional labels via pseudo-elements (so no HTML change) */
+.price--monthly::before,
+.price--yearly::before{
+  content: attr(data-label);
+  display: none; /* set to inline-block if you later want a chip label */
+}
+
+/* -------------------------------------------
+   SELECTED CARD — reverse/adapt shadow to the elevated bg
+   Keeps primary vs alt contrast; no "both look the same" effect.
+   ------------------------------------------- */
+.plan-card.is-selected .price-pill{
+  /* Reverse-ish shadow: blend with the brighter, accented card panel */
+  --pill-shadow:
+      0 10px 22px color-mix(in srgb, var(--ad-panel-soft, #161b2a) 54%, transparent),
+      inset 0 1px 0 rgba(255,255,255,.10);
+  --pill-border: rgba(255,255,255,.26);
+  --pill-fg: #f3f7ff;
+}
+
+/* On selected cards, keep the primary pill clearly stronger */
 .plans-grid.show-month .plan-card.is-selected .price--monthly,
 .plans-grid.show-year  .plan-card.is-selected .price--yearly{
   --pill-bg: linear-gradient(180deg,
-               color-mix(in srgb, var(--ad-accent, #2f6cf6) 36%, #fff 0%),
+               color-mix(in srgb, var(--ad-accent, #2f6cf6) 34%, #fff 0%),
                color-mix(in srgb, var(--ad-accent, #2f6cf6) 22%, transparent));
   --pill-border: color-mix(in srgb, var(--ad-accent, #2f6cf6) 50%, #000 50%);
-  --pill-text: #ffffff;
-  box-shadow: 0 12px 28px color-mix(in srgb, var(--ad-accent, #2f6cf6) 28%, transparent);
-  opacity: 1; /* override any inherited dimming */
+  --pill-fg: #fff;
+  --pill-shadow:
+      0 14px 28px color-mix(in srgb, var(--ad-accent, #2f6cf6) 30%, transparent),
+      inset 0 1px 0 rgba(255,255,255,.14);
 }
 
-/* And make the non-active pill clearly dimmer on a selected card */
+/* And keep the alt pill clearly “different”, but not disabled */
 .plans-grid.show-month .plan-card.is-selected .price--yearly,
 .plans-grid.show-year  .plan-card.is-selected .price--monthly{
-  opacity: .65;
+  --pill-bg:
+      linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
+  --pill-border: rgba(255,255,255,.28);
+  --pill-fg: #f0f4ff;
+  --pill-shadow:
+      0 10px 22px color-mix(in srgb, var(--ad-panel-soft, #161b2a) 50%, transparent),
+      inset 0 1px 0 rgba(255,255,255,.10);
 }
 
-/* Tiny screens: tighter paddings so long amounts still fit */
+/* Small screens: keep them readable and non-clipping */
 @media (max-width: 420px){
-  .price-pill{ padding:8px 12px; min-width: 150px; }
-  .price-pill .price-amount{ font-size: clamp(.95rem, 4.5vw, 1.1rem); }
+  .price-pill{ padding:9px 12px; min-width: 150px; }
+  .price-pill .price-amount{ font-size: clamp(.95rem, 4.4vw, 1.12rem); }
 }
