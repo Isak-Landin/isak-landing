@@ -1,4 +1,4 @@
-{# templates/admin/chat_inbox.html (or your current path) #}
+{# templates/admin/admin_chat_inbox.html (or your current path) #}
 {% extends "layouts/admin_dashboard_content_base.html" %}
 
 {% block page_title %}Chat Inbox{% endblock %}
@@ -46,5 +46,7 @@
   {% endif %}
 {% endblock %}
 
-{% block extra_css %}{{ super() }}{% endblock %}
+{% block extra_css %}{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chat/admin_chat_inbox.css') }}">
+{% endblock %}
 {% block extra_js %}{{ super() }}{% endblock %}

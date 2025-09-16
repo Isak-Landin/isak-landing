@@ -1,0 +1,108 @@
+/* Admin > Chat Inbox list styling (scoped to the content area) */
+.ad-main .split-list{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.ad-main .split-list > li{
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* emoji | text | button */
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 12px;
+  background: rgba(255,255,255,.03);
+  box-shadow: 0 4px 14px rgba(0,0,0,.18);
+}
+
+.ad-main .split-list > li .emoji{
+  font-size: 18px;
+  opacity: .9;
+}
+
+.ad-main .split-list > li .text{
+  min-width: 0;                 /* allow wrapping */
+  line-height: 1.5;
+}
+
+.ad-main .split-list > li .text strong{
+  font-weight: 800;
+}
+
+.ad-main .split-list > li .text small{
+  display: inline-block;
+  margin-top: 2px;
+  opacity: .75;
+  font-variant-numeric: tabular-nums;
+}
+
+.ad-main .split-list > li .badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: .02em;
+  background: rgba(91,140,255,.15);
+  border: 1px solid rgba(91,140,255,.35);
+  color: #cfe0ff;
+  margin-left: 8px;
+}
+
+/* unread accent */
+.ad-main .split-list > li.unread-chat{
+  border-color: rgba(91,140,255,.45);
+  background: linear-gradient(180deg, rgba(91,140,255,.10), rgba(91,140,255,.04));
+}
+
+/* Button (tight) */
+.ad-main .split-list > li .button.small{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: .45rem .80rem;
+  border-radius: 10px;
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,.22);
+  color: #e6e9f3;
+  background: transparent;
+  font-weight: 700;
+  transition: border-color .12s ease, transform .12s ease, background .12s ease;
+  white-space: nowrap;
+}
+.ad-main .split-list > li .button.small:hover{
+  transform: translateY(-1px);
+  border-color: #fff;
+  background: rgba(255,255,255,.05);
+}
+
+/* Empty state */
+.ad-main .empty-state{
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 24px;
+  border: 1px dashed rgba(255,255,255,.14);
+  border-radius: 12px;
+  background: rgba(255,255,255,.02);
+}
+.ad-main .empty-state .emoji{ font-size: 24px; opacity: .9; margin-bottom: 8px; }
+.ad-main .empty-state .empty-text{ opacity: .85; }
+
+/* Responsive: stack when narrow */
+@media (max-width: 560px){
+  .ad-main .split-list > li{
+    grid-template-columns: auto 1fr; /* emoji | text */
+    grid-template-rows: auto auto;
+  }
+  .ad-main .split-list > li .button.small{
+    grid-column: 1 / -1; /* full width row */
+    margin-top: 8px;
+    width: 100%;
+  }
+}
