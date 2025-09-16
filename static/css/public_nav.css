@@ -10,12 +10,13 @@
   --danger-weak: rgba(255,107,107,.18);
   --danger-line: rgba(255,107,107,.32);
 
-  /* Brand-specific tuning */
-  --brand-grad: linear-gradient(90deg, #f3f6ff 0%, #d8e3ff 40%, #cfe0ff 100%);
-  --brand-ink: #eaf0ff;
+  /* Brand palette (clean + monochrome by default) */
+  --brand-ink: #ffffff;   /* wordmark color */
+  --badge-ink: #c9d6ff;   /* HN letters in badge */
+  --badge-line: rgba(201,214,255,.45);
 }
 
-/* Glassy, high-contrast bar */
+/* ===== Bar ===== */
 .public-nav{
   position: sticky; top: 0; z-index: 50;
   background: linear-gradient(180deg, rgba(9,13,22,.94), rgba(9,13,22,.76));
@@ -33,50 +34,46 @@
   align-items:center; min-height:68px;
 }
 
-/* -------- Brand lockup (badge + wordmark) -------- */
+/* ===== Brand ===== */
+/* Keep markup identical: <a class="brand"><span class="brand-badge">HN</span><span class="brand-word">HostNodex</span></a> */
 .brand{
   display:inline-flex; align-items:center; gap:10px;
   text-decoration:none !important;
   color:inherit;
   padding:4px 0;
-  box-shadow:none !important;
   border: none !important;
+  box-shadow:none !important;
   transition:transform .2s ease, opacity .2s ease;
 }
 .brand:hover{ transform:translateY(-1px); }
 
-/* Badge: cleaner, less chunky */
+/* Badge — clean outline circle, no glow, no gradients */
 .brand-badge{
   display:grid; place-items:center;
-  width:28px; height:28px; border-radius:10px;
-  background:
-    radial-gradient(120% 120% at 20% 0%, rgba(255,255,255,.06), transparent 60%),
-    rgba(255,255,255,.04);
-  border:1px solid var(--line);
-  color:#fff;
-  font-weight:700;           /* was 900 */
-  font-size:11px;            /* slightly smaller to reduce “blocky” feel */
-  letter-spacing:.04em;      /* a hair more air between letters */
+  width:24px; height:24px;            /* smaller = less “chunky” */
+  border-radius:999px;                 /* circle */
+  background: transparent;             /* no fill */
+  border:1px solid var(--badge-line);  /* thin outline */
+  color: var(--badge-ink);
+  font-weight:600;                      /* slimmer */
+  font-size:11px;
+  letter-spacing:.02em;
   line-height:1;
-  box-shadow: 0 4px 14px rgba(0,0,0,.35);
+  box-shadow:none;                      /* remove inner/outer shadows */
 }
 
-/* Wordmark: slimmer, tighter tracking, softer glow */
+/* Wordmark — pure white, slimmer, no gradient, no shadow */
 .brand-word{
-  font-weight:700;                 /* was 800 — slimmer */
-  letter-spacing:.01em;            /* less spread = more premium */
-  font-size: clamp(17px, 1.8vw, 19px);
-  background: var(--brand-grad);
-  -webkit-background-clip: text; background-clip: text;
-  color: transparent;
-  /* Fallback color if background-clip isn’t supported */
-  @supports not (-webkit-background-clip: text) {
-    color: var(--brand-ink);
-  }
-  text-shadow: 0 1px 0 rgba(0,0,0,.28); /* softer than previous .35 */
+  color: var(--brand-ink);              /* solid white */
+  font-weight:600;                      /* down from 700/800 */
+  font-size: clamp(16px, 1.7vw, 18px);  /* slightly smaller cap */
+  letter-spacing: -0.005em;             /* tighter micro-tracking */
+  text-shadow:none;                     /* kill glow */
+  -webkit-background-clip: initial;     /* ensure not clipping */
+  background: none;                     /* remove gradient entirely */
 }
 
-/* -------- Center links as chips (no underline) -------- */
+/* ===== Center links ===== */
 .nav-links{
   display:flex; justify-content:center; align-items:center;
   gap:18px; list-style:none; margin:0; padding:0;
@@ -86,7 +83,7 @@
   font-size:15px; font-weight:700; letter-spacing:.02em;
   padding:8px 12px; border-radius:12px;
   border:1px solid transparent; background: transparent;
-  text-shadow: 0 1px 1px rgba(0,0,0,.35);
+  text-shadow: none; /* remove chip text glow to match cleaner brand */
   transition: color .2s ease, border-color .2s ease, background .2s ease, transform .15s ease, box-shadow .2s ease;
 }
 .nav-links a:hover{
@@ -98,10 +95,10 @@
   color:#fff; transform: translateY(-1px);
   background: var(--chip-active);
   border-color: var(--ring);
-  box-shadow: 0 6px 18px rgba(64,128,255,.18) inset, 0 2px 10px rgba(64,128,255,.25);
+  box-shadow: 0 0 0 0 rgba(0,0,0,0); /* subtler: remove inner glow */
 }
 
-/* -------- Right actions (desktop) -------- */
+/* ===== Right actions ===== */
 .nav-actions{
   margin-left:auto; display:flex; align-items:center; gap:10px;
 }
@@ -115,7 +112,21 @@
   font-size:14px;
 }
 
-/* Outline (Log in) */
+/* Buttons */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:.52rem 1rem; border-radius:12px;
+  text-decoration:none; cursor:pointer;
+  font-weight:800; letter-spacing:.02em;
+  border:1px solid var(--line);
+  color:var(--ink-strong); background:transparent;
+  text-shadow: none; /* unify with cleaner look */
+  transition: border-color .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease, transform .15s ease;
+}
+.btn svg{ display:block; }
+.btn:hover{ border-color:#fff; color:#fff; transform: translateY(-1px); }
+
+/* Variants */
 .btn.outline{
   border:1px solid rgba(255,255,255,.28);
   background:rgba(255,255,255,.04);
@@ -125,42 +136,11 @@
   border-color:#fff;
   background:rgba(255,255,255,.08);
 }
-
-/* Primary pill (Create account) */
-.btn.primary{
-  border:none;
-  color:#fff;
-  background:var(--cta-gradient);
-  font-weight:800;
-  border-radius:999px;
-  padding:.55rem 1.2rem;
-  box-shadow:0 0 0 1px rgba(255,255,255,.08) inset, 0 0 10px rgba(60,140,255,.35);
-}
-.btn.primary:hover{
-  box-shadow:0 0 0 1px rgba(255,255,255,.16) inset, 0 0 18px rgba(60,140,255,.55);
-}
-
-/* Base button */
-.btn{
-  display:inline-flex; align-items:center; justify-content:center; gap:8px;
-  padding:.52rem 1rem; border-radius:12px;
-  text-decoration:none; cursor:pointer;
-  font-weight:800; letter-spacing:.02em;
-  border:1px solid var(--line);
-  color:var(--ink-strong); background:transparent;
-  text-shadow: 0 1px 1px rgba(0,0,0,.35);
-  transition: border-color .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease, transform .15s ease;
-}
-.btn svg{ display:block; }
-.btn:hover{ border-color:#fff; color:#fff; transform: translateY(-1px); }
-
-/* Variants */
-.btn.outline{ border-color: rgba(255,255,255,.24); }
 .btn.soft{
   background: rgba(255,255,255,.06);
   border-color: rgba(255,255,255,.22);
   color:#fff;
-  box-shadow: 0 6px 20px rgba(0,0,0,.28) inset;
+  box-shadow:none; /* remove inset heaviness */
 }
 .btn.soft:hover{
   background: rgba(255,255,255,.10);
@@ -170,10 +150,10 @@
 .btn.primary{
   border:none; color:#fff;
   background: var(--cta-gradient);
-  box-shadow: 0 0 0 1px rgba(255,255,255,.08) inset, 0 0 14px rgba(60,140,255,.45);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.08) inset, 0 0 12px rgba(60,140,255,.40);
 }
 .btn.primary:hover{
-  box-shadow: 0 0 0 1px rgba(255,255,255,.16) inset, 0 0 22px rgba(60,140,255,.6);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.16) inset, 0 0 18px rgba(60,140,255,.55);
 }
 .btn.destructive{
   color: var(--danger);
@@ -187,13 +167,12 @@
 }
 .btn.icon svg{ margin-right:2px; }
 
-/* -------- Mobile -------- */
+/* ===== Mobile ===== */
 .nav-toggle{
   display:none; border:1px solid var(--line); background:transparent; color:var(--ink-strong);
   border-radius:10px; padding:.45rem .65rem; cursor:pointer;
 }
 
-/* Mobile drawer + actions */
 .nav-actions-mobile{
   display:none; gap:8px; padding:10px 16px 14px;
   border-bottom:1px solid var(--line);
@@ -204,7 +183,7 @@
 @media (max-width: 860px){
   .nav-row{ grid-template-columns:auto auto auto; min-height:64px; display: flex; }
   .nav-toggle{ display:block; margin-left:auto; }
-  .nav-actions{ display:none; } /* desktop actions hidden */
+  .nav-actions{ display:none; }
   .nav-links{
     display:none; flex-direction:column; align-items:flex-start; gap:8px;
     position:absolute; left:0; right:0; top:64px;
