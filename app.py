@@ -139,6 +139,35 @@ def inject_asset_version():
     import os, time
     return {"config": {"ASSET_VERSION": os.getenv("ASSET_VERSION", str(int(time.time()))) }}
 
+@app.after_request
+def add_security_headers(resp):
+    # Content Security Policy in *Report-Only* mode first to avoid breakage
+    # Tighten later to enforce (switch header name).
+    csp = (
+        "default-src 'self'; "
+        "img-src 'self' data:; "
+        "style-src 'self'; "
+        "script-src 'self' https://cdn.socket.io; "
+        "connect-src 'self' https://cdn.socket.io; "
+        "font-src 'self' data:; "
+        "object-src 'none'; "
+        "base-uri 'self'; "
+        "frame-ancestors 'none'"
+    )
+    resp.headers.setdefault("Content-Security-Policy-Report-Only", csp)
+
+    # Other modern headers
+    resp.headers.setdefault("X-Content-Type-Options", "nosniff")
+    resp.headers.setdefault("X-Frame-Options", "DENY")
+    resp.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    resp.headers.setdefault("Permissions-Policy",
+                            "geolocation=(), microphone=(), camera=(), payment=()")
+    # HSTS only if always HTTPS (comment out for local dev over http)
+    resp.headers.setdefault("Strict-Transport-Security",
+                            "max-age=31536000; includeSubDomains; preload")
+    return resp
+
+
 
 migrate = Migrate(app, db)
 
