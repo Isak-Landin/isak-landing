@@ -102,7 +102,7 @@ def handle_send_message(data):
             chat_id=chat_id,
             sender=role_value if role_value is not None else ("admin" if admin else "user"),
             sender_email=getattr(current_user, "email", None),
-            content=text_raw,            # NOTE: your model field is `content`
+            message=text_raw,
             is_read=False
         )
         db.session.add(msg)
