@@ -1,48 +1,133 @@
-// ---- create/share ONE global socket for all chat scripts ----
-window.socket = window.socket || io({ transports: ["websocket"] });
+// static/js/chat/admin_chat.js
+// Mirrors user_chat.v2 structure, no optimistic render (prevents double-post).
+// Renders bubbles identical to the server HTML so CSS applies 1:1.
 
-document.addEventListener("DOMContentLoaded", () => {
-  const socket = window.socket; // reuse the global
+console.info("[admin_chat] loaded from:", document.currentScript && document.currentScript.src);
 
-  const messagesContainer = document.getElementById("chat-messages");
-  if (!messagesContainer) return;
+// Reuse a single socket instance created elsewhere (chat-core or this file)
+window.socket = window.socket || io({ path: "/socket.io/", withCredentials: true });
 
-  const chatId = messagesContainer.dataset.chatId;
-  const form = document.getElementById("admin-chat-form");
-  const textarea = form?.querySelector("textarea");
+(function () {
+  const socket = window.socket;
 
-  // Join the chat room once the DOM is ready
-  if (chatId) socket.emit("join_chat", { chat_id: parseInt(chatId, 10) });
+  document.addEventListener("DOMContentLoaded", () => {
+    const messagesContainer = document.getElementById("chat-messages");
+    if (!messagesContainer) return;
 
-  // Scroll to bottom initially (chat-core will also manage this)
-  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    // Prevent double-binding if hot-reloaded
+    if (messagesContainer.__adminChatBound) return;
+    messagesContainer.__adminChatBound = true;
 
-  // Handle incoming messages
-  socket.on("receive_message", (data) => {
-    if (parseInt(chatId, 10) !== parseInt(data.chat_id, 10)) return;
+    const chatId = Number.parseInt(messagesContainer.dataset.chatId, 10);
+    if (!Number.isInteger(chatId)) return;
 
-    const msgDiv = document.createElement("div");
-    msgDiv.classList.add("chat-message", data.sender); // note: 'admin'/'user' classes
-    msgDiv.innerHTML = `
-      <strong>${data.sender.charAt(0).toUpperCase() + data.sender.slice(1)}:</strong> ${data.message}
-      <br><small>${data.timestamp}</small>
-    `;
-    messagesContainer.appendChild(msgDiv);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  });
+    // ---- Utilities ----
+    const atBottom = () =>
+      messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight <= 2;
 
-  // Handle sending message
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const message = textarea.value.trim();
-    if (!message) return;
+    const scrollToBottom = (smooth = false) =>
+      messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: smooth ? "smooth" : "auto" });
 
-    socket.emit("send_message", {
-      chat_id: parseInt(chatId, 10),
-      sender: "admin",
-      message,
+    // Format like dt_short filter on the page:
+    // - Today: HH:mm
+    // - Other day: YYYY-MM-DD HH:mm
+    function pad(n) { return n < 10 ? "0" + n : "" + n; }
+    function formatDtShort(isoOrStr) {
+      if (!isoOrStr) return "";
+      const d = new Date(isoOrStr);
+      if (isNaN(d.getTime())) return String(isoOrStr);
+
+      const now = new Date();
+      const sameDay =
+        d.getFullYear() === now.getFullYear() &&
+        d.getMonth() === now.getMonth() &&
+        d.getDate() === now.getDate();
+
+      if (sameDay) {
+        return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      }
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    // De-dup incoming events
+    const seen = new Set();
+    const markSeen = (m) => {
+      const key = m?.id ?? `${m?.chat_id}|${m?.timestamp}|${m?.sender}|${m?.message}`;
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      if (seen.size > 1000) { const it = seen.values(); seen.delete(it.next().value); }
+      return true;
+    };
+
+    // Build DOM exactly like the server-rendered template
+    function buildMessageNode({ sender, sender_label, message, timestamp, isMine }) {
+      const root = document.createElement("div");
+      root.className = `chat-message ${isMine ? "me" : "them"} ${sender || ""}`.trim();
+
+      const bubble = document.createElement("div");
+      bubble.className = "msg-bubble";
+      root.appendChild(bubble);
+
+      const header = document.createElement("div");
+      header.className = "msg-header";
+      bubble.appendChild(header);
+
+      const senderSpan = document.createElement("span");
+      senderSpan.className = "sender";
+      senderSpan.textContent = sender_label || (isMine ? "You" : "User");
+      header.appendChild(senderSpan);
+
+      const timeSpan = document.createElement("span");
+      timeSpan.className = "timestamp";
+      timeSpan.textContent = formatDtShort(timestamp);
+      header.appendChild(timeSpan);
+
+      const body = document.createElement("div");
+      body.className = "msg-body";
+      body.textContent = message ?? "";
+      bubble.appendChild(body);
+
+      return root;
+    }
+
+    // Clear any legacy listeners that might have been attached by older scripts
+    socket.off("receive_message");
+    socket.off("connect");
+    socket.off("reconnect");
+
+    // Join the room on connect/reconnect
+    const join = () => socket.emit("join_chat", { chat_id: chatId });
+    socket.on("connect", join);
+    socket.on("reconnect", join);
+
+    // Render incoming messages using the bubble structure
+    socket.on("receive_message", (data) => {
+      if (Number(data.chat_id) !== chatId) return;
+      if (!markSeen(data)) return;
+
+      // On the admin page, my messages are those from 'admin'
+      const isMine = data.sender === "admin";
+      const node = buildMessageNode({
+        sender: data.sender,
+        sender_label: data.sender_label,
+        message: data.message,
+        timestamp: data.timestamp,
+        isMine
+      });
+
+      const wasAtBottom = atBottom();
+      messagesContainer.appendChild(node);
+
+      // If you have the “new messages” indicator wired globally, let it know
+      window.__chatIndicator?.onNewMessage?.(isMine, { smooth: true });
+
+      // Fall back to autoscroll if indicator not present or message is mine
+      if (!window.__chatIndicator && (isMine || wasAtBottom)) {
+        scrollToBottom(true);
+      }
     });
 
-    textarea.value = "";
+    // Initial scroll
+    scrollToBottom(false);
   });
-});
+})();
