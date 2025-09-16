@@ -1,6 +1,4 @@
-/* ================================
-   Public index page content (glass cards, matched to page theme)
-   ================================ */
+/* Public index page content (cards + plans aligned to theme) */
 
 :root{
   --bg:#0b0f19;
@@ -11,7 +9,7 @@
   --ring:rgba(116,164,255,.35);
   --cta-gradient:linear-gradient(90deg,#5b8cff,#3ac7ff);
 
-  /* Card surface tuned to match the background (no grey cast) */
+  /* Card surface tuned to match the background */
   --card-bg: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
   --card-bg-hover: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.03));
 
@@ -21,18 +19,6 @@
   --ad-shadow:0 8px 22px rgba(0,0,0,.28);
   --ad-shadow-soft:0 4px 14px rgba(0,0,0,.22);
 }
-
-/* Sections */
-.section{ padding:42px 0; border-bottom:1px solid var(--line); }
-.section:last-of-type{ border-bottom:0; }
-
-.section-head{
-  display:flex; justify-content:space-between; align-items:center;
-  margin-bottom:18px;
-}
-.section-head h2{ margin:0; font-size:clamp(20px,2.4vw,28px); font-weight:800; }
-.link-more{ color:var(--ink); text-decoration:none; font-size:14px; opacity:.85; }
-.link-more:hover{ opacity:1; }
 
 /* ===== Feature tiles ===== */
 .grid-3{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
@@ -99,7 +85,7 @@
 .price{ font-size:22px; font-weight:800; color:#fff; }
 .price span{ font-size:14px; opacity:.8; margin-left:2px; }
 
-/* CTA */
+/* CTA (plan button) */
 .plan-btn{
   display:inline-flex; align-items:center; justify-content:center;
   min-height:40px; padding:.55rem 1rem;
@@ -116,7 +102,7 @@
 }
 .plan-btn:active{ transform: translateY(0); }
 
-/* Callout */
+/* Callout (index only) */
 .callout{ background: radial-gradient(80% 120% at 20% 0%, rgba(255,255,255,.04), transparent 60%); }
 .callout-body{
   background: var(--card-bg);
@@ -125,7 +111,7 @@
   padding:24px; text-align:center;
 }
 
-/* Final CTA */
+/* Final CTA (index only) */
 .final-cta{ text-align:center; }
 .final-cta h2{ margin:0 0 6px; font-size:clamp(20px,2.6vw,28px); }
 .final-cta p{ margin:0 0 14px; color:var(--muted); }
