@@ -6,7 +6,13 @@ home_blueprint = Blueprint("home_blueprint", __name__, template_folder="../../st
 
 @home_blueprint.route("/")
 def index():
-    return render_template("public/index.html")
+    from apps.VPS.vps_catalog import VPS_PLANS
+
+    # pick first 3 plans as teaser
+    plans_teaser = VPS_PLANS[:3]
+
+    return render_template("public/index.html", plans_teaser=plans_teaser)
+
 
 
 @home_blueprint.route("/robots.txt")

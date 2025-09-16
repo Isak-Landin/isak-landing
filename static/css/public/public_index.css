@@ -1,219 +1,137 @@
 /* ================================
-   Public index page content (refreshed to match dashboard vibe)
+   Public index page content (glass cards, matched to page theme)
    ================================ */
 
-:root {
-  /* keep existing public tokens */
-  --panel: #121725;
-  --ink: #e6e9f3;
-  --muted: #b4b9c7;
-  --line: rgba(255,255,255,.08);
-  --ring: rgba(116,164,255,.35);
-  --cta-gradient: linear-gradient(90deg, #5b8cff, #3ac7ff);
+:root{
+  --bg:#0b0f19;
+  --panel:#121725;
+  --ink:#e6e9f3;
+  --muted:#b4b9c7;
+  --line:rgba(255,255,255,.08);
+  --ring:rgba(116,164,255,.35);
+  --cta-gradient:linear-gradient(90deg,#5b8cff,#3ac7ff);
 
-  /* light aliases mirroring dashboard tokens (used below) */
-  --ad-radius: 14px;
-  --ad-radius-sm: 10px;
-  --ad-shadow: 0 6px 18px rgba(0,0,0,.25);
-  --ad-shadow-soft: 0 3px 10px rgba(0,0,0,.20);
+  /* Card surface tuned to match the background (no grey cast) */
+  --card-bg: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+  --card-bg-hover: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.03));
+
+  /* Radii/shadows aligned with dashboard */
+  --ad-radius:14px;
+  --ad-radius-sm:10px;
+  --ad-shadow:0 8px 22px rgba(0,0,0,.28);
+  --ad-shadow-soft:0 4px 14px rgba(0,0,0,.22);
 }
 
 /* Sections */
-.section {
-  padding: 42px 0;
-  border-bottom: 1px solid var(--line);
-}
-.section:last-of-type { border-bottom: none; }
+.section{ padding:42px 0; border-bottom:1px solid var(--line); }
+.section:last-of-type{ border-bottom:0; }
 
-.section-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 18px;
+.section-head{
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:18px;
 }
-.section-head h2 {
-  margin: 0;
-  font-size: clamp(20px, 2.4vw, 28px);
-  font-weight: 800;
-}
-.link-more {
-  color: var(--ink);
-  text-decoration: none;
-  font-size: 14px;
-  opacity: .85;
-}
-.link-more:hover { opacity: 1; }
+.section-head h2{ margin:0; font-size:clamp(20px,2.4vw,28px); font-weight:800; }
+.link-more{ color:var(--ink); text-decoration:none; font-size:14px; opacity:.85; }
+.link-more:hover{ opacity:1; }
 
-/* ================== Feature tiles ================== */
-.grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-}
+/* ===== Feature tiles ===== */
+.grid-3{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
 
-/* card surface matches dashboard: softer shadow, crisp border, consistent radius */
-.tile {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: var(--ad-radius);
-  padding: 20px;
-  box-shadow: var(--ad-shadow-soft);
-  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+.tile{
+  background: var(--card-bg);
+  border:1px solid var(--line);
+  border-radius:var(--ad-radius);
+  padding:20px;
+  box-shadow:var(--ad-shadow-soft);
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease, background .16s ease;
 }
 .tile:hover{
   transform: translateY(-2px);
+  background: var(--card-bg-hover);
   border-color: rgba(255,255,255,.18);
   box-shadow: var(--ad-shadow);
 }
-
-.tile-icon {
-  font-size: 22px;
-  width: 40px; height: 40px;
-  display: grid; place-items: center;
-  border-radius: var(--ad-radius-sm);
+.tile-icon{
+  font-size:22px; width:40px; height:40px; display:grid; place-items:center;
+  border-radius:var(--ad-radius-sm);
   background: rgba(255,255,255,.05);
-  border: 1px solid var(--line);
-  margin-bottom: 10px;
+  border:1px solid var(--line);
+  margin-bottom:10px;
 }
-.tile h3 {
-  margin: 0 0 6px;
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: .2px;
-}
-.tile p {
-  margin: 0;
-  color: var(--muted);
-  line-height: 1.7;
-}
+.tile h3{ margin:0 0 6px; font-size:18px; font-weight:800; letter-spacing:.2px; }
+.tile p{ margin:0; color:var(--muted); line-height:1.7; }
 
-/* ================== Plan cards ================== */
-.plan-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(240px, 1fr));
-  gap: 18px;
-}
+/* ===== Plan cards ===== */
+.plan-grid{ display:grid; grid-template-columns:repeat(3, minmax(240px,1fr)); gap:18px; }
 
-/* unify with dashboard: radius, lighter shadow, cleaner surface */
-.plan-card {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: var(--ad-radius);
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  box-shadow: var(--ad-shadow-soft);
-  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+.plan-card{
+  background: var(--card-bg);
+  border:1px solid var(--line);
+  border-radius:var(--ad-radius);
+  padding:18px;
+  display:flex; flex-direction:column;
+  box-shadow:var(--ad-shadow-soft);
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease, background .16s ease;
 }
-.plan-card:hover {
+.plan-card:hover{
   transform: translateY(-3px);
+  background: var(--card-bg-hover);
   box-shadow: var(--ad-shadow);
   border-color: rgba(255,255,255,.18);
 }
 
-.plan-title {
-  margin: 0 0 6px;
-  color: #fff;
-  font-weight: 800;
-  letter-spacing: .2px;
-  font-size: 20px;
+.plan-title{
+  margin:0 0 6px; color:#fff; font-weight:800; letter-spacing:.2px; font-size:20px;
 }
 
-.specs {
-  list-style: none;
-  padding: 0;
-  margin: 8px 0 14px;
+.specs{ list-style:none; padding:0; margin:8px 0 14px; }
+.specs li{
+  padding:8px 0;
+  border-bottom:1px dashed rgba(255,255,255,.10);
+  color:var(--ink); font-size:14px;
 }
-.specs li {
-  padding: 8px 0;
-  border-bottom: 1px dashed rgba(255,255,255,.10);
-  color: var(--ink);
-  font-size: 14px;
-}
-.specs li:last-child { border-bottom: none; }
-.specs strong { color: #fff; }
+.specs li:last-child{ border-bottom:0; }
+.specs strong{ color:#fff; }
 
-/* price + CTA row */
-.price-row {
-  margin-top: auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+.price-row{
+  margin-top:auto; display:flex; align-items:center; justify-content:space-between; gap:10px;
 }
-.price {
-  font-size: 22px;
-  font-weight: 800; /* down from 900 to match dashboard weight range */
-  color: #fff;
-}
-.price span {
-  font-size: 14px;
-  opacity: .8;
-  margin-left: 2px;
-}
+.price{ font-size:22px; font-weight:800; color:#fff; }
+.price span{ font-size:14px; opacity:.8; margin-left:2px; }
 
-/* CTA button keeps “Get started / Choose Pro” role but with cleaner style */
-.plan-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 40px;
-  padding: .55rem 1rem;
-  border-radius: var(--ad-radius-sm);
-  border: 1px solid rgba(255,255,255,.28);
-  color: #fff;
-  background: transparent;
-  text-decoration: none;
-  font-weight: 800;
-  letter-spacing: .02em;
-  text-transform: none;           /* remove forced uppercase for a more premium look */
+/* CTA */
+.plan-btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-height:40px; padding:.55rem 1rem;
+  border-radius:var(--ad-radius-sm);
+  border:1px solid rgba(255,255,255,.28);
+  color:#fff; background:transparent; text-decoration:none;
+  font-weight:800; letter-spacing:.02em;
   transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease, background .12s ease;
 }
-.plan-btn:hover {
+.plan-btn:hover{
   transform: translateY(-1px);
-  border-color: #fff;
-  box-shadow: 0 4px 12px rgba(0,0,0,.22);
+  border-color:#fff;
+  box-shadow:0 4px 12px rgba(0,0,0,.22);
 }
-.plan-btn:active { transform: translateY(0); }
+.plan-btn:active{ transform: translateY(0); }
 
-/* Optional accent variant if you want a stronger CTA on one card:
-   .plan-card.featured .plan-btn { background: var(--cta-gradient); border: none; }
-*/
-
-/* ================== Callout ================== */
-.callout {
-  background: radial-gradient(80% 120% at 20% 0%, rgba(255,255,255,.04), transparent 60%);
-}
-.callout-body {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: var(--ad-radius);
-  padding: 24px;
-  text-align: center;
-}
-.cta-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: center;
-  margin-top: 12px;
+/* Callout */
+.callout{ background: radial-gradient(80% 120% at 20% 0%, rgba(255,255,255,.04), transparent 60%); }
+.callout-body{
+  background: var(--card-bg);
+  border:1px solid var(--line);
+  border-radius:var(--ad-radius);
+  padding:24px; text-align:center;
 }
 
-/* ================== Final CTA ================== */
-.final-cta {
-  text-align: center;
-}
-.final-cta h2 {
-  margin: 0 0 6px;
-  font-size: clamp(20px, 2.6vw, 28px);
-}
-.final-cta p {
-  margin: 0 0 14px;
-  color: var(--muted);
-}
+/* Final CTA */
+.final-cta{ text-align:center; }
+.final-cta h2{ margin:0 0 6px; font-size:clamp(20px,2.6vw,28px); }
+.final-cta p{ margin:0 0 14px; color:var(--muted); }
 
 /* Responsive */
-@media (max-width: 960px) {
-  .grid-3, .plan-grid { grid-template-columns: 1fr; }
-  .plan-btn { width: 100%; } /* stronger CTA on mobile */
+@media (max-width:960px){
+  .grid-3, .plan-grid{ grid-template-columns:1fr; }
+  .plan-btn{ width:100%; }
 }
