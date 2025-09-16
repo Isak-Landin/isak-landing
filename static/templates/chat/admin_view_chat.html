@@ -46,4 +46,12 @@
 <script src="{{ url_for('static', filename='js/chat/chat-input.js') }}"></script>
 <script src="{{ url_for('static', filename='js/chat/chat-typing.js') }}"></script>
 <script src="{{ url_for('static', filename='js/chat/admin_chat.js') }}"></script>
+<script>
+  window.ADMIN_CHAT_OPTS = {
+    chatId: Number(document.getElementById('chat-messages')?.dataset?.chatId || 0),
+    log: true,           // turn to false to silence logs later
+    pollMs: 0            // set to 0 to disable polling; e.g. 15000 to poll every 15s if you want
+  };
+</script>
+<script src="{{ url_for('static', filename='js/chat/admin_chat_debug.js') }}"></script>
 {% endblock %}
