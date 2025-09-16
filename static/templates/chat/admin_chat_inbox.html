@@ -1,4 +1,4 @@
-{# templates/admin/admin_chat_inbox.html (or your current path) #}
+{# templates/chat/admin_chat_inbox.html #}
 {% extends "layouts/admin_dashboard_content_base.html" %}
 
 {% block page_title %}Chat Inbox{% endblock %}
@@ -12,41 +12,58 @@
   <span class="text-mute">Manage all active conversations with users.</span>
 {% endblock %}
 
-{# MAIN CONTENT #}
 {% block page_content %}
   {% if chats and chats|length > 0 %}
-    <ul class="split-list">
+    <ul class="split-list" aria-label="Chat conversations">
       {% for entry in chats %}
         <li class="{% if entry.unread %}unread-chat{% endif %}">
-          <span class="emoji">💬</span>
+          <span class="emoji" aria-hidden="true">💬</span>
+
           <span class="text">
             <strong>{{ entry.chat.user.email }}</strong><br>
 
             {% if entry.last_message %}
-              {{ entry.last_message.message[:50] }}{% if entry.last_message.message|length > 50 %}...{% endif %}<br>
+              {{ entry.last_message.message[:80] }}{% if entry.last_message.message|length > 80 %}…{% endif %}<br>
               <small>{{ entry.last_message.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>
             {% else %}
               <em>No messages yet</em>
             {% endif %}
 
             {% if entry.unread %}
-              <span class="badge">Unread</span>
+              <span class="badge" aria-label="Unread">Unread</span>
             {% endif %}
           </span>
 
-          <a href="{{ url_for('chat_blueprint.admin_view_chat', chat_id=entry.chat.id) }}" class="button small">Open</a>
+          <a href="{{ url_for('chat_blueprint.admin_view_chat', chat_id=entry.chat.id) }}"
+             class="button small"
+             aria-label="Open chat with {{ entry.chat.user.email }}">Open</a>
         </li>
       {% endfor %}
     </ul>
   {% else %}
-    <div class="empty-state">
-      <div class="emoji">📭</div>
+    <div class="empty-state" role="status" aria-live="polite">
+      <div class="emoji" aria-hidden="true">📭</div>
       <p class="empty-text">No conversations to show.</p>
+      <div class="empty-actions">
+        <button type="button" class="empty-btn" id="refresh-inbox">Refresh inbox</button>
+        <a class="empty-btn ghost" href="{{ url_for('admin_blueprint.dashboard') }}">Go to Dashboard</a>
+      </div>
     </div>
   {% endif %}
 {% endblock %}
 
 {% block extra_css %}{{ super() }}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/chat/admin_chat_inbox.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chat/admin_chat_inbox.css') }}?v=2">
 {% endblock %}
-{% block extra_js %}{{ super() }}{% endblock %}
+
+{% block extra_js %}{{ super() }}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const btn = document.getElementById('refresh-inbox');
+    if (btn) btn.addEventListener('click', () => {
+      // Simple, reliable refresh. No dependency on other JS.
+      window.location.reload();
+    });
+  });
+</script>
+{% endblock %}

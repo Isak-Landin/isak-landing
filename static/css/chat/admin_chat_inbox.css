@@ -106,3 +106,39 @@
     width: 100%;
   }
 }
+
+/* Empty-state action row (scoped) */
+.ad-main .empty-state .empty-actions{
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+/* Buttons used only inside the empty state */
+.ad-main .empty-state .empty-btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: .48rem .9rem;
+  border-radius: 10px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid var(--ad-line-strong, rgba(255,255,255,.14));
+  background: rgba(255,255,255,.05);
+  color: var(--ad-text, #e8ecf6);
+  transition: border-color .12s ease, background .12s ease, transform .12s ease;
+}
+
+.ad-main .empty-state .empty-btn:hover{
+  background: rgba(255,255,255,.08);
+  border-color: rgba(255,255,255,.28);
+  transform: translateY(-1px);
+}
+
+.ad-main .empty-state .empty-btn.ghost{
+  background: transparent;
+  border-color: var(--ad-line, rgba(255,255,255,.08));
+}
