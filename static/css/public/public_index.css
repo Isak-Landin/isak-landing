@@ -1,14 +1,21 @@
 /* ================================
-   Public index page content
+   Public index page content (refreshed to match dashboard vibe)
    ================================ */
 
 :root {
+  /* keep existing public tokens */
   --panel: #121725;
   --ink: #e6e9f3;
   --muted: #b4b9c7;
   --line: rgba(255,255,255,.08);
   --ring: rgba(116,164,255,.35);
   --cta-gradient: linear-gradient(90deg, #5b8cff, #3ac7ff);
+
+  /* light aliases mirroring dashboard tokens (used below) */
+  --ad-radius: 14px;
+  --ad-radius-sm: 10px;
+  --ad-shadow: 0 6px 18px rgba(0,0,0,.25);
+  --ad-shadow-soft: 0 3px 10px rgba(0,0,0,.20);
 }
 
 /* Sections */
@@ -37,119 +44,162 @@
 }
 .link-more:hover { opacity: 1; }
 
-/* Feature tiles */
+/* ================== Feature tiles ================== */
 .grid-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 18px;
 }
+
+/* card surface matches dashboard: softer shadow, crisp border, consistent radius */
 .tile {
   background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: var(--ad-radius);
   padding: 20px;
-  box-shadow: 0 6px 18px rgba(0,0,0,.22);
+  box-shadow: var(--ad-shadow-soft);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
+.tile:hover{
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,.18);
+  box-shadow: var(--ad-shadow);
+}
+
 .tile-icon {
   font-size: 22px;
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  border-radius: var(--ad-radius-sm);
+  background: rgba(255,255,255,.05);
+  border: 1px solid var(--line);
   margin-bottom: 10px;
 }
 .tile h3 {
   margin: 0 0 6px;
   font-size: 18px;
+  font-weight: 800;
+  letter-spacing: .2px;
 }
 .tile p {
   margin: 0;
   color: var(--muted);
+  line-height: 1.7;
 }
 
-/* Plan cards */
+/* ================== Plan cards ================== */
 .plan-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(240px, 1fr));
   gap: 18px;
 }
+
+/* unify with dashboard: radius, lighter shadow, cleaner surface */
 .plan-card {
-  background: #1f2331;
+  background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: var(--ad-radius);
   padding: 18px;
   display: flex;
   flex-direction: column;
+  box-shadow: var(--ad-shadow-soft);
   transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
 .plan-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 24px rgba(0,0,0,.35);
-  border-color: var(--ring);
+  box-shadow: var(--ad-shadow);
+  border-color: rgba(255,255,255,.18);
 }
+
 .plan-title {
   margin: 0 0 6px;
   color: #fff;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: .2px;
+  font-size: 20px;
 }
+
 .specs {
   list-style: none;
   padding: 0;
   margin: 8px 0 14px;
 }
 .specs li {
-  padding: 6px 0;
-  border-bottom: 1px dashed rgba(255,255,255,.08);
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(255,255,255,.10);
+  color: var(--ink);
   font-size: 14px;
 }
 .specs li:last-child { border-bottom: none; }
 .specs strong { color: #fff; }
+
+/* price + CTA row */
 .price-row {
   margin-top: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
 }
 .price {
-  font-size: 20px;
-  font-weight: 800;
+  font-size: 22px;
+  font-weight: 800; /* down from 900 to match dashboard weight range */
+  color: #fff;
 }
 .price span {
   font-size: 14px;
-  opacity: .75;
+  opacity: .8;
+  margin-left: 2px;
 }
+
+/* CTA button keeps “Get started / Choose Pro” role but with cleaner style */
 .plan-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: .55rem .9rem;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,.6);
-  background: transparent;
+  min-height: 40px;
+  padding: .55rem 1rem;
+  border-radius: var(--ad-radius-sm);
+  border: 1px solid rgba(255,255,255,.28);
   color: #fff;
-  font-weight: 700;
+  background: transparent;
   text-decoration: none;
+  font-weight: 800;
+  letter-spacing: .02em;
+  text-transform: none;           /* remove forced uppercase for a more premium look */
+  transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease, background .12s ease;
 }
 .plan-btn:hover {
-  border-color: #fff;
-  box-shadow: 0 4px 12px rgba(0,0,0,.2);
   transform: translateY(-1px);
+  border-color: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,.22);
 }
+.plan-btn:active { transform: translateY(0); }
 
-/* Callout */
+/* Optional accent variant if you want a stronger CTA on one card:
+   .plan-card.featured .plan-btn { background: var(--cta-gradient); border: none; }
+*/
+
+/* ================== Callout ================== */
 .callout {
   background: radial-gradient(80% 120% at 20% 0%, rgba(255,255,255,.04), transparent 60%);
 }
 .callout-body {
   background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: var(--ad-radius);
   padding: 24px;
+  text-align: center;
 }
 .cta-row {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  justify-content: center;
   margin-top: 12px;
 }
 
-/* Final CTA */
+/* ================== Final CTA ================== */
 .final-cta {
   text-align: center;
 }
@@ -165,4 +215,5 @@
 /* Responsive */
 @media (max-width: 960px) {
   .grid-3, .plan-grid { grid-template-columns: 1fr; }
+  .plan-btn { width: 100%; } /* stronger CTA on mobile */
 }
