@@ -44,8 +44,8 @@
 {# PAGE SCRIPTS #}
 {% block extra_js %}{{ super() }}
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-<script src="{{ url_for('static', filename='js/chat/chat-core.js') }}"></script>
-<script src="{{ url_for('static', filename='js/chat/chat-input.js') }}"></script>
-<script src="{{ url_for('static', filename='js/chat/chat-typing.js') }}"></script>
-<script src="{{ url_for('static', filename='js/chat/admin_chat.js') }}?v=3"></script>
+<script src="{{ url_for('static', filename='js/chat/chat-core.js') }}?v=2"></script>
+<script src="{{ url_for('static', filename='js/chat/chat-input.js') }}?v=2"></script>
+<script src="{{ url_for('static', filename='js/chat/chat-typing.js') }}?v=2"></script>
+<script src="{{ url_for('static', filename='js/chat/admin_chat.js') }}?v=4"></script>
 {% endblock %}
