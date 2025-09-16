@@ -24,11 +24,13 @@
   <div id="chat-messages" class="chat-history" data-chat-id="{{ chat.id }}">
     {% for msg in messages %}
       <div class="chat-message {{ 'me' if msg.is_mine else 'them' }}">
-        <div class="msg-header">
-          <span class="sender">{{ msg.sender_label }}</span>
-          <span class="timestamp">{{ msg.timestamp | dt_short }}</span>
+        <div class="msg-bubble">
+          <div class="msg-header">
+            <span class="sender">{{ msg.sender_label }}</span>
+            <span class="timestamp">{{ msg.timestamp | dt_short }}</span>
+          </div>
+          <div class="msg-body">{{ msg.content }}</div>
         </div>
-        <div class="msg-body">{{ msg.content }}</div>
       </div>
     {% endfor %}
   </div>
