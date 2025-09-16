@@ -1,7 +1,7 @@
 /* Auth pages — dark, glassy, consistent with public/public.css + dashboard_hero.css */
 :root{
   --bg: #0b0f19;
-  --panel: #121725;
+  --panel: linear-gradient(180deg, rgba(255, 255, 255, .03), rgba(255, 255, 255, .02));
   --ink: #e6e9f3;
   --muted: #b4b9c7;
   --line: rgba(255,255,255,.08);
