@@ -143,14 +143,15 @@ def admin_inbox():
     Inbox: show chats that actually have messages, sorted:
       - Unread (has at least one unread user msg) first
       - Then by latest message timestamp (newest first)
-    Includes heavy logging so we can see what's happening.
     """
+    from sqlalchemy import func, or_, case, desc, literal_column
     print("\n[admin_inbox] ---- START ----")
+
     total_chats = db.session.query(SupportChat).count()
-    total_msgs = db.session.query(SupportMessage).count()
+    total_msgs  = db.session.query(SupportMessage).count()
     print(f"[admin_inbox] totals: chats={total_chats}, messages={total_msgs}")
 
-    # Subquery: latest timestamp per chat that has messages
+    # Subquery: latest timestamp per chat that has >=1 message
     last_ts_subq = (
         db.session.query(
             SupportMessage.chat_id.label('chat_id'),
@@ -160,19 +161,47 @@ def admin_inbox():
         .subquery()
     )
 
-    # Join chats to that subquery so we only get chats with >= 1 message
+    # Subquery: unread user messages per chat (enum-safe: enum OR legacy 'user')
+    unread_subq = (
+        db.session.query(
+            SupportMessage.chat_id.label('chat_id'),
+            func.count(SupportMessage.id).label('unread_count')
+        )
+        .filter(
+            SupportMessage.is_read == False,
+            or_(SupportMessage.sender == SenderRole.user, SupportMessage.sender == 'user')
+        )
+        .group_by(SupportMessage.chat_id)
+        .subquery()
+    )
+
+    # Base rows: only chats with messages (via join to last_ts_subq)
     rows = (
-        db.session.query(SupportChat, last_ts_subq.c.last_ts)
+        db.session.query(
+            SupportChat,
+            last_ts_subq.c.last_ts,
+            func.coalesce(unread_subq.c.unread_count, 0).label('unread_count')
+        )
         .join(last_ts_subq, last_ts_subq.c.chat_id == SupportChat.id)
-        .order_by(last_ts_subq.c.last_ts.desc())
+        .outerjoin(unread_subq, unread_subq.c.chat_id == SupportChat.id)
+        .order_by(
+            # Unread first (1 for has unread, 0 otherwise), then by last_ts desc
+            desc(
+                case(
+                    (func.coalesce(unread_subq.c.unread_count, 0) > 0, 1),
+                    else_=0
+                )
+            ),
+            last_ts_subq.c.last_ts.desc()
+        )
         .all()
     )
 
     print(f"[admin_inbox] rows_from_db={len(rows)}")
-    inbox = []
 
-    for idx, (chat, last_ts) in enumerate(rows, start=1):
-        # Pull the actual last message (single query per chat; fine for now)
+    inbox = []
+    for idx, (chat, last_ts, unread_count) in enumerate(rows, start=1):
+        # Fetch the actual last message (ok for MVP; can be optimized later)
         last_msg = (
             db.session.query(SupportMessage)
             .filter_by(chat_id=chat.id)
@@ -180,18 +209,12 @@ def admin_inbox():
             .first()
         )
 
-        unread = (
-                db.session.query(SupportMessage)
-                .filter(
-                    SupportMessage.chat_id == chat.id,
-                    SupportMessage.is_read == False,
-                    or_(SupportMessage.sender == SenderRole.user, SupportMessage.sender == 'user')
-                )
-                .count() > 0
-        )
+        unread = unread_count > 0
 
-        print(f"[admin_inbox] #{idx} chat_id={chat.id} user_id={chat.user_id} "
-              f"last_ts={last_ts} last_msg_id={getattr(last_msg,'id',None)} unread={unread}")
+        print(
+            f"[admin_inbox] #{idx} chat_id={chat.id} user_id={chat.user_id} "
+            f"last_ts={last_ts} last_msg_id={getattr(last_msg,'id',None)} unread={unread}"
+        )
 
         inbox.append({
             'chat': chat,
@@ -199,26 +222,9 @@ def admin_inbox():
             'unread': unread
         })
 
-    # Sort: unread first, then newest last_msg
-    inbox.sort(
-        key=lambda e: (
-            0 if e['unread'] else 1,
-            e['last_message'].timestamp if e['last_message'] else datetime.min
-        ),
-        reverse=False
-    )
-    # Within groups, newest first
-    inbox = sorted(
-        inbox,
-        key=lambda e: (
-            0 if e['unread'] else 1,
-            e['last_message'].timestamp if e['last_message'] else datetime.min
-        ),
-        reverse=True
-    )
-
     print(f"[admin_inbox] inbox_len={len(inbox)} ---- END ----\n")
     return render_template('chat/admin_chat_inbox.html', chats=inbox)
+
 
 
 def _is_admin_sender(m):

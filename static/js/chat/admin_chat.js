@@ -100,6 +100,17 @@ window.socket = window.socket || io({ path: "/socket.io/", withCredentials: true
     socket.on("connect", join);
     socket.on("reconnect", join);
 
+    // static/js/chat/admin_chat.js  (near the bottom, after we join)
+    window.addEventListener('beforeunload', () => {
+      try { socket.emit('leave_chat', { chat_id: chatId }); } catch {}
+    });
+
+    window.addEventListener('pagehide', () => {
+      try { socket.emit('leave_chat', { chat_id: chatId }); } catch {}
+    });
+
+
+
     // Render incoming messages using the bubble structure
     socket.on("receive_message", (data) => {
       if (Number(data.chat_id) !== chatId) return;
