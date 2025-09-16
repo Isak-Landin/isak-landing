@@ -8,6 +8,8 @@ from decorators import admin_required, admin_2fa_required
 from sqlalchemy import case, func
 from datetime import datetime
 
+from sqlalchemy import or_
+
 chat_blueprint = Blueprint("chat_blueprint", __name__, url_prefix="/chat")
 
 
@@ -178,11 +180,14 @@ def admin_inbox():
             .first()
         )
 
-        # Compute unread: any user message unread?
         unread = (
-            db.session.query(SupportMessage)
-            .filter_by(chat_id=chat.id, sender='user', is_read=False)
-            .count() > 0
+                db.session.query(SupportMessage)
+                .filter(
+                    SupportMessage.chat_id == chat.id,
+                    SupportMessage.is_read == False,
+                    or_(SupportMessage.sender == SenderRole.user, SupportMessage.sender == 'user')
+                )
+                .count() > 0
         )
 
         print(f"[admin_inbox] #{idx} chat_id={chat.id} user_id={chat.user_id} "
@@ -266,6 +271,17 @@ def admin_view_chat(chat_id):
             "sender_is_admin": is_admin,
             "is_mine": is_mine,
         })
+
+        (
+            SupportMessage.query
+            .filter(
+                SupportMessage.chat_id == chat.id,
+                SupportMessage.is_read == False,
+                or_(SupportMessage.sender == SenderRole.user, SupportMessage.sender == 'user')
+            )
+            .update({SupportMessage.is_read: True}, synchronize_session=False)
+        )
+        db.session.commit()
 
     return render_template('chat/admin_view_chat.html', chat=chat, messages=msgs)
 
