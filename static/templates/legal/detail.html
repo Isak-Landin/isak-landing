@@ -6,20 +6,29 @@
 {% block hero_text %}Version {{ doc.version }} · Effective {{ doc.effective.strftime('%Y-%m-%d') }} · Category: {{ doc.category }}{% endblock %}
 
 {% block page_content %}
-  <section style="max-width: 980px; margin: 0 auto;">
-    <p style="margin:.5rem 0 1rem 0;">{{ doc.summary }}</p>
-    <p style="margin-bottom:1rem;">
+  <section class="legal-detail">
+    <p class="legal-summary">{{ doc.summary }}</p>
+
+    <div class="legal-actions">
       <a class="btn" href="{{ pdf_url }}" target="_blank" rel="noopener">Open PDF</a>
       <a class="btn" href="{{ pdf_url }}" download>Download PDF</a>
-      <a class="btn" href="{{ url_for('legal_blueprint.legal_index') }}" style="margin-left:.5rem;">← All legal documents</a>
-    </p>
+      <a class="btn btn--ghost" href="{{ url_for('legal_blueprint.legal_index') }}">← All legal documents</a>
+    </div>
 
-    <div style="border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; background:#0b0f19;">
+    <div class="legal-frame">
       <iframe
+        class="legal-iframe"
         src="{{ pdf_url }}#view=FitH"
         title="{{ doc.title }} PDF"
-        style="width:100%; height:80vh; border:0; background:#fff;"
       ></iframe>
     </div>
+
+    <p class="legal-fallback">
+      If the PDF doesn’t display, <a href="{{ pdf_url }}" target="_blank" rel="noopener">open it in a new tab</a>.
+    </p>
   </section>
+{% endblock %}
+
+{% block extra_css %}{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/legal/detail.css') }}">
 {% endblock %}
