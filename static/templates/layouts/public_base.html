@@ -60,6 +60,8 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_hero.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/public_nav.css') }}?v=5">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/public/public_main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/public/public_footer.css') }}">
+
 
   {% block extra_css %}{% endblock %}
 </head>
@@ -78,12 +80,19 @@
     {% block page_content %}{% endblock %}
   </main>
 
-  <footer class="site-footer" style="padding:24px 16px; border-top:1px solid rgba(255,255,255,.06); opacity:.9;">
-    <div class="container" style="display:flex; gap:12px; flex-wrap:wrap;">
-      <span>© HostNodex</span>
-      <span style="opacity:.6;">VPS • Domains (soon)</span>
+  <footer class="site-footer" role="contentinfo">
+    <div class="container site-footer__inner">
+      <div class="site-footer__left">
+        <span class="site-footer__copy">© {{ current_year or '2025' }} HostNodex</span>
+      </div>
+
+      <nav class="site-footer__nav" aria-label="Footer">
+        <a class="site-footer__link" href="{{ url_for('vps_blueprint.vps_list_page') }}">VPS</a>
+        <span class="site-footer__link is-disabled" aria-disabled="true" title="Coming soon">Domains (soon)</span>
+      </nav>
     </div>
   </footer>
+
 
   {% block extra_js %}
     <script src="{{ url_for('static', filename='js/public/nav-toggle.js') }}" defer></script>

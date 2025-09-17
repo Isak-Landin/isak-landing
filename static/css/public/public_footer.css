@@ -1,0 +1,72 @@
+:root {
+  /* Tweak these to match your theme */
+  --footer-bg: transparent;
+  --footer-border: rgba(255, 255, 255, 0.06);
+  --footer-text: #e8ecf6;
+  --footer-muted: rgba(255, 255, 255, 0.6);
+  --footer-link: #e8ecf6;
+}
+
+/* Wrapper */
+.site-footer {
+  background: var(--footer-bg);
+  color: var(--footer-text);
+  padding: 24px 16px;
+  border-top: 1px solid var(--footer-border);
+}
+
+/* Layout */
+.site-footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;            /* Wrap nicely on small screens */
+  min-height: 56px;
+}
+
+.site-footer__left,
+.site-footer__nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Text */
+.site-footer__copy {
+  opacity: 0.85;
+  font-size: 0.95rem;
+}
+
+/* Links */
+.site-footer__nav .site-footer__link {
+  text-decoration: none;
+  color: var(--footer-link);
+  opacity: 0.9;
+  transition: opacity 0.12s ease, text-decoration-color 0.12s ease;
+}
+
+.site-footer__nav .site-footer__link:hover,
+.site-footer__nav .site-footer__link:focus-visible {
+  opacity: 1;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
+/* Disabled pill (e.g., “Domains (soon)”) */
+.site-footer__nav .is-disabled {
+  opacity: 0.55;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Mobile polish */
+@media (max-width: 640px) {
+  .site-footer__inner {
+    gap: 8px 12px;
+  }
+  .site-footer__nav {
+    gap: 10px;
+  }
+}
