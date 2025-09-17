@@ -1,0 +1,49 @@
+/* Scope: public legal landing page */
+/* Container */
+.legal-list{
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* Category headings */
+.legal-heading{
+  margin-top: 2rem;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+/* List reset + spacing */
+.doc-list{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Item layout */
+.doc-item{
+  margin: .75rem 0;
+  line-height: 1.5;
+}
+
+/* Link + hover affordance (inherits your theme colors) */
+.doc-item__link{
+  text-decoration: none;
+}
+.doc-item__link:hover,
+.doc-item__link:focus-visible{
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 2px;
+}
+
+/* Meta (version/effective date) */
+.doc-item__meta{
+  opacity: .7;
+}
+
+/* Summary text */
+.doc-item__summary{
+  opacity: .8;
+  font-size: .95rem;
+  margin-top: .25rem;
+}
