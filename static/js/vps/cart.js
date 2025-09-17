@@ -1,8 +1,13 @@
 // static/js/vps/cart.js — Mini Cart (Plan + OS + optional SSH key) → POST /vps/checkout
+
+// Resolve checkout URL without inline JS (prefers data-checkout-url on #vps-mini-cart)
+const CHECKOUT_URL =
+  (document.getElementById('vps-mini-cart')?.dataset.checkoutUrl) ||
+  (typeof window !== 'undefined' && window.VPS_CHECKOUT_URL) ||
+  '/vps/checkout';
+
 (function () {
   'use strict';
-
-  const CHECKOUT_URL = window.VPS_CHECKOUT_URL || '/vps/checkout';
 
   const els = {
     drawer:   document.getElementById('vps-mini-cart'),
@@ -35,22 +40,16 @@
     catalogTag: document.getElementById('vps-catalog'),
   };
 
-  // Add near top-level in cart.js after els{}:
-    window._VPS_setInterval = function(value){
-      const v = (value === 'year') ? 'year' : 'month';
-      const radio = document.querySelector(`input[name="interval"][value="${v}"]`);
-      if (radio) {
-        radio.checked = true;
-        const evt = new Event('change', { bubbles: true });
-        radio.dispatchEvent(evt);
-      }
-    };
-
-    // In DOMContentLoaded boot (end of cart.js init), add:
-    if (window.VPS_PREF_INTERVAL) {
-      window._VPS_setInterval(window.VPS_PREF_INTERVAL);
+  // Expose helper for other scripts (e.g., list.js / CTA) to change the billing interval.
+  window._VPS_setInterval = function (value) {
+    const v = (value === 'year') ? 'year' : 'month';
+    const radio = document.querySelector(`input[name="interval"][value="${v}"]`);
+    if (radio) {
+      radio.checked = true;
+      const evt = new Event('change', { bubbles: true });
+      radio.dispatchEvent(evt);
     }
-
+  };
 
   const catalog = new Map();
 
@@ -69,6 +68,7 @@
   function setError(msg) {
     if (!els.error) return;
     els.error.textContent = msg || '';
+    // uses inline style so it works without extra CSS
     els.error.style.display = msg ? 'block' : 'none';
   }
   function clearError() { setError(''); }
@@ -178,12 +178,10 @@
 
   // Parse redirect; accept {checkout_url} from backend (primary)
   async function handleRedirect(res) {
-    // JSON field
     let data = {};
     try { data = await res.clone().json(); } catch (_) { /* ignore */ }
     const redirect = data.checkout_url || data.redirect_url || data.url;
     if (redirect) { window.location.assign(redirect); return true; }
-    // Location header fallback
     const loc = res.headers.get('Location') || res.headers.get('location');
     if (loc) { window.location.assign(loc); return true; }
     return false;
@@ -338,5 +336,10 @@
     primeCatalogFromInlineJSON();
     if (els.planSelect) populatePlanSelect();
     wireEvents();
+
+    // ✅ Apply preferred interval after listeners are attached
+    if (window.VPS_PREF_INTERVAL) {
+      window._VPS_setInterval(window.VPS_PREF_INTERVAL);
+    }
   });
 })();
