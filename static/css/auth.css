@@ -150,14 +150,21 @@ input:focus{
 .auth-meta a{ color:var(--ink); text-decoration:none; opacity:.9; }
 .auth-meta a:hover{ opacity:1; text-decoration:underline; }
 
-/* Errors */
-.auth-error{
-  margin-top:4px; padding:10px 12px;
-  border-radius:12px;
-  border:1px solid rgba(255,107,107,.32);
-  background: rgba(255,107,107,.12);
-  color:#ffdede; font-size:14px;
+/* Login error box hidden by default; toggle with .is-visible */
+.auth-error {
+  display: none;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(255, 71, 87, 0.12);
+  border: 1px solid rgba(255, 71, 87, 0.35);
+  color: #ffd9dd;
+  font-size: 0.95rem;
 }
+.auth-error.is-visible {
+  display: block;
+}
+
 
 /* Policy link in register checkbox */
 .policy-link-text{ color:var(--ink); text-decoration:underline; opacity:.9; }

@@ -85,11 +85,8 @@
     </div>
   </footer>
 
-  <script>
-    const t = document.querySelector('[data-js="nav-toggle"]');
-    const l = document.querySelector('[data-js="nav-links"]');
-    if (t && l) t.addEventListener('click', () => l.classList.toggle('open'));
-  </script>
-  {% block extra_js %}{% endblock %}
+  {% block extra_js %}
+    <script src="{{ url_for('static', filename='js/public/nav-toggle.js') }}" defer></script>
+  {% endblock %}
 </body>
 </html>
