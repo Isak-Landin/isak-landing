@@ -110,19 +110,19 @@
 {% endblock %}
 
 {% block extra_js %}{{ super() }}
-<script src="{{ url_for('static', filename='js/admin/users_table.js') }}?v=5"></script>
-<script src="{{ url_for('static', filename='js/admin/subscription_table.js') }}?v=9"></script>
-<script src="{{ url_for('static', filename='js/admin/vps_table.js') }}?v=7"></script>
+<script src="{{ url_for('static', filename='js/admin/users_table.js') }}?v=6"></script>
+<script src="{{ url_for('static', filename='js/admin/subscription_table.js') }}?v=10"></script>
+<script src="{{ url_for('static', filename='js/admin/vps_table.js') }}?v=8"></script>
 
 {# Filters: load AFTER renderers, BEFORE tabs controller #}
-<script src="{{ url_for('static', filename='js/admin/filters/users_filter.js') }}?v=1"></script>
-<script src="{{ url_for('static', filename='js/admin/filters/subscriptions_filter.js') }}?v=2"></script>
-<script src="{{ url_for('static', filename='js/admin/filters/vps_filter.js') }}?v=1"></script>
+<script src="{{ url_for('static', filename='js/admin/filters/users_filter.js') }}?v=2"></script>
+<script src="{{ url_for('static', filename='js/admin/filters/subscriptions_filter.js') }}?v=3"></script>
+<script src="{{ url_for('static', filename='js/admin/filters/vps_filter.js') }}?v=2"></script>
 
 {# NEW: renderer for the Billing (Subs) tab #}
-<script src="{{ url_for('static', filename='js/admin/billing_subs_table.js') }}?v=4"></script>
+<script src="{{ url_for('static', filename='js/admin/billing_subs_table.js') }}?v=5"></script>
 
 {# tabs controller last #}
-<script src="{{ url_for('static', filename='js/admin/tabs_controller.js') }}?v=4"></script>
+<script src="{{ url_for('static', filename='js/admin/tabs_controller.js') }}?v=5"></script>
 {% endblock %}
 
