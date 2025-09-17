@@ -165,6 +165,7 @@ input:focus{
   display: block;
 }
 
+.form-row--legal { margin-top: .75rem; }
 
 /* Policy link in register checkbox */
 .policy-link-text{ color:var(--ink); text-decoration:underline; opacity:.9; }

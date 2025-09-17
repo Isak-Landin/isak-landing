@@ -1,81 +1,117 @@
 // static/js/register.js
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('register-form');
-  if (!form) return;
+(function () {
+  function $(id) { return document.getElementById(id); }
 
-  const email = document.getElementById('email');
-  const pw = document.getElementById('password');
-  const confirmPw = document.getElementById('confirm_password');
-  const acceptLegal = document.getElementById('accept_legal');
+  function show(el, msg) {
+    if (!el) return;
+    el.textContent = msg || '';
+    if (msg) el.classList.add('is-visible');
+    else el.classList.remove('is-visible');
+  }
 
-  const pwError = document.getElementById('password-error');
-  const errorBox = document.getElementById('register-error');
-  const submitBtn = document.getElementById('register-submit');
+  function init() {
+    const form        = $('register-form');
+    if (!form) return;
 
-  const showError = (el, msg) => {
-    el.textContent = msg;
-    el.style.display = 'block';
-  };
-  const hideError = (el) => { el.textContent = ''; el.style.display = 'none'; };
+    const email       = $('email');
+    const pw          = $('password');
+    const confirmPw   = $('confirm_password');
+    const acceptLegal = $('accept_legal');
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    hideError(pwError);
-    hideError(errorBox);
+    const pwError     = $('password-error');
+    const errorBox    = $('register-error');
+    const submitBtn   = $('register-submit');
 
-    // Client-side validations
-    if (!pw.value || !confirmPw.value || pw.value !== confirmPw.value) {
-      showError(pwError, "Passwords don’t match.");
-      return;
-    }
-
-    if (!acceptLegal.checked) {
-      showError(errorBox, "You must agree to the Terms, Privacy Policy, and AUP to create an account.");
-      return;
-    }
-
-    // Optional: simple email validity gate (browser already validates 'type=email')
-    if (!email.checkValidity()) {
-      showError(errorBox, "Please enter a valid email address.");
-      return;
-    }
-
-    // Submit
-    submitBtn.disabled = true;
-    submitBtn.classList.add('is-loading');
-
-    try {
-      const formData = new FormData(form);
-
-      const res = await fetch('/auth/register', {
-        method: 'POST',
-        body: formData
+    // Clear errors while typing/checking boxes
+    [email, pw, confirmPw].forEach(el => {
+      if (el) el.addEventListener('input', () => {
+        if (el === pw || el === confirmPw) show(pwError, '');
+        show(errorBox, '');
       });
+    });
 
-      // Expecting your API to reply like: { success: true, redirect: "/dashboard" }
-      const data = await res.json();
+    if (acceptLegal) {
+      // Nice native validation message for the legal checkbox
+      acceptLegal.addEventListener('invalid', () => {
+        acceptLegal.setCustomValidity('You must accept the Terms, Privacy Policy, and AUP to continue.');
+      });
+      acceptLegal.addEventListener('change', () => acceptLegal.setCustomValidity(''));
+    }
 
-      if (res.ok && data && data.success) {
-        window.location.href = data.redirect || '/';
+    // Live password mismatch hint
+    const syncPwHint = () => {
+      if (pw && confirmPw && pw.value && confirmPw.value && pw.value !== confirmPw.value) {
+        show(pwError, "Passwords don’t match.");
       } else {
-        showError(errorBox, (data && data.error) || 'Registration failed.');
+        show(pwError, '');
       }
-    } catch (err) {
-      showError(errorBox, 'Network error. Please try again.');
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.classList.remove('is-loading');
-    }
-  });
+    };
+    if (pw) pw.addEventListener('input', syncPwHint);
+    if (confirmPw) confirmPw.addEventListener('input', syncPwHint);
 
-  // Quality-of-life: live password mismatch hint
-  const syncPwHint = () => {
-    if (pw.value && confirmPw.value && pw.value !== confirmPw.value) {
-      showError(pwError, "Passwords don’t match.");
-    } else {
-      hideError(pwError);
-    }
-  };
-  pw.addEventListener('input', syncPwHint);
-  confirmPw.addEventListener('input', syncPwHint);
-});
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      show(pwError, '');
+      show(errorBox, '');
+
+      // Client-side validations (since form has novalidate)
+      if (!pw || !confirmPw || pw.value !== confirmPw.value) {
+        show(pwError, "Passwords don’t match.");
+        (confirmPw || pw)?.focus();
+        return;
+      }
+
+      if (acceptLegal && !acceptLegal.checked) {
+        show(errorBox, "You must agree to the Terms, Privacy Policy, and AUP to create an account.");
+        acceptLegal.focus();
+        return;
+      }
+
+      if (email && !email.checkValidity()) {
+        show(errorBox, "Please enter a valid email address.");
+        email.focus();
+        return;
+      }
+
+      // Submit via fetch (AJAX), expect JSON
+      submitBtn && (submitBtn.disabled = true, submitBtn.classList.add('is-loading'));
+      try {
+        const action = form.getAttribute('action') || form.action || window.location.pathname;
+        const formData = new FormData(form);
+
+        const res = await fetch(action, {
+          method: 'POST',
+          body: formData,
+          credentials: 'same-origin',
+          headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+        });
+
+        let data = null;
+        const ct = res.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+          data = await res.json();
+        } else {
+          // Fallback: non-JSON error page
+          if (!res.ok) throw new Error('Registration failed');
+        }
+
+        if (res.ok && data && (data.success || data.ok)) {
+          window.location.href = data.redirect || '/dashboard';
+        } else {
+          const msg = (data && (data.error || data.message)) || 'Registration failed.';
+          show(errorBox, msg);
+        }
+      } catch (err) {
+        show(errorBox, 'Network error. Please try again.');
+      } finally {
+        submitBtn && (submitBtn.disabled = false, submitBtn.classList.remove('is-loading'));
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
