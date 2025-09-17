@@ -18,7 +18,7 @@
         <td>${fmt(r.user_email)}</td>
         <td>${fmt(r.subscription_id)}</td>
         <td>${fmt(r.description)}</td>
-        <td style="text-align:right;">${fmt(r.amount || '-')}</td>
+        <td >${fmt(r.amount || '-')}</td>
         <td>${fmt(r.status || '-')}</td>
         <td><span class="mode-pill">${modePill(!!r.livemode)}</span></td>
       `;
