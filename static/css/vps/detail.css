@@ -1,0 +1,20 @@
+/* Scope to the VPS detail page pieces you already use */
+.section-title--spaced {
+  margin-top: 18px;
+}
+
+.btn-group {
+  display: flex;
+  gap: 8px;
+}
+
+/* Tip paragraph under credentials */
+.cred-tip {
+  margin: 10px 2px 0;
+  opacity: 0.9;
+}
+
+/* Optional: make masked password look consistent */
+#cred-password[data-masked="true"] {
+  letter-spacing: 0.06em;
+}
