@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
     try {
-      const response = await fetch(this.action, { method: "POST" });
+      const response = await csrfFetch(this.action, { method: "POST" });
       const result = await response.json();
       if (result.chat_id) {
         window.location.href = `/chat/view?chat_id=${result.chat_id}`;

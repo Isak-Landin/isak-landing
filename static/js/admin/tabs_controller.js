@@ -56,7 +56,7 @@
     if (btnRefresh) { btnRefresh.classList.add('is-loading'); btnRefresh.disabled = true; }
 
     try {
-      const res = await fetch(DASHBOARD_ENDPOINT, { credentials: 'same-origin' });
+      const res = await csrfFetch(DASHBOARD_ENDPOINT, { credentials: 'same-origin' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       cache = await res.json();
 
@@ -83,7 +83,7 @@
     if (btnRefresh) { btnRefresh.classList.add('is-loading'); btnRefresh.disabled = true; }
 
     try {
-      const res = await fetch(BILLING_SUBS_ENDPOINT, { credentials: 'same-origin' });
+      const res = await csrfFetch(BILLING_SUBS_ENDPOINT, { credentials: 'same-origin' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       billingCache = await res.json();
       return billingCache;

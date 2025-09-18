@@ -211,11 +211,15 @@ const CHECKOUT_URL =
     try {
       enableSubmit(false);
       const res = await fetch(CHECKOUT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-        credentials: 'same-origin'
-      });
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': getCsrfTokenFromCookie()
+          },
+          body: JSON.stringify(payload),
+          credentials: 'same-origin'
+        });
+
 
       if (!res.ok) {
         const text = await res.text();

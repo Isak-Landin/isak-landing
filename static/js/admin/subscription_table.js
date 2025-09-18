@@ -9,7 +9,7 @@
   };
 
   async function provisionAndOpen(subId) {
-    const res = await fetch('/admin/api/provision-vps', {
+    const res = await csrfFetch('/admin/api/provision-vps', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       credentials: 'same-origin',

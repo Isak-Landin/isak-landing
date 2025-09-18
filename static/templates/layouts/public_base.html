@@ -98,6 +98,8 @@
 
   {% block extra_js %}
     <script src="{{ url_for('static', filename='js/public/nav-toggle.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/csrf.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/http.js') }}" defer></script>
   {% endblock %}
 </body>
 </html>

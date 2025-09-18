@@ -13,9 +13,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const res = await fetch('/auth/login', {
-        method: 'POST',
-        body: formData
-      });
+          method: 'POST',
+          body: formData,
+          credentials: 'same-origin',
+          headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-Token': getCsrfTokenFromCookie()
+          }
+        });
 
       const data = await res.json();
 
