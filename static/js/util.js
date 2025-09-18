@@ -94,7 +94,7 @@
 
 			}, userConfig);
 
-			// Expand "target" if it's not a jQuery object already.
+function			// Expand "target" if it's not a jQuery object already.
 				if (typeof config.target != 'jQuery')
 					config.target = $(config.target);
 
@@ -285,7 +285,7 @@
 
 			// Event: Hide on ESC.
 				if (config.hideOnEscape)
-					$window.on('keydown', function(event) {
+					$window.on('keydown', (event) {
 
 						if (event.keyCode == 27)
 							$this._hide(event);

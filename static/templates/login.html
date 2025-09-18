@@ -20,7 +20,7 @@
       </div>
 
       <form method="POST" id="login-form" class="auth-form" novalidate>
-        {% if csrf_token %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endif %}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
         <div class="form-row">
           <label for="email">Email</label>

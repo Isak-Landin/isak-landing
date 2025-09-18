@@ -34,6 +34,9 @@ from apps.VPS.models import VPSPlan
 
 from flask_migrate import Migrate
 
+from extensions import limiter
+from flask_wtf.csrf import CSRFProtect, generate_csrf
+
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth_blueprint.login'
@@ -139,33 +142,71 @@ def inject_asset_version():
     import os, time
     return {"config": {"ASSET_VERSION": os.getenv("ASSET_VERSION", str(int(time.time()))) }}
 
-@app.after_request
-def add_security_headers(resp):
-    # Content Security Policy in *Report-Only* mode first to avoid breakage
-    # Tighten later to enforce (switch header name).
-    csp = (
-        "default-src 'self'; "
-        "img-src 'self' data:; "
-        "style-src 'self'; "
-        "script-src 'self' https://cdn.socket.io; "
-        "connect-src 'self' https://cdn.socket.io; "
-        "font-src 'self' data:; "
-        "object-src 'none'; "
-        "base-uri 'self'; "
-        "frame-ancestors 'none'"
-    )
-    resp.headers.setdefault("Content-Security-Policy-Report-Only", csp)
 
-    # Other modern headers
+# Harden cookies/sessions
+app.config.update(
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    REMEMBER_COOKIE_SECURE=True,
+    REMEMBER_COOKIE_HTTPONLY=True,
+    REMEMBER_COOKIE_SAMESITE="Lax",
+)
+
+# CSRF
+csrf = CSRFProtect(app)
+
+# Limiter
+limiter.init_app(app)
+
+# Security headers (+ optional CSP). Keep light so Stripe/others aren’t broken.
+@app.after_request
+def set_security_headers(resp):
     resp.headers.setdefault("X-Content-Type-Options", "nosniff")
-    resp.headers.setdefault("X-Frame-Options", "DENY")
-    resp.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
-    resp.headers.setdefault("Permissions-Policy",
-                            "geolocation=(), microphone=(), camera=(), payment=()")
-    # HSTS only if always HTTPS (comment out for local dev over http)
-    resp.headers.setdefault("Strict-Transport-Security",
-                            "max-age=31536000; includeSubDomains; preload")
+    resp.headers.setdefault("Referrer-Policy", "no-referrer-when-downgrade")
+    resp.headers.setdefault("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
+    resp.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
+
+    # Optional CSP (public fix #3, optional). Scoped to HTML to avoid PDFs.
+    if resp.mimetype == "text/html":
+        # SAFE baseline; adjust later if you add external CDNs.
+        resp.headers.setdefault(
+            "Content-Security-Policy",
+            "default-src 'self'; "
+            "img-src 'self' data:; "
+            "style-src 'self'; "
+            "font-src 'self'; "
+            "script-src 'self'; "
+            "base-uri 'none'; "
+            "form-action 'self'; "
+            "frame-ancestors 'self'; "
+            "object-src 'none'"
+        )
     return resp
+
+
+# Expose a CSRF token to templates & JS (cookie readable by JS)
+@app.after_request
+def set_csrf_cookie(resp):
+    # Fresh token per response keeps SPA/ajax happy
+    try:
+        token = generate_csrf()
+        resp.set_cookie(
+            "csrf_token",
+            token,
+            secure=True,
+            httponly=False,  # JS needs to read to send in header
+            samesite="Lax",
+        )
+    except Exception:
+        pass
+    return resp
+
+
+# Jinja helper so you can add <meta> or hidden input easily
+@app.context_processor
+def inject_csrf_token():
+    return dict(csrf_token=generate_csrf)
 
 
 
