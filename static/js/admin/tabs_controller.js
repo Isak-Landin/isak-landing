@@ -1,4 +1,11 @@
 // static/js/admin/tabs_controller.js
+
+// Guard: if helpers didn't load for any reason, don't crash
+if (!window.csrfFetch) {
+  console.warn("csrfFetch missing — falling back to fetch (GETs will still work).");
+  window.csrfFetch = window.fetch.bind(window);
+}
+
 (function () {
   const DASHBOARD_ENDPOINT = '/admin/api/dashboard-data';
   const BILLING_SUBS_ENDPOINT = '/admin/api/billing/subscriptions';
