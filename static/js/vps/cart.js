@@ -210,7 +210,7 @@ const CHECKOUT_URL =
 
     try {
       enableSubmit(false);
-      const res = await fetch(CHECKOUT_URL, {
+      const res = await csrfFetch(CHECKOUT_URL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

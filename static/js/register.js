@@ -79,7 +79,7 @@
         const action = form.getAttribute('action') || form.action || window.location.pathname;
         const formData = new FormData(form);
 
-        const res = await fetch(action, {
+        const res = await csrfFetch(action, {
           method: 'POST',
           body: formData,
           credentials: 'same-origin',

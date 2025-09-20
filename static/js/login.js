@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const formData = new FormData(form);
 
     try {
-      const res = await fetch('/auth/login', {
+      const res = await csrfFetch('/auth/login', {
           method: 'POST',
           body: formData,
           credentials: 'same-origin',
