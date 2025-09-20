@@ -41,7 +41,7 @@
 {% endblock %}
 
 {% block extra_js %}{{ super() }}
-<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script src="{{ url_for('static', filename='js/vendor/socket.io-4.7.2.min.js') }}" defer></script>
 <script src="{{ url_for('static', filename='js/chat/chat-core.js') }}"></script>
 <script src="{{ url_for('static', filename='js/chat/chat-input.js') }}"></script>
 <script src="{{ url_for('static', filename='js/chat/chat-typing.js') }}"></script>
