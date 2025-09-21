@@ -181,7 +181,7 @@ def set_security_headers(resp):
             "base-uri 'none'; "
             "form-action 'self'; "
             "frame-ancestors 'self'; "
-            "object-src 'none'"
+            "object-src 'none'; "
             "base-uri 'self';"
         )
     return resp
