@@ -67,4 +67,4 @@ def sitemap_xml():
 @home_blueprint.route("/server")
 @home_blueprint.route("/websites")
 def legacy_redirect():
-    return redirect(url_for("home_blueprint.index"), code=301)
+    return redirect(url_for("home_blueprint.index"), code=302)
