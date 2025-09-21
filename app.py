@@ -199,9 +199,14 @@ def set_csrf_cookie(resp):
             httponly=False,  # JS needs to read to send in header
             samesite="Lax",
         )
+
+        resp.headers.setdefault("Strict-Transport-Security",
+                                "max-age=15552000; includeSubDomains; preload")
     except Exception:
         pass
     return resp
+
+
 
 
 # Jinja helper so you can add <meta> or hidden input easily
