@@ -10,12 +10,6 @@ from apps.Users.models import User
 
 # Import blueprints from different apps
 from apps.home.home import home_blueprint
-# from apps.websites.websites import blueprint as websites_bp
-# from apps.about.about import blueprint as about_bp
-# from apps.contact.contact import blueprint as contact_bp
-# from apps.hosting.hosting import blueprint as hosting_bp
-# from apps.server.server import blueprint as server_bp
-# from apps.support.support import blueprint as support_bp
 from apps.Users.auth import auth_blueprint
 from apps.Users.users import blueprint as users_bp
 from apps.store.store import store_blueprint
