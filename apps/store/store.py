@@ -39,4 +39,4 @@ def checkout():
 @store_blueprint.route('/order-history', methods=['GET'])
 def order_history_redirect():
     # Permanent redirect to canonical page with a safe default
-    return redirect(url_for('vps_blueprint.orders_page', mode='all'), code=308)
+    return "", 308, {"Location": url_for('vps_blueprint.orders_page', mode='all')}

@@ -33,4 +33,4 @@ def vps_billing_portal():
         customer=current_user.stripe_customer_id,
         return_url=return_url
     )
-    return redirect(session.url, code=303)
+    return "", 303, {"Location": session.url}
