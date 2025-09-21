@@ -5,8 +5,23 @@
   function show(el, msg) {
     if (!el) return;
     el.textContent = msg || '';
-    if (msg) el.classList.add('is-visible');
-    else el.classList.remove('is-visible');
+    if (msg && el.classList) el.classList.add('is-visible');
+    else if (el.classList) el.classList.remove('is-visible');
+    if (el.style) el.style.display = msg ? 'block' : 'none';
+  }
+
+  // Mirror backend policy: min 12 and upper+lower+digit+symbol
+  const MIN_LEN = 12;
+  const PASS_RE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,128}$/;
+
+  function validatePasswordStrength(pw) {
+    if (!pw || pw.length < MIN_LEN) {
+      return `Password must be at least ${MIN_LEN} characters.`;
+    }
+    if (!PASS_RE.test(pw)) {
+      return "Password must include uppercase, lowercase, a number, and a symbol.";
+    }
+    return "";
   }
 
   function init() {
@@ -16,90 +31,75 @@
     const email       = $('email');
     const pw          = $('password');
     const confirmPw   = $('confirm_password');
-    const acceptLegal = $('accept_legal');
-
-    const pwError     = $('password-error');
-    const errorBox    = $('register-error');
+    const legal       = $('accept_legal');      // checkbox
+    const errorBox    = $('register-error') || document.querySelector('.auth-error');
+    const pwError     = $('password-error') || errorBox;
     const submitBtn   = $('register-submit');
 
-    // Clear errors while typing/checking boxes
-    [email, pw, confirmPw].forEach(el => {
-      if (el) el.addEventListener('input', () => {
-        if (el === pw || el === confirmPw) show(pwError, '');
-        show(errorBox, '');
-      });
-    });
-
-    if (acceptLegal) {
-      // Nice native validation message for the legal checkbox
-      acceptLegal.addEventListener('invalid', () => {
-        acceptLegal.setCustomValidity('You must accept the Terms, Privacy Policy, and AUP to continue.');
-      });
-      acceptLegal.addEventListener('change', () => acceptLegal.setCustomValidity(''));
+    // Live hint on password fields
+    function syncPwHint() {
+      if (!pw || !confirmPw) return;
+      const strengthMsg = validatePasswordStrength(pw.value);
+      if (strengthMsg) { show(pwError, strengthMsg); return; }
+      if (pw.value && confirmPw.value && pw.value !== confirmPw.value) {
+        show(pwError, "Passwords don’t match."); return;
+      }
+      show(pwError, "");
     }
 
-    // Live password mismatch hint
-    const syncPwHint = () => {
-      if (pw && confirmPw && pw.value && confirmPw.value && pw.value !== confirmPw.value) {
-        show(pwError, "Passwords don’t match.");
-      } else {
-        show(pwError, '');
-      }
-    };
-    if (pw) pw.addEventListener('input', syncPwHint);
-    if (confirmPw) confirmPw.addEventListener('input', syncPwHint);
+    pw && pw.addEventListener('input', syncPwHint);
+    confirmPw && confirmPw.addEventListener('input', syncPwHint);
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      show(pwError, '');
-      show(errorBox, '');
+      show(pwError, "");
+      show(errorBox, "");
 
-      // Client-side validations (since form has novalidate)
+      // HTML email validity (UX only)
+      if (email && !email.checkValidity && !email.value.includes('@')) {
+        show(errorBox, 'Please enter a valid email address.');
+        email.focus();
+        return;
+      }
+      if (email && email.checkValidity && !email.checkValidity()) {
+        show(errorBox, 'Please enter a valid email address.');
+        email.focus();
+        return;
+      }
+
+      // Password checks mirroring backend
+      const strengthMsg = validatePasswordStrength(pw?.value);
+      if (strengthMsg) {
+        show(pwError, strengthMsg);
+        (pw || confirmPw)?.focus();
+        return;
+      }
       if (!pw || !confirmPw || pw.value !== confirmPw.value) {
         show(pwError, "Passwords don’t match.");
         (confirmPw || pw)?.focus();
         return;
       }
 
-      if (acceptLegal && !acceptLegal.checked) {
-        show(errorBox, "You must agree to the Terms, Privacy Policy, and AUP to create an account.");
-        acceptLegal.focus();
+      // Legal acceptance
+      if (legal && !legal.checked) {
+        show(errorBox, "You must agree to the Terms, Privacy Policy, and AUP.");
+        legal.focus();
         return;
       }
 
-      if (email && !email.checkValidity()) {
-        show(errorBox, "Please enter a valid email address.");
-        email.focus();
-        return;
-      }
-
-      // Submit via fetch (AJAX), expect JSON
-      submitBtn && (submitBtn.disabled = true, submitBtn.classList.add('is-loading'));
+      // Submit
+      const formData = new FormData(form);
       try {
-        const action = form.getAttribute('action') || form.action || window.location.pathname;
-        const formData = new FormData(form);
+        submitBtn && (submitBtn.disabled = true, submitBtn.classList.add('is-loading'));
 
-        const res = await csrfFetch(action, {
+        const res = await csrfFetch('/auth/register', {
           method: 'POST',
-          body: formData,
-          credentials: 'same-origin',
-          headers: {
-            'Accept': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-Token': getCsrfTokenFromCookie()
-          }
+          body: formData
         });
 
-        let data = null;
-        const ct = res.headers.get('content-type') || '';
-        if (ct.includes('application/json')) {
-          data = await res.json();
-        } else {
-          // Fallback: non-JSON error page
-          if (!res.ok) throw new Error('Registration failed');
-        }
+        const data = await res.json().catch(() => ({}));
 
-        if (res.ok && data && (data.success || data.ok)) {
+        if (res.ok && (data.success || data.ok)) {
           window.location.href = data.redirect || '/dashboard';
         } else {
           const msg = (data && (data.error || data.message)) || 'Registration failed.';

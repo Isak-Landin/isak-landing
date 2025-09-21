@@ -1,4 +1,4 @@
-# apps/Users/auth.py  (DROP-IN REPLACEMENT)
+# apps/Users/auth.py
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, session
 from flask_login import login_user, current_user, login_required, logout_user
@@ -12,12 +12,34 @@ from werkzeug.security import check_password_hash
 
 auth_blueprint = Blueprint('auth_blueprint', __name__, url_prefix='/auth')
 
-# ---- Validators (public fix #1) ----
+
+
 EMAIL_MAX_LEN = 254
 PASS_MIN = 12
 PASS_MAX = 128
-# at least one lower, upper, digit, symbol
 PASS_RE = re.compile(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{%d,%d}$' % (PASS_MIN, PASS_MAX))
+
+def normalize_email(email: str) -> str:
+    if not email or len(email) > EMAIL_MAX_LEN:
+        raise ValueError("Invalid email.")
+    try:
+        info = validate_email(email, allow_smtputf8=True)
+        return info.normalized.lower()
+    except EmailNotValidError as e:
+        raise ValueError(str(e))
+
+def validate_password_rules(pw: str, email_hint: str = ""):
+    if not pw:
+        raise ValueError("Password is required.")
+    if len(pw) < PASS_MIN:
+        raise ValueError(f"Password must be at least {PASS_MIN} characters.")
+    if len(pw) > PASS_MAX:
+        raise ValueError("Password too long.")
+    if email_hint and email_hint.lower() in pw.lower():
+        raise ValueError("Password must not contain your email.")
+    if not PASS_RE.match(pw):
+        raise ValueError("Password must include uppercase, lowercase, a number, and a symbol.")
+
 
 def norm(s: str) -> str:
     return (s or "").strip()
@@ -27,27 +49,6 @@ def parse_bool(val) -> bool:
         return True
     v = str(val).strip().lower()
     return v in ("1", "true", "on", "yes")
-
-def validate_email_safe(email: str) -> str:
-    if not email or len(email) > EMAIL_MAX_LEN:
-        raise ValueError("Invalid email or too long.")
-    try:
-        info = validate_email(email, allow_smtputf8=True)
-        return info.normalized
-    except EmailNotValidError as e:
-        raise ValueError(str(e))
-
-def validate_password_rules(pw: str, email_hint: str = ""):
-    if not pw:
-        raise ValueError("Password is required.")
-    if len(pw) > PASS_MAX:
-        raise ValueError("Password too long.")
-    if len(pw) < PASS_MIN:
-        raise ValueError(f"Password must be at least {PASS_MIN} characters.")
-    if email_hint and email_hint.lower() in pw.lower():
-        raise ValueError("Password must not contain your email.")
-    if not PASS_RE.match(pw):
-        raise ValueError("Password must include upper, lower, number, and symbol.")
 
 # ---- Routes ----
 
