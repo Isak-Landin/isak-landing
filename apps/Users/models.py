@@ -1,7 +1,8 @@
-# Users/models.py
+# apps/Users/models.py
 
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import event
 from extensions import db
 
 
@@ -42,3 +43,12 @@ class User(UserMixin, db.Model):
         parts = [self.first_name or "", self.last_name or ""]
         s = " ".join(p for p in parts if p).strip()
         return s or (self.email or f"User #{self.id}")
+
+
+# --- Normalize email to lowercase on insert/update (no schema change) ---
+def _normalize_email(mapper, connection, target: User):
+    if getattr(target, "email", None):
+        target.email = target.email.strip().lower()
+
+event.listen(User, "before_insert", _normalize_email)
+event.listen(User, "before_update", _normalize_email)

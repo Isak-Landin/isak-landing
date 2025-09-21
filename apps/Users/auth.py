@@ -12,34 +12,12 @@ from werkzeug.security import check_password_hash
 
 auth_blueprint = Blueprint('auth_blueprint', __name__, url_prefix='/auth')
 
-
-
+# ---- Validators (public fix #1) ----
 EMAIL_MAX_LEN = 254
 PASS_MIN = 12
 PASS_MAX = 128
+# at least one lower, upper, digit, symbol
 PASS_RE = re.compile(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{%d,%d}$' % (PASS_MIN, PASS_MAX))
-
-def normalize_email(email: str) -> str:
-    if not email or len(email) > EMAIL_MAX_LEN:
-        raise ValueError("Invalid email.")
-    try:
-        info = validate_email(email, allow_smtputf8=True)
-        return info.normalized.lower()
-    except EmailNotValidError as e:
-        raise ValueError(str(e))
-
-def validate_password_rules(pw: str, email_hint: str = ""):
-    if not pw:
-        raise ValueError("Password is required.")
-    if len(pw) < PASS_MIN:
-        raise ValueError(f"Password must be at least {PASS_MIN} characters.")
-    if len(pw) > PASS_MAX:
-        raise ValueError("Password too long.")
-    if email_hint and email_hint.lower() in pw.lower():
-        raise ValueError("Password must not contain your email.")
-    if not PASS_RE.match(pw):
-        raise ValueError("Password must include uppercase, lowercase, a number, and a symbol.")
-
 
 def norm(s: str) -> str:
     return (s or "").strip()
@@ -49,6 +27,27 @@ def parse_bool(val) -> bool:
         return True
     v = str(val).strip().lower()
     return v in ("1", "true", "on", "yes")
+
+def validate_email_safe(email: str) -> str:
+    if not email or len(email) > EMAIL_MAX_LEN:
+        raise ValueError("Invalid email or too long.")
+    try:
+        info = validate_email(email, allow_smtputf8=True)
+        return info.normalized
+    except EmailNotValidError as e:
+        raise ValueError(str(e))
+
+def validate_password_rules(pw: str, email_hint: str = ""):
+    if not pw:
+        raise ValueError("Password is required.")
+    if len(pw) > PASS_MAX:
+        raise ValueError("Password too long.")
+    if len(pw) < PASS_MIN:
+        raise ValueError(f"Password must be at least {PASS_MIN} characters.")
+    if email_hint and email_hint.lower() in pw.lower():
+        raise ValueError("Password must not contain your email.")
+    if not PASS_RE.match(pw):
+        raise ValueError("Password must include upper, lower, number, and symbol.")
 
 # ---- Routes ----
 
@@ -63,10 +62,16 @@ def login():
         return render_template('login.html')
 
     try:
-        email = norm(request.form.get('email'))
+        email_raw = norm(request.form.get('email'))
         password = norm(request.form.get('password'))
 
-        if not email or not password:
+        if not email_raw or not password:
+            return jsonify(success=False, error="Invalid email or password."), 400
+
+        # Normalize email (lowercased) for consistent lookups; keep generic errors
+        try:
+            email = validate_email_safe(email_raw).lower()
+        except ValueError:
             return jsonify(success=False, error="Invalid email or password."), 400
 
         # Try admin first (kept from your original flow)
@@ -121,9 +126,10 @@ def register():
         if not accepted:
             return jsonify(success=False, error="You must agree to the Terms, Privacy Policy, and AUP."), 400
 
-        email = validate_email_safe(norm(email_raw))
+        # Normalize + lowercase email for storage and uniqueness checks
+        email = validate_email_safe(norm(email_raw)).lower()
 
-        # Password checks (blocks “sql injection strings saved as a user” issue)
+        # Password checks
         if password != confirm:
             return jsonify(success=False, error="Passwords do not match."), 400
         try:
