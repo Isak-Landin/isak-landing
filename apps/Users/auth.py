@@ -12,8 +12,8 @@ from werkzeug.security import check_password_hash
 
 auth_blueprint = Blueprint('auth_blueprint', __name__, url_prefix='/auth')
 
-# ---- Validators (public fix #1) ----
-EMAIL_MAX_LEN = 254
+# ---- Validators (aligned to DB column length 120) ----
+EMAIL_MAX_LEN = 120  # model uses db.String(120)
 PASS_MIN = 12
 PASS_MAX = 128
 # at least one lower, upper, digit, symbol
@@ -29,11 +29,16 @@ def parse_bool(val) -> bool:
     return v in ("1", "true", "on", "yes")
 
 def validate_email_safe(email: str) -> str:
+    # initial basic length gate to avoid huge payloads
     if not email or len(email) > EMAIL_MAX_LEN:
         raise ValueError("Invalid email or too long.")
     try:
         info = validate_email(email, allow_smtputf8=True)
-        return info.normalized
+        normalized = info.normalized
+        # enforce storage length after normalization too
+        if len(normalized) > EMAIL_MAX_LEN:
+            raise ValueError("Invalid email or too long.")
+        return normalized
     except EmailNotValidError as e:
         raise ValueError(str(e))
 

@@ -1,3 +1,5 @@
+# app.py
+
 from flask import Flask, session, request, g
 from flask_login import login_required, current_user
 from dotenv import load_dotenv
@@ -35,7 +37,8 @@ from apps.VPS.models import VPSPlan
 from flask_migrate import Migrate
 
 from extensions import limiter
-from flask_wtf.csrf import CSRFProtect, generate_csrf
+from extensions import csrf  # <-- use the shared CSRF instance from extensions
+from flask_wtf.csrf import generate_csrf  # only need the token generator
 
 
 login_manager = LoginManager()
@@ -113,15 +116,13 @@ def create_app():
     _app.register_blueprint(store_blueprint)
     _app.register_blueprint(admin_blueprint)
     _app.register_blueprint(legal_blueprint)
-
     _app.register_blueprint(chat_blueprint)
-
     _app.register_blueprint(vps_blueprint)
 
     # Register Jinja filters
     register_jinja_filters(_app)
 
-    # Initialize the database here if needed
+    # Initialize the database
     db.init_app(_app)
 
     return _app
@@ -153,8 +154,8 @@ app.config.update(
     REMEMBER_COOKIE_SAMESITE="Lax",
 )
 
-# CSRF
-csrf = CSRFProtect(app)
+# CSRF (use the shared instance from extensions; matches X-CSRF-Token on the client)
+csrf.init_app(app)
 
 # Limiter
 limiter.init_app(app)
@@ -209,7 +210,6 @@ def inject_csrf_token():
     return dict(csrf_token=generate_csrf)
 
 
-
 migrate = Migrate(app, db)
 
 # Initialize the database
@@ -243,4 +243,3 @@ with app.app_context():
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5006, debug=True)
-

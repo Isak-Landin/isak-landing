@@ -174,3 +174,17 @@ input:focus{
 @media (max-width:540px){
   .auth-card{ padding:18px; }
 }
+
+/* Optional: small helper text under fields */
+.hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Optional: visual affordance for loading state used by JS */
+.is-loading {
+  opacity: .7;
+  pointer-events: none;
+}
