@@ -34,6 +34,7 @@ def parse_bool(val) -> bool:
     v = str(val).strip().lower()
     return v in ("1", "true", "on", "yes")
 
+
 def validate_email_safe(email: str) -> str:
     # initial basic length gate to avoid huge payloads
     if not email or len(email) > EMAIL_MAX_LEN:
@@ -47,6 +48,7 @@ def validate_email_safe(email: str) -> str:
         return normalized
     except EmailNotValidError as e:
         raise ValueError(str(e))
+
 
 def validate_password_rules(pw: str, email_hint: str = ""):
     if not pw:
