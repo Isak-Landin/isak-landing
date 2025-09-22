@@ -239,6 +239,14 @@ with app.app_context():
     except Exception as e:
         print(f"⚠️  VPS plan seeding skipped due to error: {e}")
 
+    from apps.security.seed_wordlists import seed_wordlists
+
+    try:
+        seed_wordlists()  # idempotent; loads only if tables are empty
+        print("✅ Weak password tables ready (10k/10m).")
+    except Exception as e:
+        print(f"⚠️  Weak password seeding skipped due to error: {e}")
+
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5006, debug=True)

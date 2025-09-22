@@ -1,4 +1,6 @@
 # apps/Users/auth.py
+import hashlib
+from sqlalchemy import text
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, session, current_app, send_from_directory
 from flask_login import login_user, current_user, login_required, logout_user
@@ -64,12 +66,15 @@ def validate_password_rules(pw: str, email_hint: str = ""):
 
 # ---- Helpers for reset tokens / JSON ----
 
+
 def _serializer() -> URLSafeTimedSerializer:
     secret = current_app.config.get('SECRET_KEY') or ''
     return URLSafeTimedSerializer(secret_key=secret, salt='pw-reset-v1')
 
+
 def _make_reset_token(user_id: int) -> str:
     return _serializer().dumps({'uid': user_id})
+
 
 def _parse_reset_token(token: str, max_age_seconds: int = 86400) -> int | None:
     try:
@@ -77,6 +82,7 @@ def _parse_reset_token(token: str, max_age_seconds: int = 86400) -> int | None:
         return int(data.get('uid'))
     except (BadSignature, SignatureExpired, ValueError, TypeError):
         return None
+
 
 def _wants_json() -> bool:
     if request.is_json:
@@ -109,42 +115,17 @@ def _send_reset_email(to_email: str, link: str):
     current_app.logger.info(f"[password-reset] To: {to_email}  Link: {link}")
 
 
-# ---- Blacklist easy passwords ----
-BLACKLIST_PATHS = [
-    # You can place the list in either spot; first existing one wins.
-    os.path.join(os.path.dirname(current_app.root_path), "static", "wordlists", "top_10k.txt")
-    if 'current_app' in globals() else "",  # placeholder when module loads outside app ctx
-    os.path.join(os.path.dirname(__file__), "..", "..", "static", "wordlists", "top_10k.txt"),
-    os.path.join(os.getcwd(), "static", "wordlists", "top_10k.txt"),
-]
-
-_password_blacklist = None  # lazy loaded
-
-
-def load_password_blacklist():
-    """Load a newline-separated list of weak passwords into a lowercase set."""
-    global _password_blacklist
-    if _password_blacklist is not None:
-        return _password_blacklist
-
-    wl = set()
-    for p in BLACKLIST_PATHS:
-        if not p:
-            continue
-        try:
-            if os.path.isfile(p):
-                with open(p, "r", encoding="utf-8", errors="ignore") as f:
-                    for line in f:
-                        pw = line.strip().lower()
-                        if pw:
-                            wl.add(pw)
-                break  # stop at first found file
-        except Exception:
-            # don't fail app start if wordlist missing
-            pass
-
-    _password_blacklist = wl
-    return _password_blacklist
+# ---- Blacklist for weak passwords ----
+def is_password_in_blacklist_10m(pw: str) -> bool:
+    """
+    O(1) indexed check against weak_passwords_10m.
+    We hash lowercase(pw) with SHA-256 to match seeded rows.
+    """
+    if not pw:
+        return False
+    h = hashlib.sha256(pw.lower().encode("utf-8")).hexdigest()
+    sql = text("SELECT 1 FROM weak_passwords_10m WHERE hash = :h LIMIT 1")
+    return db.session.execute(sql, {"h": h}).first() is not None
 
 
 # ---- Routes ----
