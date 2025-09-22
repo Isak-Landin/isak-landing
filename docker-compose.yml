@@ -46,6 +46,23 @@ services:
     networks:
       - web_network
 
+
+  wordlist-seed:
+    build: .
+    depends_on:
+      - dashboard-db
+    env_file:
+      - ./.env
+    environment:
+      # Make sure Flask can locate your factory
+      - FLASK_APP=app:create_app
+      # optional: override paths if you ever move the lists
+      # - WORDLIST_10K=/app/static/wordlists/top_10k.txt
+      # - WORDLIST_10M=/app/static/wordlists/top_10m.txt
+    command: >
+      sh -c "flask db upgrade || true;
+             flask wordlist-seed"
+
 volumes:
   dashboard-postgres-data:
 
