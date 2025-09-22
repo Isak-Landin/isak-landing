@@ -149,7 +149,7 @@ def load_password_blacklist():
 
 # ---- Routes ----
 @auth_blueprint.route('/login', methods=['GET', 'POST'])
-@limiter.limit("10/minute;100/hour")
+@limiter.limit("10/minute;20/hour")
 def login():
     if request.method == 'GET':
         if current_user.is_authenticated:
