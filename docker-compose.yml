@@ -52,7 +52,7 @@ services:
     depends_on:
       - dashboard-db
     env_file:
-      - ./.env
+      - .env
     environment:
       # Make sure Flask can locate your factory
       - FLASK_APP=app:create_app
