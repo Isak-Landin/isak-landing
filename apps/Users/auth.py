@@ -213,6 +213,9 @@ def register():
         except ValueError as ve:
             return jsonify(success=False, error=str(ve)), 400
 
+        if is_password_in_blacklist_10m(password):
+            return jsonify(success=False, error="That password is too common. Please choose a stronger one."), 400
+
         # Already registered?
         if User.query.filter_by(email=email).first():
             return jsonify(success=False, error="Email is already registered."), 409
@@ -326,6 +329,9 @@ def reset_password():
             if _wants_json():
                 return jsonify(success=False, error=msg), 400
             return _render_or_static('users/reset_password.html', token=token, error=msg)
+
+        if is_password_in_blacklist_10m(password):
+            return jsonify(success=False, error="That password is too common. Please choose a stronger one."), 400
 
         # All good — set new password
         user.set_password(password)
