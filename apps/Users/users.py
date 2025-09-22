@@ -97,6 +97,12 @@ def build_vps_dashboard_context(user_id: int):
     }
 
 
+@blueprint.route("/account/security", methods=["GET"])
+@login_required
+def account_security():
+    return render_template("account_security.html")
+
+
 @blueprint.route('/dashboard', methods=['GET'])
 @login_required
 def dashboard():

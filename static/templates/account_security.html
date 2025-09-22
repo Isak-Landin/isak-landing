@@ -1,0 +1,65 @@
+{% extends "layouts/dashboard_base.html" %}
+
+{% block title %}Account security{% endblock %}
+
+{% block extra_css %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}?v=10">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}?v=5">
+{% endblock %}
+
+{% block dashboard_content %}
+  <section class="dash-section">
+    <header class="dash-section-header">
+      <h1 class="dash-section-title">Account security</h1>
+      <p class="dash-section-subtitle">Manage your password and keep your account protected.</p>
+    </header>
+
+    <div class="auth-card" id="change-password-card">
+      <div class="auth-head">
+        <h2>Change password</h2>
+        <p>Use a strong password you haven’t used here before.</p>
+      </div>
+
+      <form id="change-password-form"
+            class="auth-form"
+            method="POST"
+            action="{{ url_for('users_blueprint.change_password') }}"
+            novalidate>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="form-row">
+          <label for="current_password">Current password</label>
+          <input id="current_password" name="current_password" type="password"
+                 placeholder="••••••••" required autocomplete="current-password">
+        </div>
+
+        <div class="form-row">
+          <label for="new_password">New password</label>
+          <input id="new_password" name="new_password" type="password"
+                 placeholder="Create a strong password"
+                 required minlength="12" autocomplete="new-password" aria-describedby="cpw-hint">
+          <small id="cpw-hint" class="hint">At least 12 characters, with uppercase, lowercase, a number, and a symbol.</small>
+        </div>
+
+        <div class="form-row">
+          <label for="confirm_password">Confirm new password</label>
+          <input id="confirm_password" name="confirm_password" type="password"
+                 placeholder="Repeat your password"
+                 required minlength="12" autocomplete="new-password">
+        </div>
+
+        <div id="change-password-error" class="auth-error" aria-live="polite"></div>
+
+        <div class="auth-actions">
+          <button type="submit" class="button primary auth-primary">Update password</button>
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_js %}
+  {{ super() }}
+  <script src="{{ url_for('static', filename='js/users/change_password.js') }}?v=1" defer></script>
+{% endblock %}

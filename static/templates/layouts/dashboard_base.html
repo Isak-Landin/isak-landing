@@ -92,6 +92,11 @@
           <a href="{{ url_for('vps_blueprint.orders_page', mode='all') }}">Orders</a>
           <a href="{{ url_for('chat_blueprint.chat_redirect') }}">Support</a>
           <a href="{{ url_for('store_blueprint.store') }}">Store</a>
+          <a href="{{ url_for('users_blueprint.account_security') }}"
+             class="{% if request.endpoint == 'users_blueprint.account_security' %}is-active{% endif %}">
+            🔐 Account security
+          </a>
+
         </nav>
         <div class="dash-footer-meta">
           <span class="text">User: {{ current_user.email }}</span>
