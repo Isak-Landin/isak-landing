@@ -1,14 +1,33 @@
 # apps/Users/users.py
 
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, jsonify, request
 from flask_login import login_required, current_user
 from sqlalchemy import or_, and_
+import re
+from extensions import limiter
 
 from extensions import db
 from apps.VPS.models import VPS, VpsSubscription
 
 blueprint = Blueprint('users_blueprint', __name__, url_prefix='/users')
 
+
+PASS_MIN = 12
+PASS_MAX = 128
+PASS_RE = re.compile(rf'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{{{PASS_MIN},{PASS_MAX}}}$')
+
+
+def _validate_password_rules(pw: str, email_hint: str = ""):
+    if not pw:
+        raise ValueError("Password is required.")
+    if len(pw) > PASS_MAX:
+        raise ValueError("Password too long.")
+    if len(pw) < PASS_MIN:
+        raise ValueError(f"Password must be at least {PASS_MIN} characters.")
+    if email_hint and email_hint.lower() in pw.lower():
+        raise ValueError("Password must not contain your email.")
+    if not PASS_RE.match(pw):
+        raise ValueError("Password must include upper, lower, number, and symbol.")
 
 def build_vps_dashboard_context(user_id: int):
     """
@@ -90,3 +109,45 @@ def dashboard():
         vps=vps_list,  # legacy var if template references it
         vps_ctx=ctx    # new structured context for the 3 cases
     )
+
+
+@blueprint.route("/change-password", methods=["POST"])
+@limiter.limit("5/hour")
+@login_required
+def change_password():
+    """
+    Expects form (or JSON) fields:
+      current_password, new_password, confirm_password
+    Returns JSON: { success: bool, error?: str }
+    """
+    payload = request.get_json(silent=True) or request.form
+
+    current_pw = (payload.get("current_password") or "").strip()
+    new_pw     = (payload.get("new_password") or "").strip()
+    confirm_pw = (payload.get("confirm_password") or "").strip()
+
+    if not current_pw or not new_pw or not confirm_pw:
+        return jsonify(success=False, error="All fields are required."), 400
+
+    if not current_user.check_password(current_pw):
+        # Don’t leak whether the account exists; here it’s the logged-in user, so be clear but generic
+        return jsonify(success=False, error="Current password is incorrect."), 400
+
+    if new_pw != confirm_pw:
+        return jsonify(success=False, error="Passwords do not match."), 400
+
+    try:
+        _validate_password_rules(new_pw, email_hint=current_user.email or "")
+    except ValueError as ve:
+        return jsonify(success=False, error=str(ve)), 400
+
+    # Reject reuse of the current password
+    if current_pw == new_pw:
+        return jsonify(success=False, error="New password must be different from the current password."), 400
+
+    # Save
+    current_user.set_password(new_pw)
+    from extensions import db
+    db.session.commit()
+
+    return jsonify(success=True), 200
