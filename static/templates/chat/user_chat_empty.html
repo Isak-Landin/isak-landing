@@ -24,6 +24,7 @@
         action="{{ url_for('chat_blueprint.start_chat') }}"
         method="POST"
         class="chat-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <button type="submit" class="button primary">Start chat</button>
   </form>
 {% endblock %}
