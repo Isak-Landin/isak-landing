@@ -124,6 +124,8 @@ def create_app():
 
 app = create_app()
 
+app.config.setdefault("WTF_CSRF_HEADERS", ['X-CSRFToken', 'X-CSRF-Token'])
+
 
 @app.before_request
 def set_request_timezone():
@@ -161,6 +163,7 @@ def set_security_headers(resp):
     resp.headers.setdefault("Referrer-Policy", "no-referrer-when-downgrade")
     resp.headers.setdefault("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
     resp.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
+    resp.headers.setdefault("X-XSS-Protection", "1; mode=block")
 
     # Optional CSP (public fix #3, optional). Scoped to HTML to avoid PDFs.
     if resp.mimetype == "text/html":
@@ -190,7 +193,7 @@ def set_csrf_cookie(resp):
             "csrf_token",
             token,
             secure=True,
-            httponly=False,  # JS needs to read to send in header
+            httponly=True,  # JS needs to read to send in header
             samesite="Lax",
         )
 

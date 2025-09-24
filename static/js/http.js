@@ -14,7 +14,10 @@
 
     // Only attach CSRF header for mutating requests
     if (m !== 'GET' && m !== 'HEAD' && m !== 'OPTIONS') {
-      const token = (window.getCsrfTokenFromCookie && window.getCsrfTokenFromCookie()) || '';
+      const token =
+        (typeof window.getCsrfToken === 'function' && window.getCsrfToken()) ||
+        (typeof window.getCsrfTokenFromCookie === 'function' && window.getCsrfTokenFromCookie()) ||
+        '';
       if (token) headers.set('X-CSRF-Token', token);
       // IMPORTANT: don't set Content-Type on FormData, let the browser handle it
     }
