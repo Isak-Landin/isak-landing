@@ -20,19 +20,44 @@ def _table_count(table: str) -> int:
 
 def _copy_chunk(table: str, hashes):
     """
-    Use psycopg2 COPY for fast bulk load. 'hashes' is an iterable of hex strings.
+    COPY the chunk into an UNLOGGED staging table (no constraints), then merge
+    unique rows into the destination with ON CONFLICT DO NOTHING.
+    This prevents duplicate-key errors from aborting COPY.
     """
+    staging = f"{table}_staging"
+
     raw = db.engine.raw_connection()
     try:
         cur = raw.cursor()
+        # 1) Create staging once; keep it small by truncating per chunk
+        cur.execute(f"CREATE UNLOGGED TABLE IF NOT EXISTS {staging} (hash text)")
+        cur.execute(f"TRUNCATE {staging}")
+        raw.commit()
+
+        # 2) COPY this chunk (one column) into staging
         buf = io.StringIO()
         for h in hashes:
             buf.write(h + "\n")
         buf.seek(0)
-        cur.copy_expert(f"COPY {table} (hash) FROM STDIN WITH (FORMAT csv)", buf)
+        cur.copy_expert(f"COPY {staging} (hash) FROM STDIN WITH (FORMAT csv)", buf)
+        raw.commit()
+
+        # 3) Merge into destination; ON CONFLICT keeps it idempotent
+        cur.execute(f"""
+            INSERT INTO {table} (hash)
+            SELECT DISTINCT hash
+            FROM {staging}
+            WHERE hash IS NOT NULL AND hash <> ''
+            ON CONFLICT DO NOTHING
+        """)
+        raw.commit()
+
+        # 4) Keep staging empty between chunks (so memory stays bounded)
+        cur.execute(f"TRUNCATE {staging}")
         raw.commit()
     finally:
         raw.close()
+
 
 def _hash_lines(path: str):
     """
