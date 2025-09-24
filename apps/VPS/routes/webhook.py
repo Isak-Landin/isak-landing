@@ -12,6 +12,8 @@ from apps.VPS.models import BillingRecord         # new model
 
 from typing import Optional, Union, Dict, Any
 
+from extensions import csrf
+
 
 def _find_or_bind_user(
     customer_id: Optional[str],
@@ -268,6 +270,7 @@ def _upsert_subscription_from_stripe(stripe_sub):
 
 
 @vps_blueprint.route("/webhook", methods=["POST"])
+@csrf.exempt
 def vps_webhook():
     # 1) Read raw body and header
     payload = request.get_data(as_text=False)
