@@ -6,8 +6,11 @@ from flask_login import current_user
 from apps.VPS.vps import vps_blueprint
 from apps.VPS.models import BillingRecord
 
+from extensions import csrf
+
 
 @vps_blueprint.route("/success", methods=["GET"])
+@csrf.exempt
 def vps_success():
     """
     Show real success only if the initial invoice is actually paid.
@@ -43,6 +46,7 @@ def vps_success():
 
 
 @vps_blueprint.route("/checkout-status", methods=["GET"])
+@csrf.exempt
 def checkout_status():
     """
     Lightweight JSON endpoint for the pending page to poll.

@@ -7,7 +7,7 @@ from apps.VPS.vps import vps_blueprint
 from apps.VPS.stripe.catalog import get_price_id
 from apps.VPS.models import VPSPlan, VpsSubscription
 from flask_login import current_user, login_required
-from extensions import db
+from extensions import db, csrf
 
 # Set Stripe API key from env
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
@@ -15,6 +15,7 @@ stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 
 @vps_blueprint.route("/checkout", methods=["POST"])
 @login_required
+@csrf.exempt
 def vps_checkout():
     """
     Create a Stripe Checkout Session for the selected plan & interval.
