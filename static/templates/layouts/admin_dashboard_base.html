@@ -7,6 +7,10 @@
       content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>{% block title %}Admin Dashboard{% endblock %}</title>
 
+      <meta name="csrf-token" content="{{ csrf_token() }}">
+      <script src="{{ url_for('static', filename='js/csrf.js') }}?v=3.1"></script>
+      <script src="{{ url_for('static', filename='js/http.js') }}?v=3.1"></script>
+
     {# DASHBOARD SHELL THEME (topbar + sidenav) #}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_shell.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/layouts/dashboard_components.css') }}">
@@ -70,8 +74,6 @@
 
 
     {% block extra_js %}
-    <script src="{{ url_for('static', filename='js/csrf.js') }}?v=3.1" defer></script>
-    <script src="{{ url_for('static', filename='js/http.js') }}?v=3.1" defer></script>
     {% endblock %}
   </body>
 </html>
