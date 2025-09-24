@@ -66,7 +66,8 @@ services:
         condition: service_healthy
     networks:
       - web_network
-    command: sh -c "flask db upgrade || true && flask wordlist-seed"
+    command: >
+      sh -c "python -c 'from app import create_app; app=create_app(); from apps.security.seed_wordlists import seed_wordlists; ctx=app.app_context(); ctx.push(); seed_wordlists(); print(\"✅ wordlist seed done\")'"
 
 
 volumes:
