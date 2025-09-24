@@ -61,15 +61,15 @@ services:
     command: |
       sh -euc '
         python -c "import os,time,psycopg2,sys
-for i in range(60):
-    try:
-        psycopg2.connect(os.environ[\"DATABASE_URL\"]); print(\"DB ready\"); break
-    except Exception as e:
-        print(\"DB not ready yet:\", e); time.sleep(2)
-else:
-    raise SystemExit(\"DB never became ready\")"
-        flask db upgrade || true
-        flask wordlist-seed
+          for i in range(60):
+              try:
+                  psycopg2.connect(os.environ[\"DATABASE_URL\"]); print(\"DB ready\"); break
+              except Exception as e:
+                  print(\"DB not ready yet:\", e); time.sleep(2)
+          else:
+              raise SystemExit(\"DB never became ready\")"
+                  flask db upgrade || true
+                  flask wordlist-seed
 
 volumes:
   dashboard-postgres-data:
