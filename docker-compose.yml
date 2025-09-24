@@ -47,7 +47,7 @@ services:
       - web_network
 
 
- wordlist-seed:
+  wordlist-seed:
     build: .
     env_file:
       - .env
