@@ -66,11 +66,12 @@
       </div>
     </footer>
 
-    <script src="{{ url_for('static', filename='js/csrf.js') }}?v=3.1" defer></script>
-    <script src="{{ url_for('static', filename='js/http.js') }}?v=3.1" defer></script>
+
 
 
     {% block extra_js %}
+    <script src="{{ url_for('static', filename='js/csrf.js') }}?v=3.1" defer></script>
+    <script src="{{ url_for('static', filename='js/http.js') }}?v=3.1" defer></script>
     {% endblock %}
   </body>
 </html>
