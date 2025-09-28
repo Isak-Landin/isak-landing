@@ -6,12 +6,12 @@ from flask_login import login_required
 from datetime import datetime
 
 from extensions import db
-from apps.VPS.models import VPS, VpsSubscription
+from apps.VPS.models import VPS
 from decorators import admin_required, admin_2fa_required
 from apps.admin.admin import admin_blueprint
 
 
-def _to_int(val):
+def _to_int(val: str):
     try:
         return int(val) if (val is not None and val != "") else None
     except Exception:
@@ -126,7 +126,7 @@ def admin_vps_provision(vps_id):
     vps.status = "active"
     vps.provisioning_status = "ready"
     vps.is_ready = True
-    vps.updated_at = datetime.utcnow()
+    vps.updated_at = datetime.now()
 
     db.session.commit()
     flash("VPS provisioned and set to active.", "success")
