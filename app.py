@@ -158,33 +158,32 @@ limiter.init_app(app)
 
 PLAUSIBLE = "https://plausible.io"
 
-# Security headers (+ optional CSP). Keep light so Stripe/others aren’t broken.
 @app.after_request
 def set_security_headers(resp):
     resp.headers.setdefault("X-Content-Type-Options", "nosniff")
     resp.headers.setdefault("Referrer-Policy", "no-referrer-when-downgrade")
-    resp.headers.setdefault("Permissions-Policy", "geolocation=()")
+    resp.headers.setdefault("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
     resp.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
     resp.headers.setdefault("X-XSS-Protection", "1; mode=block")
 
-    # Optional CSP (public fix #3, optional). Scoped to HTML to avoid PDFs.
     if resp.mimetype == "text/html":
-        # SAFE baseline; adjust later if you add external CDNs.
-        resp.headers.setdefault(
-            "Content-Security-Policy",
-            "default-src 'self'; "
-            "img-src 'self' data:; "
-            "style-src 'self'; "
-            "font-src 'self'; "
+        csp = [
+            "default-src 'self'",
+            "img-src 'self' data:",
+            "style-src 'self'",
+            "font-src 'self'",
+            # Allow Plausible script load…
             f"script-src 'self' {PLAUSIBLE}",
             # …and event POSTs/fetch to Plausible
             f"connect-src 'self' {PLAUSIBLE}",
-            "base-uri 'none'; "
-            "form-action 'self'; "
-            "frame-ancestors 'self'; "
-            "object-src 'none'; "
-        )
+            "base-uri 'none'",
+            "form-action 'self'",
+            "frame-ancestors 'self'",
+            "object-src 'none'",
+        ]
+        resp.headers.setdefault("Content-Security-Policy", "; ".join(csp))
     return resp
+
 
 
 # Expose a CSRF token to templates & JS (cookie readable by JS)
