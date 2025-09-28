@@ -156,12 +156,14 @@ csrf.init_app(app)
 # Limiter
 limiter.init_app(app)
 
+PLAUSIBLE = "https://plausible.io"
+
 # Security headers (+ optional CSP). Keep light so Stripe/others aren’t broken.
 @app.after_request
 def set_security_headers(resp):
     resp.headers.setdefault("X-Content-Type-Options", "nosniff")
     resp.headers.setdefault("Referrer-Policy", "no-referrer-when-downgrade")
-    resp.headers.setdefault("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
+    resp.headers.setdefault("Permissions-Policy", "geolocation=()")
     resp.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
     resp.headers.setdefault("X-XSS-Protection", "1; mode=block")
 
@@ -174,7 +176,9 @@ def set_security_headers(resp):
             "img-src 'self' data:; "
             "style-src 'self'; "
             "font-src 'self'; "
-            "script-src 'self'; "
+            f"script-src 'self' {PLAUSIBLE}",
+            # …and event POSTs/fetch to Plausible
+            f"connect-src 'self' {PLAUSIBLE}",
             "base-uri 'none'; "
             "form-action 'self'; "
             "frame-ancestors 'self'; "
