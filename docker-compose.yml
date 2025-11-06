@@ -29,7 +29,7 @@ services:
         condition: service_healthy
 
   dashboard-db:
-    image: postgres:latest
+    image: postgres:17
     # container_name: dashboard-db             # ❌ remove
     environment:
       POSTGRES_USER: admin
