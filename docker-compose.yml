@@ -1,78 +1,70 @@
 services:
   flask-app-isak-landing:
-    container_name: flask-app-isak-landing
+    # container_name: flask-app-isak-landing   # ❌ remove
     restart: always
     env_file: .env
     build: .
     ports:
       - "5006:5006"
-    networks:
-      - web_network
-
     environment:
-      - PYTHONBUFFERED=1
-
+      - PYTHONUNBUFFERED=1
+    networks: [web_network]
     depends_on:
-      - dashboard-db
+      dashboard-db:
+        condition: service_healthy
 
   nginx-isak-landing:
-    container_name: nginx-isak-landing
+    # container_name: nginx-isak-landing       # ❌ remove
     restart: always
     image: nginx:latest
     ports:
       - "40002:40002"
     volumes:
       - ./nginx:/etc/nginx/conf.d
-    networks:
-      - web_network
+    networks: [web_network]
     depends_on:
-      - flask-app-isak-landing
-      - dashboard-db
-
+      flask-app-isak-landing:
+        condition: service_started
+      dashboard-db:
+        condition: service_healthy
 
   dashboard-db:
     image: postgres:latest
-    container_name: dashboard-db
+    # container_name: dashboard-db             # ❌ remove
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: P4cQVW6aLQYYr4bJtZjZq
       POSTGRES_DB: IsakLandingDB
+    command: postgres -p 5437
     volumes:
       - dashboard-postgres-data:/var/lib/postgresql/data
     ports:
-      - "5437:5437"  # host:container
-
+      - "5437:5437"
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U admin -d IsakLandingDB -p 5437" ]
+      test: ["CMD-SHELL", "pg_isready -U admin -d IsakLandingDB -p 5437"]
       interval: 5s
       timeout: 5s
-      retries: 12
-
-    command: postgres -p 5437
+      retries: 24
     restart: always
-    networks:
-      - web_network
-
+    networks: [web_network]
 
   wordlist-seed:
     build: .
-    env_file:
-      - .env
+    env_file: [.env]
     environment:
       FLASK_APP: app:create_app
       DATABASE_URL: ${DATABASE_URL}
     depends_on:
       dashboard-db:
         condition: service_healthy
-    networks:
-      - web_network
+      flask-app-isak-landing:
+        condition: service_started
+    networks: [web_network]
     command: >
       sh -c "python -c 'from app import create_app; app=create_app(); from apps.security.seed_wordlists import seed_wordlists; ctx=app.app_context(); ctx.push(); seed_wordlists(); print(\"✅ wordlist seed done\")'"
 
-
 volumes:
   dashboard-postgres-data:
-
 
 networks:
   web_network:
